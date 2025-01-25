@@ -1,11 +1,11 @@
-import { View, Text, ScrollView } from 'react-native';
-import React from 'react';
-import Animated, { 
-  FadeInRight,
-  FadeIn
-} from 'react-native-reanimated';
 import { Button } from '@/components/ui/Button';
 import { useAuthStore } from '@/lib/stores/authStore';
+import React from 'react';
+import { ScrollView, Text, View } from 'react-native';
+import Animated, {
+  FadeIn,
+  FadeInRight
+} from 'react-native-reanimated';
 
 const mockHabits = [
   { id: 1, name: 'Morning Workout', streak: 5 },
@@ -18,13 +18,13 @@ export default function HomePage() {
 
   return (
     <View className="flex-1 bg-white">
-      <Animated.View 
+      <Animated.View
         entering={FadeIn.duration(500)}
-        className="pt-12 px-6 pb-6 bg-blue-500"
+        className=" px-6 py-6 bg-blue-500"
       >
         <Text className="text-2xl font-bold text-white">Welcome Back!</Text>
       </Animated.View>
-      
+
       <ScrollView className="flex-1 p-6">
         <Text className="text-xl font-semibold mb-4">Your Habits</Text>
         {mockHabits.map((habit, index) => (
@@ -40,10 +40,10 @@ export default function HomePage() {
       </ScrollView>
 
       <View className="p-6">
-        <Button 
-          title="Sign Out" 
-          variant="secondary" 
-          onPress={signOut} 
+        <Button
+          title="Sign Out"
+          variant="secondary"
+          onPress={signOut}
         />
       </View>
     </View>

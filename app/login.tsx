@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { Alert, Text, TextInput, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Animated, {
   FadeIn,
   FadeInDown
@@ -33,54 +34,58 @@ export default function LoginScreen() {
   };
 
   return (
+
     <View className="flex-1 bg-white">
       <StatusBar style="dark" />
-
       <Animated.View
         entering={FadeIn.duration(1000)}
         className="w-full h-1/3 bg-blue-500 rounded-b-[40px] items-center justify-center"
       >
 
       </Animated.View>
-
-      <Animated.View
-        entering={FadeInDown.duration(1000).delay(300)}
-        className="flex-1 px-6 pt-8"
+      <KeyboardAwareScrollView
+        bottomOffset={400}
+        keyboardShouldPersistTaps="always"
+        className='flex-1'
       >
-        <Text className="text-3xl font-bold mb-2">Welcome Back!</Text>
-        <Text className="text-gray-500 mb-8">Sign in to continue</Text>
+        <Animated.View
+          entering={FadeInDown.duration(1000).delay(300)}
+          className="flex-1 px-6 pt-8 z-10"
+        >
+          <Text className="text-3xl font-bold mb-2">Welcome Back!</Text>
+          <Text className="text-gray-500 mb-8">Sign in to continue</Text>
+          <View className="flex-col gap-4 ">
+            <TextInput
+              className="bg-gray-50 p-4 rounded-xl border border-gray-200"
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+            />
 
-        <View className="flex-col gap-4">
-          <TextInput
-            className="bg-gray-50 p-4 rounded-xl border border-gray-200"
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-            keyboardType="email-address"
-          />
+            <TextInput
+              className="bg-gray-50 p-4 rounded-xl border border-gray-200"
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
 
-          <TextInput
-            className="bg-gray-50 p-4 rounded-xl border border-gray-200"
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
+            <AnimatedButton
+              title="Sign In"
+              className='w-full py-4 rounded-xl bg-blue-500'
+              onPress={handleLogin}
+              isLoading={isLoading}
+              // disabled={!email || !password}
+            />
 
-          <AnimatedButton
-            title="Sign In"
-            className='w-full py-4 rounded-xl bg-blue-500'
-            onPress={handleLogin}
-            isLoading={isLoading}
-            disabled={!email || !password}
-          />
-
-          <Text className="text-center text-gray-500 mt-4">
-            Don't have an account? Contact your administrator
-          </Text>
-        </View>
-      </Animated.View>
+            <Text className="text-center text-gray-500 mt-4">
+              Don't have an account? Contact your administrator
+            </Text>
+          </View>
+        </Animated.View>
+      </KeyboardAwareScrollView>
     </View>
   );
 }
