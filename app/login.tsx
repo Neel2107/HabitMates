@@ -3,12 +3,9 @@ import { useAuthStore } from '@/lib/stores/authStore';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { Alert, Text, TextInput, View } from 'react-native';
+import { Alert, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import Animated, {
-  FadeIn,
-  FadeInDown
-} from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInDown, FadeInUp, ZoomIn } from 'react-native-reanimated';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -34,55 +31,99 @@ export default function LoginScreen() {
   };
 
   return (
-
-    <View className="flex-1 bg-white">
-      <StatusBar style="dark" />
-      <Animated.View
-        entering={FadeIn.duration(1000)}
-        className="w-full h-1/3 bg-blue-500 rounded-b-[40px] items-center justify-center"
-      >
-
-      </Animated.View>
+    <View className="flex-1 bg-slate-50">
+      <StatusBar style="light" />
       <KeyboardAwareScrollView
         bottomOffset={400}
         keyboardShouldPersistTaps="always"
-        className='flex-1'
+        className="flex-1"
+        showsVerticalScrollIndicator={false}
       >
+        {/* Animated Header */}
         <Animated.View
-          entering={FadeInDown.duration(1000).delay(300)}
-          className="flex-1 px-6 pt-8 z-10"
+          entering={FadeInUp.duration(1000).springify()}
+          className="w-full h-72 items-center justify-center bg-indigo-500 rounded-b-[40px]"
         >
-          <Text className="text-3xl font-bold mb-2">Welcome Back!</Text>
-          <Text className="text-gray-500 mb-8">Sign in to continue</Text>
-          <View className="flex-col gap-4 ">
-            <TextInput
-              className="bg-gray-50 p-4 rounded-xl border border-gray-200"
-              placeholder="Email"
-              value={email}
-              onChangeText={setEmail}
-              autoCapitalize="none"
-              keyboardType="email-address"
-            />
+          <Animated.Image
+            entering={ZoomIn.duration(800).delay(200)}
+            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/6543/6543853.png' }}
+            className="w-28 h-28 mb-4"
+            resizeMode="contain"
+          />
+          <Animated.Text
+            entering={FadeInDown.duration(600).delay(400)}
+            className="text-white text-3xl font-bold mb-1"
+          >
+            HabitMates
+          </Animated.Text>
+          <Animated.Text
+            entering={FadeInDown.duration(600).delay(500)}
+            className="text-indigo-100 text-lg font-medium"
+          >
+            Build habits together
+          </Animated.Text>
+        </Animated.View>
 
-            <TextInput
-              className="bg-gray-50 p-4 rounded-xl border border-gray-200"
-              placeholder="Password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-            />
+        {/* Form Container */}
+        <Animated.View
+          entering={FadeIn.duration(800).delay(600)}
+          className="flex-1 px-6 pt-8"
+        >
+          <View className="flex-col gap-6">
+            {/* Email Input */}
+            <Animated.View entering={FadeInDown.duration(600).delay(700)}>
+              <Text className="text-slate-700 mb-2 font-semibold">Email Address</Text>
+              <View className="bg-white p-4 rounded-2xl border border-slate-200">
+                <TextInput
+                  placeholder="john@example.com"
+                  value={email}
+                  onChangeText={setEmail}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  className="text-slate-700 text-base"
+                  placeholderTextColor="#94a3b8"
+                />
+              </View>
+            </Animated.View>
 
-            <AnimatedButton
-              title="Sign In"
-              className='w-full py-4 rounded-xl bg-blue-500'
-              onPress={handleLogin}
-              isLoading={isLoading}
-              // disabled={!email || !password}
-            />
+            {/* Password Input */}
+            <Animated.View entering={FadeInDown.duration(600).delay(800)}>
+              <Text className="text-slate-700 mb-2 font-semibold">Password</Text>
+              <View className="bg-white p-4 rounded-2xl border border-slate-200">
+                <TextInput
+                  placeholder="••••••••"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry
+                  className="text-slate-700 text-base"
+                  placeholderTextColor="#94a3b8"
+                />
+              </View>
+            </Animated.View>
 
-            <Text className="text-center text-gray-500 mt-4">
-              Don't have an account? Contact your administrator
-            </Text>
+            {/* Login Button */}
+            <Animated.View entering={FadeInDown.duration(600).delay(900)}>
+              <AnimatedButton
+                title="Sign In"
+                onPress={handleLogin}
+                isLoading={isLoading}
+                className="w-full py-5 rounded-2xl bg-indigo-500"
+                variant="primary"
+              />
+            </Animated.View>
+
+            
+
+            {/* Sign Up Link */}
+            <Animated.View
+              entering={FadeInDown.duration(600).delay(1100)}
+              className="flex-row justify-center space-x-1 pt-4"
+            >
+              <Text className="text-slate-500">New here?</Text>
+              <TouchableOpacity activeOpacity={0.7}>
+                <Text className="text-indigo-500 font-semibold">Create account</Text>
+              </TouchableOpacity>
+            </Animated.View>
           </View>
         </Animated.View>
       </KeyboardAwareScrollView>

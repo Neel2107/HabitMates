@@ -1,6 +1,6 @@
+import { Session } from '@supabase/supabase-js';
 import { create } from 'zustand';
 import { supabase } from '../supabase';
-import { Session } from '@supabase/supabase-js';
 
 interface AuthState {
   session: Session | null;
@@ -8,11 +8,13 @@ interface AuthState {
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   setSession: (session: Session | null) => void;
+  setIsLoading: (isLoading: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   session: null,
   isLoading: true,
+  setIsLoading: (isLoading) => set({ isLoading }),
   signIn: async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
