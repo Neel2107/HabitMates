@@ -19,13 +19,6 @@ export default function AuthLayout() {
             <View className={`flex-1 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
                 <Stack screenOptions={{ headerShown: false }}>
                     <Stack.Screen name="(tabs)" />
-                    <Stack.Screen
-                        name="edit-profile"
-                        options={{
-                            presentation: 'modal',
-                            animation: 'slide_from_bottom'
-                        }}
-                    />
                 </Stack>
             </View>
         </ThemeProvider>

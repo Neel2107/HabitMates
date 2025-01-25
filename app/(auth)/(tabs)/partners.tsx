@@ -32,33 +32,29 @@ const mockPartners = [
   },
 ];
 
-const activities = [
-  { id: 1, user: 'Alex', action: 'completed', habit: 'Morning Run', time: '2h ago' },
-  { id: 2, user: 'Sarah', action: 'started', habit: 'Meditation', time: '4h ago' },
-  { id: 3, user: 'Mike', action: 'reached', milestone: '7 day streak', time: '1d ago' },
-];
 
 const PartnersScreen = () => {
   const isDark = useThemeStore((state) => state.isDark);
 
   return (
-    <SafeAreaView className={`flex-1 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
-      {/* Modern Minimal Header */}
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-app-dark' : 'bg-app-light'}`}>
       <Animated.View
         entering={FadeIn.duration(500)}
         className="px-6 pt-12 pb-6"
       >
         <View className="flex-row items-center justify-between">
           <View>
-            <Text className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-800'}`}>
+            <Text className={`text-2xl font-bold ${isDark ? 'text-content-primary-dark' : 'text-content-primary-light'
+              }`}>
               Partners
             </Text>
-            <Text className={`text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+            <Text className={`text-sm mt-1 ${isDark ? 'text-content-secondary-dark' : 'text-content-secondary-light'
+              }`}>
               {mockPartners.length} active partners
             </Text>
           </View>
           <TouchableOpacity
-            className={`w-10 h-10 rounded-full items-center justify-center ${isDark ? 'bg-indigo-600' : 'bg-indigo-500'
+            className={`w-10 h-10 rounded-full items-center justify-center ${isDark ? 'bg-brand-primary-dark' : 'bg-brand-primary'
               }`}
             activeOpacity={0.8}
           >
@@ -68,64 +64,64 @@ const PartnersScreen = () => {
       </Animated.View>
 
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        {mockPartners.map((partner, index) => 
+        {mockPartners.map((partner, index) =>
           <Animated.View
             key={partner.id}
             entering={FadeInDown.delay(index * 100).duration(500)}
             className={`mb-4 p-4 rounded-2xl border shadow-sm ${isDark
-                ? 'bg-slate-800 border-slate-700'
-                : 'bg-white border-slate-100'
+              ? 'bg-app-card-dark border-border-dark'
+              : 'bg-app-card-light border-border-light'
               }`}
           >
             <View className="flex-row items-center">
               <Image
                 source={{ uri: partner.image }}
-                className={`w-12 h-12 rounded-full border ${isDark ? 'border-slate-600' : 'border-slate-100'
+                className={`w-12 h-12 rounded-full border ${isDark ? 'border-border-dark' : 'border-border-light'
                   }`}
               />
               <View className="flex-1 ml-3">
-                <Text className={`text-base font-semibold ${isDark ? 'text-white' : 'text-slate-800'
+                <Text className={`text-base font-semibold ${isDark ? 'text-content-primary-dark' : 'text-content-primary-light'
                   }`}>
                   {partner.name}
                 </Text>
-                <Text className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'
+                <Text className={`text-sm ${isDark ? 'text-content-secondary-dark' : 'text-content-secondary-light'
                   }`}>
                   {partner.status}
                 </Text>
               </View>
               <View className={`w-2.5 h-2.5 rounded-full ${partner.completedToday
-                  ? 'bg-emerald-500'
-                  : isDark ? 'bg-slate-600' : 'bg-slate-300'
+                ? isDark ? 'bg-status-success-dark' : 'bg-status-success-light'
+                : isDark ? 'bg-border-dark' : 'bg-border-light'
                 }`} />
             </View>
 
             <View className="flex-row mt-4 gap-2">
               <TouchableOpacity
-                className={`flex-1 flex-row items-center justify-center py-2.5 rounded-xl ${isDark ? 'bg-slate-700/50' : 'bg-slate-50'
+                className={`flex-1 flex-row items-center justify-center py-2.5 rounded-xl ${isDark ? 'bg-app-card-dark/50' : 'bg-app-light'
                   }`}
                 activeOpacity={0.7}
               >
                 <Feather
                   name="bar-chart-2"
                   size={16}
-                  color={isDark ? '#818cf8' : '#6366f1'}
+                  color={isDark ? '#6ee7b7' : '#059669'}
                 />
-                <Text className={`font-medium text-sm ml-2 ${isDark ? 'text-indigo-400' : 'text-indigo-500'
+                <Text className={`font-medium text-sm ml-2 ${isDark ? 'text-brand-primary-dark' : 'text-brand-primary'
                   }`}>
                   Progress
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className={`flex-1 flex-row items-center justify-center py-2.5 rounded-xl ${isDark ? 'bg-slate-700/50' : 'bg-slate-50'
+                className={`flex-1 flex-row items-center justify-center py-2.5 rounded-xl ${isDark ? 'bg-app-card-dark/50' : 'bg-app-light'
                   }`}
                 activeOpacity={0.7}
               >
                 <Feather
                   name="message-circle"
                   size={16}
-                  color={isDark ? '#818cf8' : '#6366f1'}
+                  color={isDark ? '#6ee7b7' : '#059669'}
                 />
-                <Text className={`font-medium text-sm ml-2 ${isDark ? 'text-indigo-400' : 'text-indigo-500'
+                <Text className={`font-medium text-sm ml-2 ${isDark ? 'text-brand-primary-dark' : 'text-brand-primary'
                   }`}>
                   Message
                 </Text>

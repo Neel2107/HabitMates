@@ -3,7 +3,7 @@ import { useAuthStore } from "@/lib/stores/authStore";
 import { useThemeStore } from "@/lib/stores/themeStore";
 import { Redirect, Tabs } from "expo-router";
 import { StatusBar } from 'expo-status-bar';
-import { Home, ListChecks, Settings, Users2 } from 'lucide-react-native';
+import { Home, ListChecks, Settings2, Settings2Icon, SettingsIcon, User, Users2 } from 'lucide-react-native';
 import { View } from "react-native";
 
 export default function AuthLayout() {
@@ -17,11 +17,11 @@ export default function AuthLayout() {
   return (
     <ThemeProvider>
       <StatusBar style={isDark ? 'light' : 'dark'} />
-      <View className={`flex-1 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
+      <View className={`flex-1 ${isDark ? 'bg-app-dark' : 'bg-app-light'}`}>
         <Tabs
           screenOptions={{
-            tabBarActiveTintColor: "#3b82f6",
-            tabBarInactiveTintColor: isDark ? "#94a3b8" : "#64748b",
+            tabBarActiveTintColor: isDark ? '#6ee7b7' : '#059669',
+            tabBarInactiveTintColor: isDark ? '#94a3b8' : '#64748b',
             tabBarStyle: {
               paddingBottom: 8,
               paddingTop: 8,
@@ -35,31 +35,42 @@ export default function AuthLayout() {
             name="home"
             options={{
               title: "Home",
-              tabBarIcon: ({ color }) => <Home size={24} color={color} />
+              tabBarIcon: ({ color }) => <Home size={24} color={color} />,
+              tabBarLabelStyle: {
+                fontWeight: '500'
+              }
             }}
           />
           <Tabs.Screen
             name="habits"
             options={{
               title: "Habits",
-              tabBarIcon: ({ color }) => <ListChecks size={24} color={color} />
+              tabBarIcon: ({ color }) => <ListChecks size={24} color={color} />,
+              tabBarLabelStyle: {
+                fontWeight: '500'
+              }
             }}
           />
           <Tabs.Screen
             name="partners"
             options={{
               title: "Partners",
-              tabBarIcon: ({ color }) => <Users2 size={24} color={color} />
+              tabBarIcon: ({ color }) => <Users2 size={24} color={color} />,
+              tabBarLabelStyle: {
+                fontWeight: '500'
+              }
             }}
           />
           <Tabs.Screen
             name="profile"
             options={{
               title: "Profile",
-              tabBarIcon: ({ color }) => <Settings size={24} color={color} />
+              tabBarIcon: ({ color }) => <SettingsIcon size={24} color={color} />,
+              tabBarLabelStyle: {
+                fontWeight: '500'
+              }
             }}
           />
-     
         </Tabs>
       </View>
     </ThemeProvider>

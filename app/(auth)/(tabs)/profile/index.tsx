@@ -1,6 +1,7 @@
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
 import { Feather } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Image, ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native';
@@ -73,13 +74,15 @@ const ProfileScreen = () => {
                             <View className="flex-row items-center">
                                 <View className={`w-12 h-12 rounded-xl items-center justify-center ${isDark ? 'bg-slate-700' : 'bg-slate-100'
                                     }`}>
-                                    <Text className="text-2xl">{achievement.icon}</Text>
+                                    <Text style={{ fontSize: 24 }}>{achievement.icon}</Text>
                                 </View>
                                 <View className="flex-1 ml-3">
-                                    <Text className={`text-base font-semibold ${isDark ? 'text-white' : 'text-slate-800'}`}>
+                                    <Text className={`text-base font-semibold ${isDark ? 'text-white' : 'text-slate-800'
+                                        }`}>
                                         {achievement.name}
                                     </Text>
-                                    <Text className={`text-sm mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                                    <Text className={`text-sm mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'
+                                        }`}>
                                         {achievement.description}
                                     </Text>
                                 </View>
@@ -95,12 +98,11 @@ const ProfileScreen = () => {
                     </Text>
                     <View className={`rounded-2xl border shadow-sm overflow-hidden ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'
                         }`}>
-                        // Update the Edit Profile TouchableOpacity:
                         <TouchableOpacity
                             className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-slate-700' : 'border-slate-100'
                                 }`}
                             activeOpacity={0.7}
-                        // onPress={() => router.navigate('/(auth)/edit-profile')}
+                            onPress={() => router.navigate('/(auth)/(tabs)/profile/edit')}
                         >
                             <View className="flex-row items-center">
                                 <View className={`w-8 h-8 rounded-full items-center justify-center ${isDark ? 'bg-blue-900/30' : 'bg-blue-100'

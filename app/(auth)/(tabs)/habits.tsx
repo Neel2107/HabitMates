@@ -39,17 +39,23 @@ const HabitsScreen = () => {
 
     const ProgressCircle = ({ progress }: { progress: number }) => (
         <View className="relative w-10 h-10">
-            <View className={`absolute inset-0 rounded-full border-2 ${isDark ? 'border-slate-700' : 'border-slate-100'}`} />
+            <View className={`absolute inset-0 rounded-full border-2 ${
+                isDark ? 'border-border-dark' : 'border-border-light'
+            }`} />
             <View
-                className={`absolute inset-0 rounded-full border-2 ${isDark ? 'border-indigo-400' : 'border-indigo-500'}`}
+                className={`absolute inset-0 rounded-full border-2 ${
+                    isDark ? 'border-brand-primary-dark' : 'border-brand-primary'
+                }`}
                 style={{
                     borderLeftColor: 'transparent',
                     borderBottomColor: 'transparent',
-                    transform: [{ rotate: `${progress * 360}deg` }]
+                    transform: [{ rotate: `${(progress * 360) - 90}deg` }] // Subtract 90 degrees to start from top
                 }}
             />
             <View className="absolute inset-0 items-center justify-center">
-                <Text className={`text-xs font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                <Text className={`text-xs font-medium ${
+                    isDark ? 'text-content-secondary-dark' : 'text-content-secondary-light'
+                }`}>
                     {Math.round(progress * 100)}%
                 </Text>
             </View>
@@ -57,23 +63,25 @@ const HabitsScreen = () => {
     );
 
     return (
-        <SafeAreaView className={`flex-1 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
-            {/* Modern Minimal Header */}
+        <SafeAreaView className={`flex-1 ${isDark ? 'bg-app-dark' : 'bg-app-light'}`}>
             <Animated.View
                 entering={FadeIn.duration(500)}
                 className="px-6 pt-12 pb-6"
             >
                 <View className="flex-row items-center justify-between">
                     <View>
-                        <Text className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-800'}`}>
+                        <Text className={`text-2xl font-bold ${isDark ? 'text-content-primary-dark' : 'text-content-primary-light'
+                            }`}>
                             My Habits
                         </Text>
-                        <Text className={`text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                        <Text className={`text-sm mt-1 ${isDark ? 'text-content-secondary-dark' : 'text-content-secondary-light'
+                            }`}>
                             {mockHabits.length} habits in progress
                         </Text>
                     </View>
                     <TouchableOpacity
-                        className={`w-10 h-10 rounded-full items-center justify-center ${isDark ? 'bg-indigo-600' : 'bg-indigo-500'}`}
+                        className={`w-10 h-10 rounded-full items-center justify-center ${isDark ? 'bg-brand-primary-dark' : 'bg-brand-primary'
+                            }`}
                         activeOpacity={0.8}
                     >
                         <Feather name="plus" size={20} color="white" />
@@ -81,31 +89,50 @@ const HabitsScreen = () => {
                 </View>
 
                 {/* Search Bar */}
-                <View className={`mt-6 flex-row items-center rounded-xl border px-4 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'
+                <View className={`mt-6 flex-row items-center rounded-xl border px-4 ${isDark
+                        ? 'bg-app-card-dark border-border-dark'
+                        : 'bg-app-card-light border-border-light'
                     }`}>
-                    <Feather name="search" size={18} color={isDark ? '#94a3b8' : '#64748b'} />
+                    <Feather
+                        name="search"
+                        size={18}
+                        color={isDark ? '#94a3b8' : '#64748b'}
+                    />
                     <TextInput
                         placeholder="Search habits..."
                         value={searchQuery}
                         onChangeText={setSearchQuery}
-                        className={`flex-1 py-3 px-2 text-base ${isDark ? 'text-white' : 'text-slate-800'}`}
-                        placeholderTextColor="#94a3b8"
+                        className={`flex-1 py-3 px-2 text-base ${isDark ? 'text-content-primary-dark' : 'text-content-primary-light'
+                            }`}
+                        placeholderTextColor={isDark ? '#94a3b8' : '#64748b'}
                     />
                 </View>
 
                 {/* Tabs */}
-                <View className={`flex-row mt-6 p-1 rounded-xl ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`}>
+                <View className={`flex-row mt-6 p-1 rounded-xl ${
+                    isDark ? 'bg-app-card-dark' : 'bg-app-card-light'
+                }`}>
                     {(['all', 'active', 'completed'] as HabitStatus[]).map((tab) => (
                         <TouchableOpacity
                             key={tab}
                             onPress={() => setActiveTab(tab)}
-                            className={`flex-1 py-2 rounded-lg ${activeTab === tab ? (isDark ? 'bg-slate-700' : 'bg-white') : ''
-                                }`}
+                            className={`flex-1 py-2 rounded-lg ${
+                                activeTab === tab
+                                    ? isDark 
+                                        ? 'bg-border-dark' 
+                                        : 'bg-gray-50 shadow-sm'  // Added shadow for better visibility
+                                    : ''
+                            }`}
                         >
-                            <Text className={`text-center text-sm font-medium capitalize ${activeTab === tab
-                                    ? isDark ? 'text-indigo-400' : 'text-indigo-500'
-                                    : isDark ? 'text-slate-400' : 'text-slate-500'
-                                }`}>
+                            <Text className={`text-center text-sm font-medium capitalize ${
+                                activeTab === tab
+                                    ? isDark 
+                                        ? 'text-brand-primary-dark' 
+                                        : 'text-brand-primary'
+                                    : isDark 
+                                        ? 'text-content-secondary-dark' 
+                                        : 'text-content-secondary-light'
+                            }`}>
                                 {tab}
                             </Text>
                         </TouchableOpacity>
@@ -120,16 +147,18 @@ const HabitsScreen = () => {
                         key={habit.id}
                         entering={FadeInDown.delay(index * 100).duration(500)}
                         className={`mb-4 p-4 rounded-2xl border shadow-sm ${isDark
-                                ? 'bg-slate-800 border-slate-700'
-                                : 'bg-white border-slate-100'
+                                ? 'bg-app-card-dark border-border-dark'
+                                : 'bg-app-card-light border-border-light'
                             }`}
                     >
                         <View className="flex-row items-center justify-between">
                             <View className="flex-1">
-                                <Text className={`text-base font-semibold ${isDark ? 'text-white' : 'text-slate-800'}`}>
+                                <Text className={`text-base font-semibold ${isDark ? 'text-content-primary-dark' : 'text-content-primary-light'
+                                    }`}>
                                     {habit.name}
                                 </Text>
-                                <Text className={`text-sm mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                                <Text className={`text-sm mt-0.5 ${isDark ? 'text-content-secondary-dark' : 'text-content-secondary-light'
+                                    }`}>
                                     {habit.frequency}
                                 </Text>
                             </View>
@@ -145,7 +174,8 @@ const HabitsScreen = () => {
                                 size={14}
                                 color={isDark ? '#818cf8' : '#6366f1'}
                             />
-                            <Text className={`font-medium text-sm ml-1.5 ${isDark ? 'text-indigo-400' : 'text-indigo-500'}`}>
+                            <Text className={`font-medium text-sm ml-1.5 ${isDark ? 'text-brand-primary-dark' : 'text-brand-primary'
+                                }`}>
                                 Edit
                             </Text>
                         </TouchableOpacity>
