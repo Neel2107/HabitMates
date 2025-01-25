@@ -95,10 +95,12 @@ const ProfileScreen = () => {
                     </Text>
                     <View className={`rounded-2xl border shadow-sm overflow-hidden ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'
                         }`}>
+                        // Update the Edit Profile TouchableOpacity:
                         <TouchableOpacity
                             className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-slate-700' : 'border-slate-100'
                                 }`}
                             activeOpacity={0.7}
+                        // onPress={() => router.navigate('/(auth)/edit-profile')}
                         >
                             <View className="flex-row items-center">
                                 <View className={`w-8 h-8 rounded-full items-center justify-center ${isDark ? 'bg-blue-900/30' : 'bg-blue-100'
