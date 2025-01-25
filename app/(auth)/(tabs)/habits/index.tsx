@@ -1,7 +1,9 @@
+import { useHabitsStore } from '@/lib/stores/habitsStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
 import { Feather } from '@expo/vector-icons';
-import React, { useState } from 'react';
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { router } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -26,38 +28,32 @@ const HabitsScreen = () => {
     const isDark = useThemeStore((state) => state.isDark);
     const [activeTab, setActiveTab] = useState<HabitStatus>('all');
     const [searchQuery, setSearchQuery] = useState('');
+    const { habits, isLoading, fetchHabits } = useHabitsStore();
+    const [refreshing, setRefreshing] = useState(false);
 
-    const filteredHabits = mockHabits
+    useEffect(() => {
+        fetchHabits();
+    }, []);
+
+    const onRefresh = React.useCallback(async () => {
+        setRefreshing(true);
+        try {
+            await fetchHabits();
+        } finally {
+            setRefreshing(false);
+        }
+    }, [fetchHabits]);
+
+    const filteredHabits = habits
         .filter(habit => {
-            if (activeTab === 'active') return !habit.isCompleted;
-            if (activeTab === 'completed') return habit.isCompleted;
+            if (activeTab === 'active') return habit.current_streak > 0;
+            if (activeTab === 'completed') return habit.current_streak === 0;
             return true;
         })
         .filter(habit =>
             habit.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
-    const ProgressCircle = ({ progress }: { progress: number }) => (
-        <View className="relative w-10 h-10">
-            <View className={`absolute inset-0 rounded-full border-2 ${isDark ? 'border-border-dark' : 'border-border-light'
-                }`} />
-            <View
-                className={`absolute inset-0 rounded-full border-2 ${isDark ? 'border-brand-primary-dark' : 'border-brand-primary'
-                    }`}
-                style={{
-                    borderLeftColor: 'transparent',
-                    borderBottomColor: 'transparent',
-                    transform: [{ rotate: `${(progress * 360) - 90}deg` }] // Subtract 90 degrees to start from top
-                }}
-            />
-            <View className="absolute inset-0 items-center justify-center">
-                <Text className={`text-xs font-medium ${isDark ? 'text-content-secondary-dark' : 'text-content-secondary-light'
-                    }`}>
-                    {Math.round(progress * 100)}%
-                </Text>
-            </View>
-        </View>
-    );
 
     return (
         <SafeAreaView className={`flex-1 ${isDark ? 'bg-app-dark' : 'bg-app-light'}`}>
@@ -77,8 +73,8 @@ const HabitsScreen = () => {
                         </Text>
                     </View>
                     <TouchableOpacity
-                        className={`w-10 h-10 rounded-full items-center justify-center ${isDark ? 'bg-brand-primary-dark' : 'bg-brand-primary'
-                            }`}
+                        onPress={() => router.push('/(auth)/(tabs)/habits/add')}
+                        className={`w-10 h-10 rounded-full items-center justify-center ${isDark ? 'bg-brand-primary-dark' : 'bg-brand-primary'}`}
                         activeOpacity={0.8}
                     >
                         <Feather name="plus" size={20} color="white" />
@@ -135,7 +131,19 @@ const HabitsScreen = () => {
             </Animated.View>
 
             {/* Habits List */}
-            <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
+            <ScrollView
+                className="flex-1 px-6"
+                showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        tintColor={isDark ? '#6ee7b7' : '#059669'}
+                        colors={[isDark ? '#6ee7b7' : '#059669']}
+                        progressBackgroundColor={isDark ? '#1e293b' : '#f1f5f9'}
+                    />
+                }
+            >
                 {filteredHabits.map((habit, index) => (
                     <Animated.View
                         key={habit.id}
@@ -156,7 +164,7 @@ const HabitsScreen = () => {
                                     {habit.frequency}
                                 </Text>
                             </View>
-                            <ProgressCircle progress={habit.streak / habit.target} />
+                            {/* <ProgressCircle progress={habit.streak / habit.target} /> */}
                         </View>
 
                         <TouchableOpacity

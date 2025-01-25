@@ -3,7 +3,7 @@ import { useAuthStore } from "@/lib/stores/authStore";
 import { useThemeStore } from "@/lib/stores/themeStore";
 import { Redirect, Tabs } from "expo-router";
 import { StatusBar } from 'expo-status-bar';
-import { Home, ListChecks, Settings2, Settings2Icon, SettingsIcon, User, Users2 } from 'lucide-react-native';
+import { Home, ListChecks, SettingsIcon, Users2 } from 'lucide-react-native';
 import { View } from "react-native";
 
 export default function AuthLayout() {
