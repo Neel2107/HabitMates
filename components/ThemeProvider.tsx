@@ -1,12 +1,28 @@
 import { useThemeStore } from '@/lib/stores/themeStore';
-import { View } from 'react-native';
+import { useEffect } from 'react';
+import { useColorScheme } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const mode = useThemeStore((state) => state.mode);
   const isDark = useThemeStore((state) => state.isDark);
+  const setIsDark = useThemeStore((state) => state.setIsDark);
+  const systemColorScheme = useColorScheme();
+
+  useEffect(() => {
+    if (mode === 'system') {
+      setIsDark(systemColorScheme === 'dark');
+    } else {
+      setIsDark(mode === 'dark');
+    }
+  }, [mode, systemColorScheme]);
 
   return (
-    <View className={`flex-1 ${isDark ? 'dark' : ''}`}>
+    <Animated.View
+      entering={FadeIn.duration(300)}
+      className="flex-1"
+    >
       {children}
-    </View>
+    </Animated.View>
   );
 }

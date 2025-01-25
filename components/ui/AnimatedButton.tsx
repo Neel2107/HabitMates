@@ -1,11 +1,12 @@
+import { useThemeStore } from '@/lib/stores/themeStore';
+import * as Haptics from 'expo-haptics';
 import React from "react";
 import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
-import Animated, { 
-  useAnimatedStyle, 
-  useSharedValue, 
-  withSpring 
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring
 } from "react-native-reanimated";
-import * as Haptics from 'expo-haptics';
 
 interface AnimatedButtonProps {
   onPress: () => void;
@@ -24,6 +25,7 @@ export function AnimatedButton({
   variant = 'primary',
   className = "",
 }: AnimatedButtonProps) {
+  const isDark = useThemeStore((state) => state.isDark);
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -47,21 +49,21 @@ export function AnimatedButton({
     >
       <Animated.View
         style={animatedStyle}
-        className={`w-full py-4 items-center justify-center rounded-2xl ${
-          disabled || isLoading 
-            ? 'bg-gray-300' 
-            : variant === 'primary' 
-              ? 'bg-blue-500' 
-              : 'bg-gray-100'
-        } ${className}`}
+        className={`w-full py-4 items-center justify-center rounded-2xl ${disabled || isLoading
+            ? 'bg-slate-300 dark:bg-slate-700'
+            : variant === 'primary'
+              ? 'bg-blue-500 dark:bg-blue-600'
+              : 'bg-slate-100 dark:bg-slate-800'
+          } ${className}`}
       >
         {isLoading ? (
-          <ActivityIndicator color={variant === 'primary' ? "#FFFFFF" : "#000000"} />
+          <ActivityIndicator color={variant === 'primary' ? "#FFFFFF" : isDark ? "#94a3b8" : "#1e293b"} />
         ) : (
-          <Text 
-            className={`font-semibold text-lg ${
-              variant === 'primary' ? 'text-white' : 'text-gray-800'
-            }`}
+          <Text
+            className={`font-semibold text-lg ${variant === 'primary'
+                ? 'text-white'
+                : isDark ? 'text-slate-200' : 'text-slate-800'
+              }`}
           >
             {title}
           </Text>
