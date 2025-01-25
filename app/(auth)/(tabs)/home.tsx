@@ -63,7 +63,7 @@ export default function HomePage() {
             <Animated.View
               key={habit.id}
               entering={FadeInDown.delay(index * 100).duration(500)}
-              className={`mb-3 rounded-2xl border shadow-sm ${isDark
+              className={`mb-3 rounded-2xl border   ${isDark
                 ? 'bg-slate-800 border-slate-700'
                 : 'bg-white border-slate-100'
                 }`}

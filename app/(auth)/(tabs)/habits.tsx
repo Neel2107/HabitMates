@@ -39,13 +39,11 @@ const HabitsScreen = () => {
 
     const ProgressCircle = ({ progress }: { progress: number }) => (
         <View className="relative w-10 h-10">
-            <View className={`absolute inset-0 rounded-full border-2 ${
-                isDark ? 'border-border-dark' : 'border-border-light'
-            }`} />
+            <View className={`absolute inset-0 rounded-full border-2 ${isDark ? 'border-border-dark' : 'border-border-light'
+                }`} />
             <View
-                className={`absolute inset-0 rounded-full border-2 ${
-                    isDark ? 'border-brand-primary-dark' : 'border-brand-primary'
-                }`}
+                className={`absolute inset-0 rounded-full border-2 ${isDark ? 'border-brand-primary-dark' : 'border-brand-primary'
+                    }`}
                 style={{
                     borderLeftColor: 'transparent',
                     borderBottomColor: 'transparent',
@@ -53,9 +51,8 @@ const HabitsScreen = () => {
                 }}
             />
             <View className="absolute inset-0 items-center justify-center">
-                <Text className={`text-xs font-medium ${
-                    isDark ? 'text-content-secondary-dark' : 'text-content-secondary-light'
-                }`}>
+                <Text className={`text-xs font-medium ${isDark ? 'text-content-secondary-dark' : 'text-content-secondary-light'
+                    }`}>
                     {Math.round(progress * 100)}%
                 </Text>
             </View>
@@ -90,8 +87,8 @@ const HabitsScreen = () => {
 
                 {/* Search Bar */}
                 <View className={`mt-6 flex-row items-center rounded-xl border px-4 ${isDark
-                        ? 'bg-app-card-dark border-border-dark'
-                        : 'bg-app-card-light border-border-light'
+                    ? 'bg-app-card-dark border-border-dark'
+                    : 'bg-app-card-light border-border-light'
                     }`}>
                     <Feather
                         name="search"
@@ -109,30 +106,27 @@ const HabitsScreen = () => {
                 </View>
 
                 {/* Tabs */}
-                <View className={`flex-row mt-6 p-1 rounded-xl ${
-                    isDark ? 'bg-app-card-dark' : 'bg-app-card-light'
-                }`}>
+                <View className={`flex-row mt-6 p-1 rounded-xl ${isDark ? 'bg-app-card-dark' : 'bg-app-card-light'
+                    }`}>
                     {(['all', 'active', 'completed'] as HabitStatus[]).map((tab) => (
                         <TouchableOpacity
                             key={tab}
                             onPress={() => setActiveTab(tab)}
-                            className={`flex-1 py-2 rounded-lg ${
-                                activeTab === tab
-                                    ? isDark 
-                                        ? 'bg-border-dark' 
-                                        : 'bg-gray-50 shadow-sm'  // Added shadow for better visibility
-                                    : ''
-                            }`}
+                            className={`flex-1 py-2 rounded-lg ${activeTab === tab
+                                ? isDark
+                                    ? 'bg-border-dark'
+                                    : 'bg-gray-50  '
+                                : ''
+                                }`}
                         >
-                            <Text className={`text-center text-sm font-medium capitalize ${
-                                activeTab === tab
-                                    ? isDark 
-                                        ? 'text-brand-primary-dark' 
-                                        : 'text-brand-primary'
-                                    : isDark 
-                                        ? 'text-content-secondary-dark' 
-                                        : 'text-content-secondary-light'
-                            }`}>
+                            <Text className={`text-center text-sm font-medium capitalize ${activeTab === tab
+                                ? isDark
+                                    ? 'text-brand-primary-dark'
+                                    : 'text-brand-primary'
+                                : isDark
+                                    ? 'text-content-secondary-dark'
+                                    : 'text-content-secondary-light'
+                                }`}>
                                 {tab}
                             </Text>
                         </TouchableOpacity>
@@ -146,9 +140,9 @@ const HabitsScreen = () => {
                     <Animated.View
                         key={habit.id}
                         entering={FadeInDown.delay(index * 100).duration(500)}
-                        className={`mb-4 p-4 rounded-2xl border shadow-sm ${isDark
-                                ? 'bg-app-card-dark border-border-dark'
-                                : 'bg-app-card-light border-border-light'
+                        className={`mb-4 p-4 rounded-2xl border   ${isDark
+                            ? 'bg-app-card-dark border-border-dark'
+                            : 'bg-app-card-light border-border-light'
                             }`}
                     >
                         <View className="flex-row items-center justify-between">

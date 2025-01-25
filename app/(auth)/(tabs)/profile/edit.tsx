@@ -97,7 +97,7 @@ const EditProfileScreen = () => {
                                 }`}
                         />
                         <TouchableOpacity
-                            className={`absolute bottom-0 right-0 w-8 h-8 rounded-full items-center justify-center shadow-sm ${isDark ? 'bg-brand-primary-dark' : 'bg-brand-primary'
+                            className={`absolute bottom-0 right-0 w-8 h-8 rounded-full items-center justify-center   ${isDark ? 'bg-brand-primary-dark' : 'bg-brand-primary'
                                 }`}
                             activeOpacity={0.8}
                         >

@@ -40,7 +40,7 @@ const ProfileScreen = () => {
                             className={`w-20 h-20 rounded-full border-2 ${isDark ? 'border-slate-700' : 'border-slate-100'}`}
                         />
                         <TouchableOpacity
-                            className={`absolute bottom-0 right-0 w-8 h-8 rounded-full items-center justify-center shadow-sm ${isDark ? 'bg-indigo-600' : 'bg-indigo-500'
+                            className={`absolute bottom-0 right-0 w-8 h-8 rounded-full items-center justify-center   ${isDark ? 'bg-indigo-600' : 'bg-indigo-500'
                                 }`}
                             activeOpacity={0.8}
                         >
@@ -66,7 +66,7 @@ const ProfileScreen = () => {
                         <Animated.View
                             key={achievement.id}
                             entering={FadeInDown.delay(index * 100).duration(500)}
-                            className={`mb-3 p-4 rounded-2xl border shadow-sm ${isDark
+                            className={`mb-3 p-4 rounded-2xl border   ${isDark
                                 ? 'bg-slate-800 border-slate-700'
                                 : 'bg-white border-slate-100'
                                 }`}
@@ -96,7 +96,7 @@ const ProfileScreen = () => {
                     <Text className={`text-base font-medium mb-4 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         SETTINGS
                     </Text>
-                    <View className={`rounded-2xl border shadow-sm overflow-hidden ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'
+                    <View className={`rounded-2xl border   overflow-hidden ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'
                         }`}>
                         <TouchableOpacity
                             className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-slate-700' : 'border-slate-100'

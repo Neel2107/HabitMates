@@ -54,7 +54,11 @@ export default function RootLayout() {
               <ActivityIndicator size="large" color={isDark ? '#60a5fa' : '#3b82f6'} />
             </View>
           ) : (
-            <Stack screenOptions={{ headerShown: false }} />
+            <Stack screenOptions={{ headerShown: false }} >
+              <Stack.Screen name="index" />
+              <Stack.Screen name="login" />
+              <Stack.Screen name="(auth)" />
+            </Stack>
           )}
         </KeyboardProvider>
       </GestureHandlerRootView>

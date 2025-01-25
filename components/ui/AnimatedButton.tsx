@@ -50,10 +50,10 @@ export function AnimatedButton({
       <Animated.View
         style={animatedStyle}
         className={`w-full py-4 items-center justify-center rounded-2xl ${disabled || isLoading
-            ? 'bg-slate-300 dark:bg-slate-700'
-            : variant === 'primary'
-              ? 'bg-blue-500 dark:bg-blue-600'
-              : 'bg-slate-100 dark:bg-slate-800'
+          ? 'bg-slate-300 dark:bg-slate-700'
+          : variant === 'primary'
+            ? 'bg-blue-500 dark:bg-blue-600'
+            : 'bg-slate-100 dark:bg-slate-800'
           } ${className}`}
       >
         {isLoading ? (
@@ -61,8 +61,8 @@ export function AnimatedButton({
         ) : (
           <Text
             className={`font-semibold text-lg ${variant === 'primary'
-                ? 'text-white'
-                : isDark ? 'text-slate-200' : 'text-slate-800'
+              ? 'text-white'
+              : isDark ? 'text-slate-200' : 'text-slate-800'
               }`}
           >
             {title}

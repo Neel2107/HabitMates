@@ -68,7 +68,7 @@ const PartnersScreen = () => {
           <Animated.View
             key={partner.id}
             entering={FadeInDown.delay(index * 100).duration(500)}
-            className={`mb-4 p-4 rounded-2xl border shadow-sm ${isDark
+            className={`mb-4 p-4 rounded-2xl border   ${isDark
               ? 'bg-app-card-dark border-border-dark'
               : 'bg-app-card-light border-border-light'
               }`}
