@@ -2,6 +2,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { useAuthStore } from "@/lib/stores/authStore";
 import { useThemeStore } from "@/lib/stores/themeStore";
 import { Redirect, Tabs } from "expo-router";
+import { StatusBar } from 'expo-status-bar';
 import { Home, ListChecks, Settings, Users2 } from 'lucide-react-native';
 import { View } from "react-native";
 
@@ -15,6 +16,7 @@ export default function AuthLayout() {
 
   return (
     <ThemeProvider>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
       <View className={`flex-1 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
         <Tabs
           screenOptions={{

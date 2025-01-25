@@ -70,7 +70,7 @@ export default function HomePage() {
             >
               <TouchableOpacity
                 onPress={() => toggleHabit(habit.id)}
-                className="p-4 flex-row items-center space-x-4"
+                className="p-4 flex-row items-center gap-4"
                 activeOpacity={0.7}
               >
                 <View className={`w-6 h-6 rounded-full border-2 items-center justify-center ${habit.completed
@@ -87,7 +87,7 @@ export default function HomePage() {
                   <Text className={`text-base font-medium ${isDark ? 'text-white' : 'text-slate-800'}`}>
                     {habit.name}
                   </Text>
-                  <View className="flex-row items-center space-x-2 mt-2">
+                  <View className="flex-row items-center gap-2 mt-2">
                     <View className={`flex-1 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-slate-700' : 'bg-slate-100'
                       }`}>
                       <View

@@ -1,13 +1,15 @@
 import { AnimatedButton } from '@/components/ui/AnimatedButton';
 import { useAuthStore } from '@/lib/stores/authStore';
+import { useThemeStore } from '@/lib/stores/themeStore';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { Alert, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Animated, { FadeIn, FadeInDown, FadeInUp, ZoomIn } from 'react-native-reanimated';
 
 export default function LoginScreen() {
+  const isDark = useThemeStore((state) => state.isDark);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -31,8 +33,8 @@ export default function LoginScreen() {
   };
 
   return (
-    <View className="flex-1 bg-slate-50">
-      <StatusBar style="light" />
+    <View className={`flex-1 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
       <KeyboardAwareScrollView
         bottomOffset={400}
         keyboardShouldPersistTaps="always"
@@ -112,12 +114,12 @@ export default function LoginScreen() {
               />
             </Animated.View>
 
-            
+
 
             {/* Sign Up Link */}
             <Animated.View
               entering={FadeInDown.duration(600).delay(1100)}
-              className="flex-row justify-center space-x-1 pt-4"
+              className="flex-row justify-center gap-1 pt-4"
             >
               <Text className="text-slate-500">New here?</Text>
               <TouchableOpacity activeOpacity={0.7}>

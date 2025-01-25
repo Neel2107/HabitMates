@@ -68,7 +68,7 @@ const PartnersScreen = () => {
       </Animated.View>
 
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        {mockPartners.map((partner, index) => (
+        {mockPartners.map((partner, index) => 
           <Animated.View
             key={partner.id}
             entering={FadeInDown.delay(index * 100).duration(500)}
@@ -99,7 +99,7 @@ const PartnersScreen = () => {
                 }`} />
             </View>
 
-            <View className="flex-row mt-4 space-x-2">
+            <View className="flex-row mt-4 gap-2">
               <TouchableOpacity
                 className={`flex-1 flex-row items-center justify-center py-2.5 rounded-xl ${isDark ? 'bg-slate-700/50' : 'bg-slate-50'
                   }`}
@@ -132,7 +132,7 @@ const PartnersScreen = () => {
               </TouchableOpacity>
             </View>
           </Animated.View>
-        ))}
+        )}
         <View className="h-6" />
       </ScrollView>
     </SafeAreaView>

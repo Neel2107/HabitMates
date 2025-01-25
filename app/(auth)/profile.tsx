@@ -1,6 +1,7 @@
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
 import { Feather } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Image, ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
@@ -16,7 +17,6 @@ const ProfileScreen = () => {
     const mode = useThemeStore((state) => state.mode);
     const setMode = useThemeStore((state) => state.setMode);
     const isDark = useThemeStore((state) => state.isDark);
-    // Remove the incorrect toggleTheme implementation
     const session = useAuthStore((state) => state.session);
     const signOut = useAuthStore((state) => state.signOut);
     const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
@@ -25,7 +25,8 @@ const ProfileScreen = () => {
     const userEmail = session?.user?.email || 'email@example.com';
 
     return (
-        <SafeAreaView className="flex-1 bg-slate-50 dark:bg-slate-900">
+        <SafeAreaView className={`flex-1 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
+            <StatusBar style={isDark ? 'light' : 'dark'} />
             {/* Modern Minimal Header */}
             <Animated.View
                 entering={FadeIn.duration(500)}
@@ -35,19 +36,20 @@ const ProfileScreen = () => {
                     <View className="relative">
                         <Image
                             source={{ uri: 'https://i.pravatar.cc/160' }}
-                            className="w-20 h-20 rounded-full border-2 border-slate-100 dark:border-slate-700"
+                            className={`w-20 h-20 rounded-full border-2 ${isDark ? 'border-slate-700' : 'border-slate-100'}`}
                         />
                         <TouchableOpacity
-                            className="absolute bottom-0 right-0 bg-indigo-500 dark:bg-indigo-600 w-8 h-8 rounded-full items-center justify-center shadow-sm"
+                            className={`absolute bottom-0 right-0 w-8 h-8 rounded-full items-center justify-center shadow-sm ${isDark ? 'bg-indigo-600' : 'bg-indigo-500'
+                                }`}
                             activeOpacity={0.8}
                         >
                             <Feather name="edit-2" size={15} color="white" />
                         </TouchableOpacity>
                     </View>
-                    <Text className="text-xl font-bold text-slate-800 dark:text-white mt-4 capitalize">
+                    <Text className={`text-xl font-bold mt-4 capitalize ${isDark ? 'text-white' : 'text-slate-800'}`}>
                         {userName}
                     </Text>
-                    <Text className="text-sm text-slate-500 dark:text-slate-400">
+                    <Text className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         {userEmail}
                     </Text>
                 </View>
@@ -56,24 +58,28 @@ const ProfileScreen = () => {
             <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
                 {/* Achievements */}
                 <View className="mb-8">
-                    <Text className="text-base font-medium text-slate-500 dark:text-slate-400 mb-4">
+                    <Text className={`text-base font-medium mb-4 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         ACHIEVEMENTS
                     </Text>
                     {achievements.map((achievement, index) => (
                         <Animated.View
                             key={achievement.id}
                             entering={FadeInDown.delay(index * 100).duration(500)}
-                            className="bg-white dark:bg-slate-800 mb-3 p-4 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm"
+                            className={`mb-3 p-4 rounded-2xl border shadow-sm ${isDark
+                                ? 'bg-slate-800 border-slate-700'
+                                : 'bg-white border-slate-100'
+                                }`}
                         >
                             <View className="flex-row items-center">
-                                <View className="w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-xl items-center justify-center">
+                                <View className={`w-12 h-12 rounded-xl items-center justify-center ${isDark ? 'bg-slate-700' : 'bg-slate-100'
+                                    }`}>
                                     <Text className="text-2xl">{achievement.icon}</Text>
                                 </View>
                                 <View className="flex-1 ml-3">
-                                    <Text className="text-base font-semibold text-slate-800 dark:text-white">
+                                    <Text className={`text-base font-semibold ${isDark ? 'text-white' : 'text-slate-800'}`}>
                                         {achievement.name}
                                     </Text>
-                                    <Text className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                                    <Text className={`text-sm mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                                         {achievement.description}
                                     </Text>
                                 </View>
@@ -84,67 +90,72 @@ const ProfileScreen = () => {
 
                 {/* Settings */}
                 <View className="mb-8">
-                    <Text className="text-base font-medium text-slate-500 dark:text-slate-400 mb-4">
+                    <Text className={`text-base font-medium mb-4 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         SETTINGS
                     </Text>
-                    <View className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
+                    <View className={`rounded-2xl border shadow-sm overflow-hidden ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'
+                        }`}>
                         <TouchableOpacity
-                            className="p-4 flex-row items-center justify-between border-b border-slate-100 dark:border-slate-700"
+                            className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-slate-700' : 'border-slate-100'
+                                }`}
                             activeOpacity={0.7}
                         >
                             <View className="flex-row items-center">
-                                <View className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 items-center justify-center">
-                                    <Feather name="user" size={18} color="#3b82f6" />
+                                <View className={`w-8 h-8 rounded-full items-center justify-center ${isDark ? 'bg-blue-900/30' : 'bg-blue-100'
+                                    }`}>
+                                    <Feather name="user" size={18} color={isDark ? '#60a5fa' : '#3b82f6'} />
                                 </View>
-                                <Text className="font-medium ml-3 text-slate-800 dark:text-white">
+                                <Text className={`font-medium ml-3 ${isDark ? 'text-white' : 'text-slate-800'}`}>
                                     Edit Profile
                                 </Text>
                             </View>
                             <Feather name="chevron-right" size={20} color={isDark ? '#94a3b8' : '#64748b'} />
                         </TouchableOpacity>
 
-                        <View className="p-4 flex-row items-center justify-between border-b border-slate-100 dark:border-slate-700">
+                        <View className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-slate-700' : 'border-slate-100'
+                            }`}>
                             <View className="flex-row items-center">
-                                <View className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 items-center justify-center">
-                                    <Feather name="bell" size={18} color="#8b5cf6" />
+                                <View className={`w-8 h-8 rounded-full items-center justify-center ${isDark ? 'bg-purple-900/30' : 'bg-purple-100'
+                                    }`}>
+                                    <Feather name="bell" size={18} color={isDark ? '#a78bfa' : '#8b5cf6'} />
                                 </View>
-                                <Text className="font-medium ml-3 text-slate-800 dark:text-white">
+                                <Text className={`font-medium ml-3 ${isDark ? 'text-white' : 'text-slate-800'}`}>
                                     Notifications
                                 </Text>
                             </View>
                             <Switch
                                 value={notificationsEnabled}
                                 onValueChange={setNotificationsEnabled}
-                                trackColor={{ false: '#cbd5e1', true: '#93c5fd' }}
-                                thumbColor={notificationsEnabled ? '#3b82f6' : '#f1f5f9'}
+                                trackColor={{ false: isDark ? '#475569' : '#cbd5e1', true: '#93c5fd' }}
+                                thumbColor={notificationsEnabled ? '#3b82f6' : isDark ? '#94a3b8' : '#f1f5f9'}
                             />
                         </View>
 
-
-
                         {/* Theme Mode */}
-                        <View className="p-4 flex-row items-center justify-between border-b border-slate-100 dark:border-slate-700">
+                        <View className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-slate-700' : 'border-slate-100'
+                            }`}>
                             <View className="flex-row items-center">
-                                <View className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/30 items-center justify-center">
-                                    <Feather name="sun" size={18} color="#6366f1" />
+                                <View className={`w-8 h-8 rounded-full items-center justify-center ${isDark ? 'bg-indigo-900/30' : 'bg-indigo-100'
+                                    }`}>
+                                    <Feather name="sun" size={18} color={isDark ? '#818cf8' : '#6366f1'} />
                                 </View>
-                                <Text className="font-medium ml-3 text-slate-800 dark:text-white">
+                                <Text className={`font-medium ml-3 ${isDark ? 'text-white' : 'text-slate-800'}`}>
                                     Theme
                                 </Text>
                             </View>
-                            <View className="flex-row items-center space-x-4">
+                            <View className="flex-row items-center gap-2">
                                 {(['system', 'light', 'dark'] as const).map((themeMode) => (
                                     <TouchableOpacity
                                         key={themeMode}
                                         onPress={() => setMode(themeMode)}
                                         className={`px-3 py-1 rounded-full ${mode === themeMode
-                                            ? 'bg-indigo-100 dark:bg-indigo-900/30'
-                                            : 'bg-slate-100 dark:bg-slate-700/50'
+                                            ? isDark ? 'bg-indigo-900/30' : 'bg-indigo-100'
+                                            : isDark ? 'bg-slate-700/50' : 'bg-slate-100'
                                             }`}
                                     >
                                         <Text className={`text-sm capitalize ${mode === themeMode
-                                            ? 'text-indigo-500 dark:text-indigo-400'
-                                            : 'text-slate-500 dark:text-slate-400'
+                                            ? isDark ? 'text-indigo-400' : 'text-indigo-500'
+                                            : isDark ? 'text-slate-400' : 'text-slate-500'
                                             }`}>
                                             {themeMode}
                                         </Text>
@@ -158,10 +169,13 @@ const ProfileScreen = () => {
                             className="p-4 flex-row items-center"
                             activeOpacity={0.7}
                         >
-                            <View className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 items-center justify-center">
-                                <Feather name="log-out" size={18} color="#ef4444" />
+                            <View className={`w-8 h-8 rounded-full items-center justify-center ${isDark ? 'bg-red-900/30' : 'bg-red-100'
+                                }`}>
+                                <Feather name="log-out" size={18} color={isDark ? '#f87171' : '#ef4444'} />
                             </View>
-                            <Text className="text-red-500 font-medium ml-3">Log Out</Text>
+                            <Text className={`font-medium ml-3 ${isDark ? 'text-red-400' : 'text-red-500'}`}>
+                                Log Out
+                            </Text>
                         </TouchableOpacity>
                     </View>
                 </View>
