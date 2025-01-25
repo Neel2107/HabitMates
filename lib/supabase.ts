@@ -1,10 +1,11 @@
+import 'react-native-url-polyfill/auto'
 import { createClient } from '@supabase/supabase-js';
 import { storage } from './storage';
 
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const SUPABASE_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+export const supabase = createClient(SUPABASE_URL!, SUPABASE_KEY!, {
   auth: {
     storage: {
       getItem: (key) => storage.getString(key) || null,

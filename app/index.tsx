@@ -1,21 +1,12 @@
-import { StatusBar } from 'expo-status-bar';
-import { Text, View } from "react-native";
+import { useAuthStore } from "@/lib/stores/authStore";
+import { Redirect } from "expo-router";
 
 export default function Index() {
-  return (
-    <View
+  const session = useAuthStore((state) => state.session);
 
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <StatusBar style="inverted" />
-      <Text
-        className="text-2xl "
-      >Edit app/index.tsx to edit this screen.</Text>
+  if (!session) {
+    return <Redirect href="/login" />;
+  }
 
-    </View>
-  );
+  return <Redirect href="/(auth)/home" />;
 }
