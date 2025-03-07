@@ -1,10 +1,11 @@
+import CustomSwitch from '@/components/Switch/CustomSwitch';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { Image, ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -116,8 +117,11 @@ const ProfileScreen = () => {
                             <Feather name="chevron-right" size={20} color={isDark ? '#94a3b8' : '#64748b'} />
                         </TouchableOpacity>
 
-                        <View className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-slate-700' : 'border-slate-100'
-                            }`}>
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            onPress={() => setNotificationsEnabled(!notificationsEnabled)}
+                            className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-slate-700' : 'border-slate-100'
+                                }`}>
                             <View className="flex-row items-center">
                                 <View className={`w-8 h-8 rounded-full items-center justify-center ${isDark ? 'bg-purple-900/30' : 'bg-purple-100'
                                     }`}>
@@ -127,13 +131,13 @@ const ProfileScreen = () => {
                                     Notifications
                                 </Text>
                             </View>
-                            <Switch
+
+                            <CustomSwitch
                                 value={notificationsEnabled}
                                 onValueChange={setNotificationsEnabled}
-                                trackColor={{ false: isDark ? '#475569' : '#cbd5e1', true: '#93c5fd' }}
-                                thumbColor={notificationsEnabled ? '#3b82f6' : isDark ? '#94a3b8' : '#f1f5f9'}
                             />
-                        </View>
+
+                        </TouchableOpacity>
 
                         {/* Theme Mode */}
                         <View className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-slate-700' : 'border-slate-100'

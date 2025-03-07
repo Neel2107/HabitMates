@@ -157,7 +157,6 @@ export default function LoginScreen() {
               </TouchableOpacity>
             </Animated.View>
 
-            {/* Sign Up Link */}
             <Animated.View
               entering={FadeInDown.duration(600).delay(1100)}
               className="flex-row justify-center gap-1 pt-4"
@@ -165,7 +164,10 @@ export default function LoginScreen() {
               <Text className={isDark ? 'text-slate-400' : 'text-slate-500'}>
                 New here?
               </Text>
-              <TouchableOpacity activeOpacity={0.7}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => router.navigate('/signup')}
+              >
                 <Text className={`font-semibold ${isDark ? 'text-indigo-400' : 'text-indigo-500'
                   }`}>
                   Create account
