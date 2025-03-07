@@ -41,7 +41,7 @@ export default function HomePage() {
       {/* Modern Minimal Header */}
       <Animated.View
         entering={FadeIn.duration(500)}
-        className="px-6 pt-12 pb-6"
+        className="px-6 pt-5 pb-6"
       >
         <View>
           <Text className={`text-lg ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
