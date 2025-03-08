@@ -1,19 +1,14 @@
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
 import { Feather } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Text, TextInput, TouchableOpacity, View, Platform } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import Animated, { 
-  FadeIn, 
-  FadeInDown, 
-  FadeInUp, 
-  Layout, 
-  ZoomIn 
-} from 'react-native-reanimated';
-import { AnimatedButton } from '@/components/ui/AnimatedButton';
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 export default function SignUpScreen() {
   const isDark = useThemeStore((state) => state.isDark);
@@ -75,21 +70,12 @@ export default function SignUpScreen() {
     field: keyof typeof formData,
     placeholder: string,
     isPassword = false,
-    delay = 0
   ) => (
-    <Animated.View 
-      entering={FadeInDown.duration(600).delay(delay)}
-      layout={Layout.springify()}
-    >
-      <Text className={`mb-2 font-semibold ${
-        isDark ? 'text-slate-200' : 'text-slate-700'
-      }`}>
+    <View className="mb-6">
+      <Text className="text-base font-medium mb-2 text-white/90">
         {placeholder}
       </Text>
-      <View className={`p-4 rounded-2xl border ${
-        errors[field] ? 'border-red-500' :
-        isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'
-      }`}>
+      <View className="overflow-hidden rounded-xl bg-white/10">
         <View className="flex-row items-center">
           <TextInput
             placeholder={placeholder}
@@ -103,21 +89,19 @@ export default function SignUpScreen() {
             secureTextEntry={isPassword && !showPassword}
             autoCapitalize="none"
             keyboardType={field === 'email' ? 'email-address' : 'default'}
-            className={`flex-1 text-base ${
-              isDark ? 'text-slate-200' : 'text-slate-700'
-            }`}
-            placeholderTextColor={isDark ? '#64748b' : '#94a3b8'}
+            className="flex-1 p-4 text-base text-white"
+            placeholderTextColor="rgba(255,255,255,0.5)"
           />
           {isPassword && (
             <TouchableOpacity
               onPress={() => setShowPassword(!showPassword)}
               activeOpacity={0.7}
-              className="ml-2"
+              className="pr-4"
             >
               <Feather
                 name={showPassword ? 'eye-off' : 'eye'}
                 size={20}
-                color={isDark ? '#64748b' : '#94a3b8'}
+                color="rgba(255,255,255,0.6)"
               />
             </TouchableOpacity>
           )}
@@ -126,84 +110,102 @@ export default function SignUpScreen() {
       {errors[field] && (
         <Animated.Text 
           entering={FadeIn.duration(300)}
-          className="text-red-500 mt-1 text-sm"
+          className="text-red-400 mt-1 text-sm"
         >
           {errors[field]}
         </Animated.Text>
       )}
-    </Animated.View>
+    </View>
   );
 
   return (
-    <View className={`flex-1 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
+    <View className="flex-1">
       <StatusBar style={isDark ? 'light' : 'dark'} />
+      <View style={{ position: 'absolute', width: '100%', height: '100%' }}>
+        <LinearGradient
+          colors={isDark ? 
+            ['#1e1b4b', '#312e81', '#4338ca'] : 
+            ['#e0f2fe', '#bfdbfe', '#93c5fd']
+          }
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{ flex: 1 }}
+        />
+      </View>
+
       <KeyboardAwareScrollView
-        bottomOffset={400}
+        bottomOffset={Platform.OS === 'ios' ? 400 : 200}
         keyboardShouldPersistTaps="handled"
         className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1 }}
       >
-        <Animated.View
-          entering={FadeInUp.duration(1000).springify()}
-          className={`w-full h-52 items-center justify-center rounded-b-[40px] ${
-            isDark ? 'bg-indigo-600' : 'bg-indigo-500'
-          }`}
+        {/* Header Section */}
+        <Animated.View 
+          entering={FadeInDown.duration(1000).springify()}
+          className="w-full h-60 items-center justify-end"
         >
-          <Animated.Image
-            entering={ZoomIn.duration(800).delay(200)}
-            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/6543/6543853.png' }}
-            className="w-24 h-24 mb-2"
-            resizeMode="contain"
-          />
-          <Animated.Text
-            entering={FadeInDown.duration(600).delay(400)}
-            className="text-white text-2xl font-bold"
-          >
-            Create Account
-          </Animated.Text>
+          <View className="items-center">
+            <Text className="text-5xl font-bold mb-3 text-white">
+              Join Us
+            </Text>
+            <Text className="text-lg text-white/80">
+              Start your journey to better habits
+            </Text>
+          </View>
         </Animated.View>
 
+        {/* Form Container */}
         <Animated.View
-          entering={FadeIn.duration(800).delay(600)}
-          className="flex-1 px-6 pt-8"
+          entering={FadeIn.duration(1000)}
+          className="flex-1 px-6 pt-10"
         >
-          <View className="flex-col gap-6">
-            {renderInput('email', 'Email Address', false, 700)}
-            {renderInput('username', 'Username', false, 800)}
-            {renderInput('password', 'Password', true, 900)}
-            {renderInput('confirmPassword', 'Confirm Password', true, 1000)}
-
-            <Animated.View 
-              entering={FadeInDown.duration(600).delay(1100)}
-              className="mt-4"
+          <View className="overflow-hidden rounded-3xl">
+            <BlurView
+              intensity={isDark ? 15 : 45}
+              tint={isDark ? 'dark' : 'light'}
+              className="p-8 rounded-3xl"
             >
-              <AnimatedButton
+              {renderInput('email', 'Email Address')}
+              {renderInput('username', 'Username')}
+              {renderInput('password', 'Password', true)}
+              {renderInput('confirmPassword', 'Confirm Password', true)}
+
+              {/* Sign Up Button */}
+              <TouchableOpacity
                 onPress={handleSignUp}
-                isLoading={isLoading}
-                title="Sign Up"
+                activeOpacity={0.8}
                 disabled={isLoading}
-              />
-            </Animated.View>
-
-            <Animated.View
-              entering={FadeInDown.duration(600).delay(1200)}
-              className="flex-row justify-center gap-1 pt-4"
-            >
-              <Text className={isDark ? 'text-slate-400' : 'text-slate-500'}>
-                Already have an account?
-              </Text>
-              <TouchableOpacity 
-                activeOpacity={0.7}
-                onPress={() => router.push('/login')}
+                className="mb-6"
               >
-                <Text className={`font-semibold ${
-                  isDark ? 'text-indigo-400' : 'text-indigo-500'
-                }`}>
-                  Sign In
-                </Text>
+                <View className="overflow-hidden rounded-xl">
+                  <BlurView
+                    intensity={100}
+                    tint="light"
+                    className={`py-4 rounded-xl ${isLoading ? 'opacity-70' : ''}`}
+                  >
+                    <Text className="text-center font-semibold text-base text-indigo-950">
+                      {isLoading ? 'Creating Account...' : 'Create Account'}
+                    </Text>
+                  </BlurView>
+                </View>
               </TouchableOpacity>
-            </Animated.View>
+
+              {/* Sign In Link */}
+              <View className="flex-row justify-center items-center">
+                <Text className="text-white/60">
+                  Already have an account?{' '}
+                </Text>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => router.push('/login')}
+                >
+                  <Text className="text-white font-semibold">
+                    Sign In
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </BlurView>
           </View>
         </Animated.View>
       </KeyboardAwareScrollView>

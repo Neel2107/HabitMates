@@ -110,16 +110,37 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setSession: (session) => set({ session }),
 
   updateProfile: async (data) => {
-    const { error } = await supabase
-      .from('users')
-      .update({
-        ...data,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', get().session?.user?.id);
+    try {
+        // Update user metadata in Supabase Auth
+        const { error: metadataError } = await supabase.auth.updateUser({
+            data: {
+                ...get().session?.user?.user_metadata,
+                ...data
+            }
+        });
 
-    if (error) throw error;
-  },
+        if (metadataError) throw metadataError;
+
+        // Update users table
+        const { error: profileError } = await supabase
+            .from('users')
+            .update({
+                ...data,
+                updated_at: new Date().toISOString(),
+            })
+            .eq('id', get().session?.user?.id);
+
+        if (profileError) throw profileError;
+
+        // Update local session with new metadata
+        const { data: { session } } = await supabase.auth.getSession();
+        set({ session });
+
+    } catch (error) {
+        console.error('Profile update error:', error);
+        throw error;
+    }
+},
 
   uploadAvatar: async (uri: string) => {
     try {
