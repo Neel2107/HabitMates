@@ -1,3 +1,4 @@
+import CustomSwitch from '@/components/Switch/CustomSwitch';
 import { jsonLog } from '@/lib/helpers';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useHabitsStore } from '@/lib/stores/habitsStore';
@@ -5,8 +6,8 @@ import { useThemeStore } from '@/lib/stores/themeStore';
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, ScrollView, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import Animated, { FadeIn, FadeInDown, Layout } from 'react-native-reanimated';
+import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Animated, { FadeIn, FadeInDown, LinearTransition } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const AddHabitScreen = () => {
@@ -83,7 +84,7 @@ const AddHabitScreen = () => {
             >
                 <Animated.View
                     className="gap-6"
-                    layout={Layout.springify()}
+                    layout={LinearTransition.damping(15)}
                 >
                     {/* Basic Info Fields */}
                     {[
@@ -93,7 +94,7 @@ const AddHabitScreen = () => {
                         <Animated.View
                             key={field.key}
                             entering={FadeInDown.duration(500).delay(200 + index * 100)}
-                            layout={Layout.springify()}
+                            layout={LinearTransition.damping(15)}
                             className={`rounded-2xl border ${isDark
                                 ? 'bg-app-card-dark border-border-dark'
                                 : 'bg-app-card-light border-border-light'}`}
@@ -135,9 +136,10 @@ const AddHabitScreen = () => {
                     ))}
 
                     {/* Frequency Selection with enhanced UI */}
+                    {/* Frequency Selection with enhanced UI */}
                     <Animated.View
                         entering={FadeInDown.duration(500).delay(400)}
-                        layout={Layout.springify()}
+                        layout={LinearTransition.damping(15)}
                         className={`rounded-2xl border ${isDark
                             ? 'bg-app-card-dark border-border-dark'
                             : 'bg-app-card-light border-border-light'}`}
@@ -149,50 +151,47 @@ const AddHabitScreen = () => {
                                 How often?
                             </Text>
                             <View className="gap-4">
-                                <View className="flex-row items-center p-2 rounded-xl bg-gray-100 dark:bg-gray-800">
+                                <View className="flex-row gap-3">
                                     {[
-                                        { value: 'daily', icon: 'sun', label: 'Daily', description: 'Every day' },
-                                        { value: 'weekly', icon: 'calendar', label: 'Weekly', description: 'Specific days' }
+                                        { value: 'daily', icon: 'sun', label: 'Daily' },
+                                        { value: 'weekly', icon: 'calendar', label: 'Weekly' }
                                     ].map((freq) => (
                                         <TouchableOpacity
                                             key={freq.value}
                                             onPress={() => setFormData(prev => ({ ...prev, frequency: freq.value as 'daily' | 'weekly' }))}
-                                            className={`flex-1 py-4 px-4 rounded-lg ${formData.frequency === freq.value
+                                            className={`flex-1 py-3 px-4 rounded-xl border ${formData.frequency === freq.value
                                                 ? isDark
-                                                    ? 'bg-brand-primary-dark'
-                                                    : 'bg-brand-primary'
-                                                : 'bg-transparent'}`}
+                                                    ? 'bg-brand-primary-dark border-brand-primary-dark'
+                                                    : 'bg-brand-primary border-brand-primary'
+                                                : isDark
+                                                    ? 'border-border-dark'
+                                                    : 'border-border-light'
+                                                }`}
                                         >
-                                            <View className="items-center gap-2">
+                                            <View className="flex-row items-center justify-center gap-2">
                                                 <Feather
                                                     name={freq.icon as 'sun' | 'calendar'}
-                                                    size={24}
+                                                    size={18}
                                                     color={formData.frequency === freq.value
                                                         ? '#ffffff'
                                                         : isDark ? '#94a3b8' : '#64748b'}
                                                 />
                                                 <Text
-                                                    className={`font-semibold ${formData.frequency === freq.value
+                                                    className={`font-medium ${formData.frequency === freq.value
                                                         ? 'text-white'
-                                                        : isDark ? 'text-content-primary-dark' : 'text-content-primary-light'}`}
+                                                        : isDark
+                                                            ? 'text-content-primary-dark'
+                                                            : 'text-content-primary-light'
+                                                        }`}
                                                 >
                                                     {freq.label}
-                                                </Text>
-                                                <Text
-                                                    className={`text-xs ${formData.frequency === freq.value
-                                                        ? 'text-white/80'
-                                                        : isDark ? 'text-content-secondary-dark' : 'text-content-secondary-light'}`}
-                                                >
-                                                    {freq.description}
                                                 </Text>
                                             </View>
                                         </TouchableOpacity>
                                     ))}
                                 </View>
 
-                                {/* Target Days Input with better UX */}
-                                // Update the Target Days section
-                                <View className="mt-4">
+                                <View className="mt-2">
                                     <View className="flex-row items-center justify-between mb-2">
                                         <Text className={`text-sm font-medium ${isDark
                                             ? 'text-content-secondary-dark'
@@ -205,23 +204,31 @@ const AddHabitScreen = () => {
                                             {formData.target_days} days
                                         </Text>
                                     </View>
-                                    <View className={`p-4 rounded-xl border ${isDark
-                                        ? 'bg-app-card-dark border-border-dark'
-                                        : 'bg-app-card-light border-border-light'}`}>
+                                    <View className={`rounded-xl border ${isDark
+                                        ? 'border-border-dark'
+                                        : 'border-border-light'}`}>
                                         <TextInput
                                             value={formData.target_days.toString()}
-                                            onChangeText={(text) =>
+                                            onChangeText={(text) => {
+                                                const days = parseInt(text) || 0;
+                                                if (days > 3650) {
+                                                    Alert.alert(
+                                                        'Invalid Input',
+                                                        'Target days cannot exceed 10 years (3650 days)'
+                                                    );
+                                                    return;
+                                                }
                                                 setFormData(prev => ({
                                                     ...prev,
-                                                    target_days: parseInt(text) || 0
-                                                }))
-                                            }
+                                                    target_days: days
+                                                }));
+                                            }}
                                             keyboardType="numeric"
-                                            className={`text-base ${isDark
+                                            className={`px-4 py-3 text-base ${isDark
                                                 ? 'text-content-primary-dark'
                                                 : 'text-content-primary-light'}`}
                                             placeholderTextColor={isDark ? '#94a3b8' : '#64748b'}
-                                            placeholder="Enter target days"
+                                            placeholder="Enter target days (max 3650)"
                                         />
                                     </View>
                                 </View>
@@ -232,12 +239,18 @@ const AddHabitScreen = () => {
                     {/* Privacy Settings with enhanced UI */}
                     <Animated.View
                         entering={FadeInDown.duration(500).delay(500)}
-                        layout={Layout.springify()}
+                        layout={LinearTransition.damping(15)}
                         className={`rounded-2xl border ${isDark
                             ? 'bg-app-card-dark border-border-dark'
                             : 'bg-app-card-light border-border-light'}`}
                     >
-                        <View className="p-4">
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                setFormData(prev => ({ ...prev, is_public: !prev.is_public }));
+                            }}
+
+                            className="p-4">
                             <View className="flex-row items-center justify-between">
                                 <View className="flex-1 mr-4">
                                     <Text className={`text-sm font-medium ${isDark
@@ -251,14 +264,14 @@ const AddHabitScreen = () => {
                                         Others can see and join your habit
                                     </Text>
                                 </View>
-                                <Switch
+                                <CustomSwitch
                                     value={formData.is_public}
                                     onValueChange={(value) =>
                                         setFormData(prev => ({ ...prev, isPublic: value }))
                                     }
                                 />
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     </Animated.View>
 
                     {/* Partner Selection */}

@@ -43,31 +43,31 @@ const EditProfileScreen = () => {
     const handleImagePick = async () => {
         try {
             const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            
+
             if (!permissionResult.granted) {
                 Alert.alert("Permission Required", "You need to grant access to your photos to upload an avatar.");
                 return;
             }
-    
+
             let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ['images', 'videos'],
+                mediaTypes: ['images'],
                 allowsEditing: true,
                 aspect: [4, 3],
                 quality: 1,
-              });
-    
-              if (!result.canceled && result.assets[0].uri) {
+            });
+
+            if (!result.canceled && result.assets[0].uri) {
                 setIsLoading(true);
                 try {
                     const uri = result.assets[0].uri;
                     console.log('Selected image URI:', uri); // Debug log
-    
+
                     const publicUrl = await uploadAvatar(uri);
                     console.log('Received public URL:', publicUrl); // Debug log
-    
+
                     if (publicUrl) {
                         setAvatarUrl(publicUrl);
-                        await updateProfile({ 
+                        await updateProfile({
                             avatar_url: publicUrl,
                         });
                         Alert.alert('Success', 'Profile picture updated successfully');
@@ -159,7 +159,7 @@ const EditProfileScreen = () => {
                             source={{
                                 uri: avatarUrl || 'https://i.pravatar.cc/160'
                             }}
-                            className={`w-24 h-24 rounded-full border-2 ${isDark ? 'border-border-dark' : 'border-border-light'
+                            className={`w-40 h-40 rounded-full border-2 ${isDark ? 'border-border-dark' : 'border-border-light'
                                 }`}
                         />
                         <TouchableOpacity

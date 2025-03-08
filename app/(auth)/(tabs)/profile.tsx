@@ -40,7 +40,7 @@ const ProfileScreen = () => {
                         className={`w-20 h-20 rounded-full border-2 ${isDark ? 'border-slate-700' : 'border-slate-100'}`}
                     />
                     <TouchableOpacity
-                        onPress={() => router.push('/(auth)/edit-profile/edit')}
+                        onPress={() => router.push('/(auth)/edit-profile')}
                         className={`absolute bottom-0 right-0 w-8 h-8 rounded-full items-center justify-center ${isDark ? 'bg-indigo-600' : 'bg-indigo-500'
                             }`}
                         activeOpacity={0.8}
@@ -58,8 +58,8 @@ const ProfileScreen = () => {
 
 
             <ScrollView className="flex-1 px-6  "
-            contentContainerClassName='gap-4 pt-4'
-            showsVerticalScrollIndicator={false}>
+                contentContainerClassName='gap-4 pt-4'
+                showsVerticalScrollIndicator={false}>
                 {/* Achievements */}
                 <View className="">
                     <Text className={`text-base font-medium mb-4 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
@@ -105,7 +105,7 @@ const ProfileScreen = () => {
                             className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-slate-700' : 'border-slate-100'
                                 }`}
                             activeOpacity={0.7}
-                            onPress={() => router.navigate('/(auth)/edit-profile/edit')}
+                            onPress={() => router.navigate('/(auth)/edit-profile')}
                         >
                             <View className="flex-row items-center">
                                 <View className={`w-8 h-8 rounded-full items-center justify-center ${isDark ? 'bg-blue-900/30' : 'bg-blue-100'

@@ -73,7 +73,7 @@ const HabitsScreen = () => {
                         </Text>
                     </View>
                     <TouchableOpacity
-                        onPress={() => router.push('/(auth)/(tabs)/habits/add')}
+                        onPress={() => router.push('/(auth)/add-habit')}
                         className={`w-10 h-10 rounded-full items-center justify-center ${isDark ? 'bg-brand-primary-dark' : 'bg-brand-primary'}`}
                         activeOpacity={0.8}
                     >
