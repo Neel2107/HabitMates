@@ -120,15 +120,19 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   uploadAvatar: async (uri: string) => {
     try {
       const response = await fetch(uri);
-      const blob = await response.blob();
+      const blobData = await response.blob();
       
-      const fileExt = uri.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
+      const fileExt = uri.split('.').pop()?.toLowerCase() || 'jpg';
+      const fileName = `${Date.now()}.${fileExt}`;
       const filePath = `${get().session?.user?.id}/${fileName}`;
 
+      // Upload blob directly
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(filePath, blob);
+        .upload(filePath, blobData, {
+          contentType: `image/${fileExt}`,
+          upsert: true
+        });
 
       if (uploadError) throw uploadError;
 

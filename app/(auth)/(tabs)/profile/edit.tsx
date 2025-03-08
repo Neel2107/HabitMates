@@ -42,27 +42,28 @@ const EditProfileScreen = () => {
 
     const handleImagePick = async () => {
         try {
-            // Request permission first
             const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
+            
             if (!permissionResult.granted) {
                 Alert.alert("Permission Required", "You need to grant access to your photos to upload an avatar.");
                 return;
             }
-
+    
             const result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ['images'],
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: true,
                 aspect: [1, 1],
                 quality: 0.8,
+                base64: true, // Enable base64 output
             });
-
-            if (!result.canceled) {
+    
+            if (!result.canceled && result.assets[0].uri) {
                 setIsLoading(true);
                 try {
                     const publicUrl = await uploadAvatar(result.assets[0].uri);
                     setAvatarUrl(publicUrl);
                     await updateProfile({ avatar_url: publicUrl });
+                    Alert.alert('Success', 'Profile picture updated successfully');
                 } catch (error: any) {
                     Alert.alert('Error', 'Failed to upload image. Please try again.');
                     console.error('Upload error:', error);
@@ -118,7 +119,7 @@ const EditProfileScreen = () => {
                 <TouchableOpacity
                     onPress={handleSave}
                     disabled={isLoading}
-                    className={`py-2 px-4 rounded-full ${isDark ? 'bg-brand-primary-dark' : 'bg-brand-primary'
+                    className={`py-2 px-4 rounded-full ${isDark ? 'bg-brand-primary' : 'bg-brand-primary'
                         }`}
                     activeOpacity={0.7}
                 >

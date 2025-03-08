@@ -4,7 +4,7 @@
     "slug": "HabitMates",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/hm-logo-ios.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -18,7 +18,8 @@
       "bundleIdentifier": "com.habitmates.app",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
-      }
+      },
+      "icon": "./assets/images/hm-logo-ios.png"
     },
     "android": {
       "adaptiveIcon": {
@@ -49,8 +50,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos",
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera"
+          "photosPermission": "The app needs access to your photos to set your profile picture."
         }
       ]
     ],

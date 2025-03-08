@@ -1,12 +1,14 @@
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
 import { Feather } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Text, TextInput, TouchableOpacity, View, Platform } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import Animated, { FadeIn, FadeInDown, FadeInUp, ZoomIn } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 export default function LoginScreen() {
   const isDark = useThemeStore((state) => state.isDark);
@@ -28,152 +30,143 @@ export default function LoginScreen() {
       router.replace('/(auth)/(tabs)/home');
     } catch (error: any) {
       Alert.alert('Error', error.message);
-      console.log(error)
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <View className={`flex-1 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
+    <View className="flex-1">
       <StatusBar style={isDark ? 'light' : 'dark'} />
+      <View style={{ position: 'absolute', width: '100%', height: '100%' }}>
+        <LinearGradient
+          colors={isDark ? 
+            ['#1e1b4b', '#312e81', '#4338ca'] : 
+            ['#e0f2fe', '#bfdbfe', '#93c5fd']
+          }
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{ flex: 1 }}
+        />
+      </View>
+      
       <KeyboardAwareScrollView
-        bottomOffset={400}
+        bottomOffset={Platform.OS === 'ios' ? 400 : 200}
         keyboardShouldPersistTaps="handled"
         className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1 }}
       >
-        {/* Animated Header */}
-        <Animated.View
-          entering={FadeInUp.duration(1000).springify()}
-          className={`w-full h-72 items-center justify-center rounded-b-[40px] ${isDark ? 'bg-indigo-600' : 'bg-indigo-500'
-            }`}
+        {/* Header Section */}
+        <Animated.View 
+          entering={FadeInDown.duration(1000).springify()}
+          className="w-full h-80 items-center justify-end"
         >
-          <Animated.Image
-            entering={ZoomIn.duration(800).delay(200)}
-            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/6543/6543853.png' }}
-            className="w-28 h-28 mb-4"
-            resizeMode="contain"
-          />
-          <Animated.Text
-            entering={FadeInDown.duration(600).delay(400)}
-            className="text-white text-3xl font-bold mb-1"
-          >
-            HabitMates
-          </Animated.Text>
-          <Animated.Text
-            entering={FadeInDown.duration(600).delay(500)}
-            className="text-indigo-100 text-lg font-medium"
-          >
-            Build habits together
-          </Animated.Text>
+          <View className="items-center">
+            <Text className="text-5xl font-bold mb-3 text-white">
+              HabitMates
+            </Text>
+            <Text className="text-lg text-white/80">
+              Build better habits together
+            </Text>
+          </View>
         </Animated.View>
 
         {/* Form Container */}
         <Animated.View
-          entering={FadeIn.duration(800).delay(600)}
-          className="flex-1 px-6 pt-8"
+          entering={FadeIn.duration(1000)}
+          className="flex-1 px-6 pt-10 "
         >
-          <View className="flex-col gap-6">
+           <View className="overflow-hidden rounded-3xl">
+
+          <BlurView
+            intensity={isDark ? 15 : 45}
+            tint={isDark ? 'dark' : 'light'}
+            className="p-8 rounded-3xl "
+           
+          >
             {/* Email Input */}
-            <Animated.View entering={FadeInDown.duration(600).delay(700)}>
-              <Text className={`mb-2 font-semibold ${isDark ? 'text-slate-200' : 'text-slate-700'
-                }`}>
+            <View className="mb-6">
+              <Text className="text-base font-medium mb-2 text-white/90">
                 Email Address
               </Text>
-              <View className={`p-4 rounded-2xl border ${isDark
-                ? 'bg-slate-800 border-slate-700'
-                : 'bg-white border-slate-200'
-                }`}>
+              <View className="overflow-hidden rounded-xl bg-white/10">
                 <TextInput
                   placeholder="john@example.com"
                   value={email}
                   onChangeText={setEmail}
                   autoCapitalize="none"
                   keyboardType="email-address"
-                  className={`text-base ${isDark ? 'text-slate-200' : 'text-slate-700'
-                    }`}
-                  placeholderTextColor={isDark ? '#64748b' : '#94a3b8'}
+                  className="p-4 text-base text-white"
+                  placeholderTextColor="rgba(255,255,255,0.5)"
                 />
               </View>
-            </Animated.View>
+            </View>
 
             {/* Password Input */}
-            <Animated.View entering={FadeInDown.duration(600).delay(800)}>
-              <Text className={`mb-2 font-semibold ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
+            <View className="mb-8">
+              <Text className="text-base font-medium mb-2 text-white/90">
                 Password
               </Text>
-              <View className={`p-4 rounded-2xl border flex-row items-center ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'
-                }`}>
+              <View className="flex-row items-center overflow-hidden rounded-xl bg-white/10">
                 <TextInput
                   placeholder="••••••••"
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
-                  className={`flex-1 text-base ${isDark ? 'text-slate-200' : 'text-slate-700'
-                    }`}
-                  placeholderTextColor={isDark ? '#64748b' : '#94a3b8'}
+                  className="flex-1 p-4 text-base text-white"
+                  placeholderTextColor="rgba(255,255,255,0.5)"
                 />
                 <TouchableOpacity
                   onPress={() => setShowPassword(!showPassword)}
                   activeOpacity={0.7}
-                  className="ml-2"
+                  className="pr-4"
                 >
                   <Feather
                     name={showPassword ? 'eye-off' : 'eye'}
                     size={20}
-                    color={isDark ? '#64748b' : '#94a3b8'}
+                    color="rgba(255,255,255,0.6)"
                   />
                 </TouchableOpacity>
               </View>
-            </Animated.View>
-
-            {/* Forgot Password */}
-            <Animated.View
-              entering={FadeInDown.duration(600).delay(850)}
-              className="items-end"
-            >
-              <TouchableOpacity activeOpacity={0.7}>
-                <Text className={`font-medium ${isDark ? 'text-indigo-400' : 'text-indigo-500'
-                  }`}>
-                  Forgot Password?
-                </Text>
-              </TouchableOpacity>
-            </Animated.View>
+            </View>
 
             {/* Login Button */}
-            <Animated.View entering={FadeInDown.duration(600).delay(900)}>
-              <TouchableOpacity
-                onPress={handleLogin}
-                activeOpacity={0.7}
-                disabled={isLoading}
-                className={`w-full py-5 rounded-2xl items-center justify-center ${isDark ? 'bg-indigo-500' : 'bg-indigo-500'
-                  } ${isLoading ? 'opacity-70' : ''}`}
-              >
-                <Text className="text-white font-semibold text-lg">
+            <TouchableOpacity
+              onPress={handleLogin}
+              activeOpacity={0.8}
+              disabled={isLoading}
+              className="mb-6"
+            >
+              <View className='overflow-hidden rounded-xl'>
+
+              <BlurView
+                intensity={100}
+                tint="light"
+                className={`py-4 rounded-xl ${isLoading ? 'opacity-70' : ''}`}
+                >
+                <Text className="text-center font-semibold text-base text-indigo-950">
                   {isLoading ? 'Signing in...' : 'Sign In'}
                 </Text>
-              </TouchableOpacity>
-            </Animated.View>
+              </BlurView>
+                </View>
+            </TouchableOpacity>
 
-            <Animated.View
-              entering={FadeInDown.duration(600).delay(1100)}
-              className="flex-row justify-center gap-1 pt-4"
-            >
-              <Text className={isDark ? 'text-slate-400' : 'text-slate-500'}>
-                New here?
+            {/* Sign Up Link */}
+            <View className="flex-row justify-center items-center">
+              <Text className="text-white/60">
+                New here?{' '}
               </Text>
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => router.navigate('/signup')}
               >
-                <Text className={`font-semibold ${isDark ? 'text-indigo-400' : 'text-indigo-500'
-                  }`}>
+                <Text className="text-white font-semibold">
                   Create account
                 </Text>
               </TouchableOpacity>
-            </Animated.View>
+            </View>
+          </BlurView>
           </View>
         </Animated.View>
       </KeyboardAwareScrollView>

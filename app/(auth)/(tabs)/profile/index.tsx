@@ -25,24 +25,25 @@ const ProfileScreen = () => {
 
     const userName = session?.user?.email?.split('@')[0] || 'User';
     const userEmail = session?.user?.email || 'email@example.com';
+    const avatarUrl = session?.user?.user_metadata?.avatar_url;
 
     return (
         <SafeAreaView className={`flex-1 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
             <StatusBar style={isDark ? 'light' : 'dark'} />
             {/* Modern Minimal Header */}
-            <Animated.View
-                entering={FadeIn.duration(500)}
-                className="px-6 pt-6 pb-6"
-            >
                 <View className="items-center">
                     <View className="relative">
                         <Image
-                            source={{ uri: 'https://i.pravatar.cc/160' }}
+                            source={{ 
+                                uri: avatarUrl || 'https://cdn-icons-png.flaticon.com/512/6543/6543853.png'
+                            }}
                             className={`w-20 h-20 rounded-full border-2 ${isDark ? 'border-slate-700' : 'border-slate-100'}`}
                         />
                         <TouchableOpacity
-                            className={`absolute bottom-0 right-0 w-8 h-8 rounded-full items-center justify-center   ${isDark ? 'bg-indigo-600' : 'bg-indigo-500'
-                                }`}
+                            onPress={() => router.push('/(auth)/(tabs)/profile/edit')}
+                            className={`absolute bottom-0 right-0 w-8 h-8 rounded-full items-center justify-center ${
+                                isDark ? 'bg-indigo-600' : 'bg-indigo-500'
+                            }`}
                             activeOpacity={0.8}
                         >
                             <Feather name="edit-2" size={15} color="white" />
@@ -55,11 +56,11 @@ const ProfileScreen = () => {
                         {userEmail}
                     </Text>
                 </View>
-            </Animated.View>
+  
 
-            <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
+            <ScrollView className="flex-1 px-6 " showsVerticalScrollIndicator={false}>
                 {/* Achievements */}
-                <View className="mb-8">
+                <View className="">
                     <Text className={`text-base font-medium mb-4 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         ACHIEVEMENTS
                     </Text>
@@ -93,7 +94,7 @@ const ProfileScreen = () => {
                 </View>
 
                 {/* Settings */}
-                <View className="mb-8">
+                <View className="">
                     <Text className={`text-base font-medium mb-4 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         SETTINGS
                     </Text>
@@ -187,7 +188,7 @@ const ProfileScreen = () => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View className="h-6" />
+                {/* <View className="h-6" /> */}
             </ScrollView>
         </SafeAreaView>
     );
