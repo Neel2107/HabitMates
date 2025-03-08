@@ -1,6 +1,7 @@
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
 import { Feather } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
@@ -16,9 +17,17 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+
 const EditProfileScreen = () => {
     const isDark = useThemeStore((state) => state.isDark);
     const session = useAuthStore((state) => state.session);
+
+    const updateProfile = useAuthStore((state) => state.updateProfile);
+    const uploadAvatar = useAuthStore((state) => state.uploadAvatar);
+
+    const [avatarUrl, setAvatarUrl] = useState<string | null>(
+        session?.user?.user_metadata?.avatar_url || null
+    );
 
     const [formData, setFormData] = useState({
         fullName: session?.user?.user_metadata?.full_name || '',
@@ -30,10 +39,50 @@ const EditProfileScreen = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
+
+    const handleImagePick = async () => {
+        try {
+            // Request permission first
+            const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+            if (!permissionResult.granted) {
+                Alert.alert("Permission Required", "You need to grant access to your photos to upload an avatar.");
+                return;
+            }
+
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ['images'],
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 0.8,
+            });
+
+            if (!result.canceled) {
+                setIsLoading(true);
+                try {
+                    const publicUrl = await uploadAvatar(result.assets[0].uri);
+                    setAvatarUrl(publicUrl);
+                    await updateProfile({ avatar_url: publicUrl });
+                } catch (error: any) {
+                    Alert.alert('Error', 'Failed to upload image. Please try again.');
+                    console.error('Upload error:', error);
+                } finally {
+                    setIsLoading(false);
+                }
+            }
+        } catch (error: any) {
+            Alert.alert('Error', 'Failed to pick image');
+            console.error('Image picker error:', error);
+            setIsLoading(false);
+        }
+    };
+
     const handleSave = async () => {
         setIsLoading(true);
         try {
-            // TODO: Implement Supabase profile update
+            await updateProfile({
+                username: formData.username,
+            });
             Alert.alert('Success', 'Profile updated successfully');
             router.back();
         } catch (error: any) {
@@ -42,7 +91,6 @@ const EditProfileScreen = () => {
             setIsLoading(false);
         }
     };
-
     return (
         <SafeAreaView className={`flex-1 ${isDark ? 'bg-app-dark' : 'bg-app-light'}`}>
             <StatusBar style={isDark ? 'light' : 'dark'} />
@@ -92,12 +140,15 @@ const EditProfileScreen = () => {
                 >
                     <View className="relative">
                         <Image
-                            source={{ uri: 'https://i.pravatar.cc/160' }}
+                            source={{
+                                uri: avatarUrl || 'https://i.pravatar.cc/160'
+                            }}
                             className={`w-24 h-24 rounded-full border-2 ${isDark ? 'border-border-dark' : 'border-border-light'
                                 }`}
                         />
                         <TouchableOpacity
-                            className={`absolute bottom-0 right-0 w-8 h-8 rounded-full items-center justify-center   ${isDark ? 'bg-brand-primary-dark' : 'bg-brand-primary'
+                            onPress={handleImagePick}
+                            className={`absolute bottom-0 right-0 w-8 h-8 rounded-full items-center justify-center ${isDark ? 'bg-brand-primary-dark' : 'bg-brand-primary'
                                 }`}
                             activeOpacity={0.8}
                         >

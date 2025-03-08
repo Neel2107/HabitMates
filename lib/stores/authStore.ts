@@ -11,9 +11,11 @@ interface AuthState {
   signOut: () => Promise<void>;
   setSession: (session: Session | null) => void;
   setIsLoading: (isLoading: boolean) => void;
+  updateProfile: (data: { username?: string; avatar_url?: string | null }) => Promise<void>;
+  uploadAvatar: (file: string) => Promise<string>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   session: null,
   isLoading: true,
   setIsLoading: (isLoading) => set({ isLoading }),
@@ -102,4 +104,42 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   setSession: (session) => set({ session }),
+
+  updateProfile: async (data) => {
+    const { error } = await supabase
+      .from('users')
+      .update({
+        ...data,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', get().session?.user?.id);
+
+    if (error) throw error;
+  },
+
+  uploadAvatar: async (uri: string) => {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      
+      const fileExt = uri.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `${get().session?.user?.id}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, blob);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      return publicUrl;
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      throw error;
+    }
+  },
 }));
