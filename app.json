@@ -9,17 +9,17 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/splash-icon.png",
+      "image": "./assets/images/hm-logo-ios.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#059669"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/hm-logo-android.png",
+        "backgroundColor": "#059669"
       },
       "permissions": [
         "android.permission.CAMERA",
@@ -37,8 +37,8 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
-          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "cameraPermission": "Allow HabitMates to access your camera",
+          "microphonePermission": "Allow HabitMates to access your microphone",
           "recordAudioAndroid": true
         }
       ]

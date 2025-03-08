@@ -2,7 +2,7 @@
 
 ## 1. Authentication & User Management
 - [x] Login screen implementation
-- [ ] Sign up screen
+- [] Sign up screen
   - Email/password registration
   - Username selection
   - Avatar upload option

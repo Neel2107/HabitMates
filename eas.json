@@ -5,6 +5,9 @@
             "distribution": "internal",
             "env": {
                 "ANDROID_HOME": "/Users/racit/Library/Android/sdk"
+            },
+            "ios": {
+                "simulator": true
             }
         },
         "preview": {
@@ -13,7 +16,6 @@
             },
             "env": {
                 "ANDROID_HOME": "/Users/racit/Library/Android/sdk"
-
             }
         },
         "production": {

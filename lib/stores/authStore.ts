@@ -100,6 +100,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     if (error) throw error;
     set({ session: null });
   },
-  
+
   setSession: (session) => set({ session }),
 }));
