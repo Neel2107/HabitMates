@@ -31,7 +31,7 @@ const ProfileScreen = () => {
         <SafeAreaView className={`flex-1 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
             <StatusBar style={isDark ? 'light' : 'dark'} />
             {/* Modern Minimal Header */}
-            <View className="items-center">
+            <View className="items-center pt-4">
                 <View className="relative">
                     <Image
                         source={{
@@ -57,7 +57,9 @@ const ProfileScreen = () => {
             </View>
 
 
-            <ScrollView className="flex-1 px-6 " showsVerticalScrollIndicator={false}>
+            <ScrollView className="flex-1 px-6  "
+            contentContainerClassName='gap-4 pt-4'
+            showsVerticalScrollIndicator={false}>
                 {/* Achievements */}
                 <View className="">
                     <Text className={`text-base font-medium mb-4 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>

@@ -49,24 +49,38 @@ const EditProfileScreen = () => {
                 return;
             }
     
-            const result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ['images', 'videos'],
                 allowsEditing: true,
-                aspect: [1, 1],
-                quality: 0.8,
-                base64: true, // Enable base64 output
-            });
+                aspect: [4, 3],
+                quality: 1,
+              });
     
-            if (!result.canceled && result.assets[0].uri) {
+              if (!result.canceled && result.assets[0].uri) {
                 setIsLoading(true);
                 try {
-                    const publicUrl = await uploadAvatar(result.assets[0].uri);
-                    setAvatarUrl(publicUrl);
-                    await updateProfile({ avatar_url: publicUrl });
-                    Alert.alert('Success', 'Profile picture updated successfully');
+                    const uri = result.assets[0].uri;
+                    console.log('Selected image URI:', uri); // Debug log
+    
+                    const publicUrl = await uploadAvatar(uri);
+                    console.log('Received public URL:', publicUrl); // Debug log
+    
+                    if (publicUrl) {
+                        setAvatarUrl(publicUrl);
+                        await updateProfile({ 
+                            avatar_url: publicUrl,
+                        });
+                        Alert.alert('Success', 'Profile picture updated successfully');
+                    } else {
+                        throw new Error('Failed to get public URL');
+                    }
                 } catch (error: any) {
+                    console.error('Detailed upload error:', {
+                        message: error.message,
+                        stack: error.stack,
+                        cause: error.cause
+                    });
                     Alert.alert('Error', 'Failed to upload image. Please try again.');
-                    console.error('Upload error:', error);
                 } finally {
                     setIsLoading(false);
                 }
@@ -83,6 +97,7 @@ const EditProfileScreen = () => {
         try {
             await updateProfile({
                 username: formData.username,
+                updated_at: new Date().toISOString()
             });
             Alert.alert('Success', 'Profile updated successfully');
             router.back();

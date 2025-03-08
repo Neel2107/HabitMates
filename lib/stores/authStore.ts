@@ -11,7 +11,11 @@ interface AuthState {
   signOut: () => Promise<void>;
   setSession: (session: Session | null) => void;
   setIsLoading: (isLoading: boolean) => void;
-  updateProfile: (data: { username?: string; avatar_url?: string | null }) => Promise<void>;
+  updateProfile: (data: { 
+    username?: string; 
+    avatar_url?: string | null;
+    updated_at?: string;
+  }) => Promise<void>;
   uploadAvatar: (file: string) => Promise<string>;
 }
 
@@ -119,31 +123,50 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   uploadAvatar: async (uri: string) => {
     try {
-      const response = await fetch(uri);
-      const blobData = await response.blob();
-      
-      const fileExt = uri.split('.').pop()?.toLowerCase() || 'jpg';
-      const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `${get().session?.user?.id}/${fileName}`;
+        console.log('Starting avatar upload for URI:', uri);
+        
+        // Handle Android file URI
+        const formData = new FormData();
+        formData.append('file', {
+            uri: uri,
+            type: 'image/jpeg',
+            name: 'avatar.jpg'
+        } as any);
+        
+        const fileExt = 'jpeg';
+        const fileName = `${Date.now()}.${fileExt}`;
+        const filePath = `${get().session?.user?.id}/${fileName}`;
+        
+        console.log('Uploading to path:', filePath);
 
-      // Upload blob directly
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, blobData, {
-          contentType: `image/${fileExt}`,
-          upsert: true
+        // Direct upload using the file URI
+        const { error: uploadError, data: uploadData } = await supabase.storage
+            .from('avatars')
+            .upload(filePath, formData, {
+                contentType: 'image/jpeg',
+                upsert: true
+            });
+
+        if (uploadError) {
+            console.error('Supabase upload error:', uploadError);
+            throw uploadError;
+        }
+
+        console.log('Upload successful:', uploadData);
+
+        const { data: { publicUrl } } = supabase.storage
+            .from('avatars')
+            .getPublicUrl(filePath);
+
+        console.log('Generated public URL:', publicUrl);
+        return publicUrl;
+    } catch (error: any) {
+        console.error('Detailed avatar upload error:', {
+            message: error.message,
+            stack: error.stack,
+            cause: error.cause
         });
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
-
-      return publicUrl;
-    } catch (error) {
-      console.error('Error uploading avatar:', error);
-      throw error;
+        throw error;
     }
-  },
+}
 }));
