@@ -123,9 +123,9 @@ export default function SignUpScreen() {
       <StatusBar style={isDark ? 'light' : 'dark'} />
       <View style={{ position: 'absolute', width: '100%', height: '100%' }}>
         <LinearGradient
-          colors={isDark ? 
-            ['#1e1b4b', '#312e81', '#4338ca'] : 
-            ['#e0f2fe', '#bfdbfe', '#93c5fd']
+          colors={isDark ?
+            ['#6366f1', '#059669', '#6ee7b7'] :
+            ['#059669', '#6ee7b7', '#818cf8']
           }
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -141,16 +141,16 @@ export default function SignUpScreen() {
         contentContainerStyle={{ flexGrow: 1 }}
       >
         {/* Header Section */}
-        <Animated.View 
+        <Animated.View
           entering={FadeInDown.duration(1000).springify()}
-          className="w-full h-60 items-center justify-end"
+          className="w-full h-80 items-center justify-end"
         >
           <View className="items-center">
             <Text className="text-5xl font-bold mb-3 text-white">
-              Join Us
+              HabitMates
             </Text>
             <Text className="text-lg text-white/80">
-              Start your journey to better habits
+              Join our community today
             </Text>
           </View>
         </Animated.View>
@@ -158,13 +158,13 @@ export default function SignUpScreen() {
         {/* Form Container */}
         <Animated.View
           entering={FadeIn.duration(1000)}
-          className="flex-1 px-6 pt-10"
+          className="flex-1 pt-10"
         >
-          <View className="overflow-hidden rounded-3xl">
+          <View className="overflow-hidden rounded-t-3xl flex-1">
             <BlurView
-              intensity={isDark ? 15 : 45}
+              intensity={isDark ? 70 : 45}
               tint={isDark ? 'dark' : 'light'}
-              className="p-8 rounded-3xl"
+              className="p-8 flex-1"
             >
               {renderInput('email', 'Email Address')}
               {renderInput('username', 'Username')}
@@ -178,16 +178,14 @@ export default function SignUpScreen() {
                 disabled={isLoading}
                 className="mb-6"
               >
-                <View className="overflow-hidden rounded-xl">
-                  <BlurView
-                    intensity={100}
-                    tint="light"
-                    className={`py-4 rounded-xl ${isLoading ? 'opacity-70' : ''}`}
+                <View className='overflow-hidden rounded-xl'>
+                  <TouchableOpacity
+                    className='overflow-hidden rounded-xl bg-zinc-200 p-4'
                   >
                     <Text className="text-center font-semibold text-base text-indigo-950">
                       {isLoading ? 'Creating Account...' : 'Create Account'}
                     </Text>
-                  </BlurView>
+                  </TouchableOpacity>
                 </View>
               </TouchableOpacity>
 
