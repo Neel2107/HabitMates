@@ -17,6 +17,7 @@ interface AuthState {
     updated_at?: string;
   }) => Promise<void>;
   uploadAvatar: (file: string) => Promise<string>;
+  resetPassword: (email: string) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -189,5 +190,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         });
         throw error;
     }
-}
+},
+
+resetPassword: async (email: string) => {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: 'habitmates://reset-confirm',
+  });
+  if (error) throw error;
+},
 }));

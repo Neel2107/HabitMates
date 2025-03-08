@@ -17,5 +17,5 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "nativewind-env.d.ts"
-, "app/(auth)/(tabs)/profile/index.tsx"  ]
+, "app/(auth)/(tabs)/profile/profile.tsx"  ]
 }

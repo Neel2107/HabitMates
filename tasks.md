@@ -7,7 +7,7 @@
   - Username selection
   - Avatar upload option
 - [ ] Password reset functionality
-- [ ] User profile screen
+- [x] User profile screen
   - Edit profile information
   - View statistics
   - Manage account settings

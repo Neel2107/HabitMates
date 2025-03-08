@@ -162,8 +162,15 @@ export default function SignUpScreen() {
         >
           <View className="overflow-hidden rounded-t-3xl flex-1">
             <BlurView
-              intensity={isDark ? 70 : 45}
-              tint={isDark ? 'dark' : 'light'}
+              intensity={Platform.select({
+                ios: isDark ? 90 : 70,
+                android: isDark ? 70 : 45,
+              })}
+              tint={Platform.select({
+                ios: 'dark',
+                android: isDark ? 'dark' : 'light',
+              })}
+            
               className="p-8 flex-1"
             >
               {renderInput('email', 'Email Address')}
