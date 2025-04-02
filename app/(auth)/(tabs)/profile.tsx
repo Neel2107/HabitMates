@@ -6,14 +6,53 @@ import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Svg, { Circle, Path } from 'react-native-svg';
+
+// Custom SVG Avatar component
+const UserAvatar = ({ size = 80, color = "#059669", avatarUrl = null }: { size?: number; color?: string; avatarUrl?: string | null }) => {
+    if (avatarUrl) {
+        return (
+            <Image
+                source={{ uri: avatarUrl }}
+                style={{ width: size, height: size, borderRadius: size / 2 }}
+            />
+        );
+    }
+
+    return (
+        <Svg width={size} height={size} viewBox="0 0 80 80" fill="none">
+            <Circle cx="40" cy="40" r="40" fill={color} />
+            <Circle cx="40" cy="30" r="14" fill="white" />
+            <Path d="M16 62C22 46 58 46 64 62" fill="white" />
+            <Circle cx="40" cy="40" r="38" stroke="white" strokeWidth="2" />
+        </Svg>
+    );
+};
+
+// Achievement Icon Component
+const AchievementIcon = ({ emoji, isDark }: { emoji: string; isDark: boolean }) => (
+    <View className={`w-12 h-12 rounded-xl items-center justify-center ${isDark ? 'bg-gray-800' : 'bg-[#e6f7f1]'
+        }`}>
+        <Text style={{ fontSize: 24 }}>{emoji}</Text>
+    </View>
+);
 
 const achievements = [
     { id: 1, name: '7 Day Streak', icon: '🔥', description: 'Completed a habit for 7 days' },
     { id: 2, name: 'Early Bird', icon: '🌅', description: 'Completed morning habits 5 times' },
     { id: 3, name: 'Team Player', icon: '🤝', description: 'Connected with 3 partners' },
 ];
+
+// Move these interface definitions outside the component
+interface BaseSettingProps {
+    icon: string;
+    name: string;
+    color: string;
+    bgColor: string;
+    danger?: boolean;
+}
 
 const ProfileScreen = () => {
     const mode = useThemeStore((state) => state.mode);
@@ -23,69 +62,182 @@ const ProfileScreen = () => {
     const signOut = useAuthStore((state) => state.signOut);
     const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
 
-    const userName = session?.user?.email?.split('@')[0] || 'User';
+    const userName = session?.user?.user_metadata?.username || session?.user?.email?.split('@')[0] || 'User';
     const userEmail = session?.user?.email || 'email@example.com';
     const avatarUrl = session?.user?.user_metadata?.avatar_url;
 
-    return (
-        <SafeAreaView className={`flex-1 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
-            <StatusBar style={isDark ? 'light' : 'dark'} />
-            {/* Modern Minimal Header */}
-            <View className="items-center pt-4">
-                <View className="relative">
-                    <Image
-                        source={{
-                            uri: avatarUrl || 'https://cdn-icons-png.flaticon.com/512/6543/6543853.png'
-                        }}
-                        className={`w-20 h-20 rounded-full border-2 ${isDark ? 'border-slate-700' : 'border-slate-100'}`}
-                    />
-                    <TouchableOpacity
-                        onPress={() => router.push('/(auth)/edit-profile')}
-                        className={`absolute bottom-0 right-0 w-8 h-8 rounded-full items-center justify-center ${isDark ? 'bg-indigo-600' : 'bg-indigo-500'
-                            }`}
-                        activeOpacity={0.8}
-                    >
-                        <Feather name="edit-2" size={15} color="white" />
-                    </TouchableOpacity>
+    // Move these component definitions inside the main component to access isDark
+    // Regular setting item with navigation/press action
+    const NavigationSettingItem = ({ icon, name, color, bgColor, action, danger = false }: BaseSettingProps & { action?: () => void }) => (
+        <TouchableOpacity
+            className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-gray-700/50' : 'border-gray-100'
+                }`}
+            activeOpacity={action ? 0.7 : 1}
+            onPress={action}
+        >
+            <View className="flex-row items-center">
+                <View className={`w-9 h-9 rounded-full items-center justify-center ${bgColor}`}>
+                    <Feather name={icon as any} size={18} color={color} />
                 </View>
-                <Text className={`text-xl font-bold mt-4 capitalize ${isDark ? 'text-white' : 'text-slate-800'}`}>
-                    {userName}
-                </Text>
-                <Text className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                    {userEmail}
+                <Text className={`font-medium ml-3 ${danger ? (isDark ? 'text-red-400' : 'text-red-500') :
+                    isDark ? 'text-white' : 'text-gray-800'
+                    }`}>
+                    {name}
                 </Text>
             </View>
+            <Feather name="chevron-right" size={20} color={isDark ? '#94a3b8' : '#64748b'} />
+        </TouchableOpacity>
+    );
 
+    // Setting item with toggle switch
+    const SwitchSettingItem = ({ icon, name, color, bgColor, value, onValueChange }: BaseSettingProps & {
+        value: boolean;
+        onValueChange: (value: boolean) => void
+    }) => (
+        <TouchableOpacity
+            className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-gray-700/50' : 'border-gray-100'
+                }`}
+            activeOpacity={1}
+            onPress={() => onValueChange(!value)}
+        >
+            <View className="flex-row items-center">
+                <View className={`w-9 h-9 rounded-full items-center justify-center ${bgColor}`}>
+                    <Feather name={icon as any} size={18} color={color} />
+                </View>
+                <Text className={`font-medium ml-3 ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                    {name}
+                </Text>
+            </View>
+            <CustomSwitch
+                value={value}
+                onValueChange={onValueChange}
+            />
+        </TouchableOpacity>
+    );
 
-            <ScrollView className="flex-1 px-6  "
-                contentContainerClassName='gap-4 pt-4'
-                showsVerticalScrollIndicator={false}>
+    // Action setting item without chevron (like logout)
+    const ActionSettingItem = ({ icon, name, color, bgColor, action, danger = false }: BaseSettingProps & { action?: () => void }) => (
+        <TouchableOpacity
+            className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-gray-700/50' : 'border-gray-100'
+                }`}
+            activeOpacity={0.7}
+            onPress={action}
+        >
+            <View className="flex-row items-center">
+                <View className={`w-9 h-9 rounded-full items-center justify-center ${bgColor}`}>
+                    <Feather name={icon as any} size={18} color={color} />
+                </View>
+                <Text className={`font-medium ml-3 ${danger ? (isDark ? 'text-red-400' : 'text-red-500') :
+                    isDark ? 'text-white' : 'text-gray-800'
+                    }`}>
+                    {name}
+                </Text>
+            </View>
+        </TouchableOpacity>
+    );
+
+    return (
+        <SafeAreaView className={`flex-1 ${isDark ? 'bg-[#1a1a1a]' : 'bg-white'}`}>
+            <StatusBar style={isDark ? 'light' : 'dark'} />
+
+            {/* Header with profile info */}
+            <Animated.View
+                entering={FadeIn.duration(500)}
+                className="px-6 pt-4 pb-6"
+            >
+                <View className="flex-row justify-between items-center">
+                    <Text className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                        Profile
+                    </Text>
+
+                    <TouchableOpacity
+                        className="p-2 rounded-full"
+                        activeOpacity={0.7}
+                        onPress={() => router.push('/(auth)/edit-profile')}
+                    >
+                        <Feather
+                            name="settings"
+                            size={22}
+                            color={isDark ? '#e2e8f0' : '#0f172a'}
+                        />
+                    </TouchableOpacity>
+                </View>
+            </Animated.View>
+
+            <ScrollView
+                className="flex-1"
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 40 }}
+            >
+                {/* Profile Card */}
+                <Animated.View
+                    entering={FadeInDown.duration(500).delay(100)}
+                    className={`mx-6 mb-6 p-6 rounded-2xl border shadow-sm ${isDark ? 'bg-gray-800/60 border-gray-700' : 'bg-white border-gray-100'
+                        }`}
+                >
+                    <View className="items-center">
+                        <View className="relative">
+                            <UserAvatar
+                                size={80}
+                                color="#059669"
+                                avatarUrl={avatarUrl}
+                            />
+                            <TouchableOpacity
+                                onPress={() => router.push('/(auth)/edit-profile')}
+                                className="absolute bottom-0 right-0 w-8 h-8 rounded-full items-center justify-center bg-[#059669]"
+                                activeOpacity={0.8}
+                            >
+                                <Feather name="edit-2" size={15} color="white" />
+                            </TouchableOpacity>
+                        </View>
+
+                        <Text className={`text-xl font-bold mt-4 capitalize ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                            {userName}
+                        </Text>
+                        <Text className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                            {userEmail}
+                        </Text>
+
+                        <View className="flex-row gap-4 mt-6">
+                            <TouchableOpacity
+                                className="bg-[#059669] px-5 py-2.5 rounded-xl"
+                                activeOpacity={0.8}
+                                onPress={() => router.push('/(auth)/edit-profile')}
+                            >
+                                <Text className="text-white font-medium">Edit Profile</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                className={`px-5 py-2.5 rounded-xl border ${isDark ? 'border-gray-700' : 'border-gray-200'
+                                    }`}
+                                activeOpacity={0.8}
+                            >
+                                <Text className={isDark ? 'text-white' : 'text-gray-800'}>Share Stats</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Animated.View>
+
                 {/* Achievements */}
-                <View className="">
-                    <Text className={`text-base font-medium mb-4 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                <View className="px-6 mb-6">
+                    <Text className={`text-base font-semibold mb-4 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                         ACHIEVEMENTS
                     </Text>
+
                     {achievements.map((achievement, index) => (
                         <Animated.View
                             key={achievement.id}
                             entering={FadeInDown.delay(index * 100).duration(500)}
-                            className={`mb-3 p-4 rounded-2xl border   ${isDark
-                                ? 'bg-slate-800 border-slate-700'
-                                : 'bg-white border-slate-100'
+                            className={`mb-3 p-4 rounded-2xl border shadow-sm ${isDark ? 'bg-gray-800/60 border-gray-700' : 'bg-white border-gray-100'
                                 }`}
                         >
                             <View className="flex-row items-center">
-                                <View className={`w-12 h-12 rounded-xl items-center justify-center ${isDark ? 'bg-slate-700' : 'bg-slate-100'
-                                    }`}>
-                                    <Text style={{ fontSize: 24 }}>{achievement.icon}</Text>
-                                </View>
+                                <AchievementIcon emoji={achievement.icon} isDark={isDark} />
                                 <View className="flex-1 ml-3">
-                                    <Text className={`text-base font-semibold ${isDark ? 'text-white' : 'text-slate-800'
-                                        }`}>
+                                    <Text className={`text-base font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
                                         {achievement.name}
                                     </Text>
-                                    <Text className={`text-sm mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'
-                                        }`}>
+                                    <Text className={`text-sm mt-0.5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                                         {achievement.description}
                                     </Text>
                                 </View>
@@ -95,77 +247,59 @@ const ProfileScreen = () => {
                 </View>
 
                 {/* Settings */}
-                <View className="">
-                    <Text className={`text-base font-medium mb-4 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                <View className="px-6">
+                    <Text className={`text-base font-semibold mb-4 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                         SETTINGS
                     </Text>
-                    <View className={`rounded-2xl border   overflow-hidden ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'
+
+                    <View className={`rounded-2xl border overflow-hidden shadow-sm ${isDark ? 'bg-gray-800/60 border-gray-700' : 'bg-white border-gray-100'
                         }`}>
-                        <TouchableOpacity
-                            className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-slate-700' : 'border-slate-100'
-                                }`}
-                            activeOpacity={0.7}
-                            onPress={() => router.navigate('/(auth)/edit-profile')}
-                        >
-                            <View className="flex-row items-center">
-                                <View className={`w-8 h-8 rounded-full items-center justify-center ${isDark ? 'bg-blue-900/30' : 'bg-blue-100'
-                                    }`}>
-                                    <Feather name="user" size={18} color={isDark ? '#60a5fa' : '#3b82f6'} />
-                                </View>
-                                <Text className={`font-medium ml-3 ${isDark ? 'text-white' : 'text-slate-800'}`}>
-                                    Edit Profile
-                                </Text>
-                            </View>
-                            <Feather name="chevron-right" size={20} color={isDark ? '#94a3b8' : '#64748b'} />
-                        </TouchableOpacity>
+                        <NavigationSettingItem
+                            icon="user"
+                            name="Edit Profile"
+                            color={isDark ? '#059669' : '#059669'}
+                            bgColor={isDark ? 'bg-[#059669]/20' : 'bg-[#e6f7f1]'}
+                            action={() => router.navigate('/(auth)/edit-profile')}
+                        />
 
-                        <TouchableOpacity
-                            activeOpacity={1}
-                            onPress={() => setNotificationsEnabled(!notificationsEnabled)}
-                            className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-slate-700' : 'border-slate-100'
-                                }`}>
-                            <View className="flex-row items-center">
-                                <View className={`w-8 h-8 rounded-full items-center justify-center ${isDark ? 'bg-purple-900/30' : 'bg-purple-100'
-                                    }`}>
-                                    <Feather name="bell" size={18} color={isDark ? '#a78bfa' : '#8b5cf6'} />
-                                </View>
-                                <Text className={`font-medium ml-3 ${isDark ? 'text-white' : 'text-slate-800'}`}>
-                                    Notifications
-                                </Text>
-                            </View>
-
-                            <CustomSwitch
-                                value={notificationsEnabled}
-                                onValueChange={setNotificationsEnabled}
-                            />
-
-                        </TouchableOpacity>
+                        <SwitchSettingItem
+                            icon="bell"
+                            name="Notifications"
+                            color={isDark ? '#059669' : '#059669'}
+                            bgColor={isDark ? 'bg-[#059669]/20' : 'bg-[#e6f7f1]'}
+                            value={notificationsEnabled}
+                            onValueChange={setNotificationsEnabled}
+                        />
 
                         {/* Theme Mode */}
-                        <View className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-slate-700' : 'border-slate-100'
-                            }`}>
-                            <View className="flex-row items-center">
-                                <View className={`w-8 h-8 rounded-full items-center justify-center ${isDark ? 'bg-indigo-900/30' : 'bg-indigo-100'
+                        <View className={`p-4 flex flex-row justify-between items-center border-b ${isDark ? 'border-gray-700/50' : 'border-gray-100'}`}>
+                            <View className="flex-row items-center mb-3">
+                                <View className={`w-9 h-9 rounded-full items-center justify-center ${isDark ? 'bg-[#059669]/20' : 'bg-[#e6f7f1]'
                                     }`}>
-                                    <Feather name="sun" size={18} color={isDark ? '#818cf8' : '#6366f1'} />
+                                    <Feather
+                                        name={isDark ? "moon" : "sun"}
+                                        size={18}
+                                        color="#059669"
+                                    />
                                 </View>
-                                <Text className={`font-medium ml-3 ${isDark ? 'text-white' : 'text-slate-800'}`}>
+                                <Text className={`font-medium ml-3 ${isDark ? 'text-white' : 'text-gray-800'}`}>
                                     Theme
                                 </Text>
                             </View>
-                            <View className="flex-row items-center gap-2">
+
+                            <View className="flex-row gap-2 ml-12">
                                 {(['system', 'light', 'dark'] as const).map((themeMode) => (
                                     <TouchableOpacity
                                         key={themeMode}
                                         onPress={() => setMode(themeMode)}
-                                        className={`px-3 py-1 rounded-full ${mode === themeMode
-                                            ? isDark ? 'bg-indigo-900/30' : 'bg-indigo-100'
-                                            : isDark ? 'bg-slate-700/50' : 'bg-slate-100'
+                                        className={`px-4 py-2 rounded-xl ${mode === themeMode
+                                            ? 'bg-[#059669]'
+                                            : isDark ? 'bg-gray-700/50' : 'bg-gray-100'
                                             }`}
                                     >
                                         <Text className={`text-sm capitalize ${mode === themeMode
-                                            ? isDark ? 'text-indigo-400' : 'text-indigo-500'
-                                            : isDark ? 'text-slate-400' : 'text-slate-500'
+                                            ? 'text-white font-medium'
+                                            : isDark ? 'text-gray-300' : 'text-gray-700'
                                             }`}>
                                             {themeMode}
                                         </Text>
@@ -174,19 +308,15 @@ const ProfileScreen = () => {
                             </View>
                         </View>
 
-                        <TouchableOpacity
-                            onPress={signOut}
-                            className="p-4 flex-row items-center"
-                            activeOpacity={0.7}
-                        >
-                            <View className={`w-8 h-8 rounded-full items-center justify-center ${isDark ? 'bg-red-900/30' : 'bg-red-100'
-                                }`}>
-                                <Feather name="log-out" size={18} color={isDark ? '#f87171' : '#ef4444'} />
-                            </View>
-                            <Text className={`font-medium ml-3 ${isDark ? 'text-red-400' : 'text-red-500'}`}>
-                                Log Out
-                            </Text>
-                        </TouchableOpacity>
+
+                        <ActionSettingItem
+                            icon="log-out"
+                            name="Log Out"
+                            color={isDark ? '#f87171' : '#ef4444'}
+                            bgColor={isDark ? 'bg-red-900/30' : 'bg-red-100'}
+                            action={signOut}
+                            danger={true}
+                        />
                     </View>
                 </View>
             </ScrollView>
