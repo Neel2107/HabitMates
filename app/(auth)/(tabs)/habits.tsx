@@ -90,6 +90,11 @@ const HabitsScreen = () => {
             habit.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
+    const navigateToHabitDetail = (habitId: string) => {
+        console.log('Navigating to habit detail:', habitId);
+        router.push(`/(auth)/habit-detail?id=${habitId}`);
+    };
+
     return (
         <SafeAreaView className={`flex-1 ${isDark ? 'bg-[#1a1a1a]' : 'bg-white'}`}>
             <StatusBar style={isDark ? 'light' : 'dark'} />
@@ -275,32 +280,38 @@ const HabitsScreen = () => {
                                     </View>
                                 </TouchableOpacity>
 
-                                <View className="flex-1">
-                                    <Text className={`text-base font-medium ${isDark ? 'text-white' : 'text-gray-800'
-                                        }`}>
-                                        {habit.name}
-                                    </Text>
-                                    <Text className={`text-xs mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'
-                                        }`}>
-                                        {habit.frequency} • Streak: {habit.current_streak || 0} days
-                                    </Text>
-
-                                    <View className="flex-row items-center gap-2 mt-2">
-                                        <View className={`flex-1 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-gray-700' : 'bg-gray-100'
+                                <TouchableOpacity
+                                    className="flex-1"
+                                    activeOpacity={0.7}
+                                    onPress={() => navigateToHabitDetail(habit.id?.toString() || '')}
+                                >
+                                    <View>
+                                        <Text className={`text-base font-medium ${isDark ? 'text-white' : 'text-gray-800'
                                             }`}>
-                                            <View
-                                                className="h-full rounded-full bg-[#059669]"
-                                                style={{
-                                                    width: `${Math.min(100, ((habit.current_streak || 0) / (habit.longest_streak > 0 ? habit.longest_streak : 7)) * 100)}%`
-                                                }}
-                                            />
-                                        </View>
-                                        <Text className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'
-                                            }`}>
-                                            {habit.current_streak || 0}/{habit.longest_streak > 0 ? habit.longest_streak : 7}
+                                            {habit.name}
                                         </Text>
+                                        <Text className={`text-xs mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'
+                                            }`}>
+                                            {habit.frequency} • Streak: {habit.current_streak || 0} days
+                                        </Text>
+
+                                        <View className="flex-row items-center gap-2 mt-2">
+                                            <View className={`flex-1 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-gray-700' : 'bg-gray-100'
+                                                }`}>
+                                                <View
+                                                    className="h-full rounded-full bg-[#059669]"
+                                                    style={{
+                                                        width: `${Math.min(100, ((habit.current_streak || 0) / (habit.longest_streak > 0 ? habit.longest_streak : 7)) * 100)}%`
+                                                    }}
+                                                />
+                                            </View>
+                                            <Text className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'
+                                                }`}>
+                                                {habit.current_streak || 0}/{habit.longest_streak > 0 ? habit.longest_streak : 7}
+                                            </Text>
+                                        </View>
                                     </View>
-                                </View>
+                                </TouchableOpacity>
 
                                 <TouchableOpacity
                                     className="ml-2 p-2"

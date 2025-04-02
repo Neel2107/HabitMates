@@ -22,6 +22,10 @@ export interface Habit {
   created_at: string;
   updated_at: string;
   todayCompleted?: boolean;
+  target_days?: number;
+  status?: 'active' | 'completed' | 'archived';
+  start_date?: string;
+  end_date?: string | null;
 }
 
 export interface Streak {

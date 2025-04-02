@@ -1,0 +1,116 @@
+# HabitMates Implementation Tasks
+
+## CURRENT PRIORITY: Complete & Polish Existing Features
+
+### Immediate Tasks (Next Sprint)
+- [ ] Complete Streak System
+  - [ ] Improve streak tracking accuracy in database
+  - [ ] Implement streak calculation functions
+  - [ ] Add streak visualization (calendar & graph)
+  - [ ] Add streak rescue functionality
+  - [ ] Implement proper Supabase queries and listeners
+  
+- [ ] Data Management & Supabase Integration
+  - [ ] Implement optimistic updates for immediate feedback
+  - [ ] Add proper error handling for all API calls
+  - [ ] Set up caching for offline support
+  - [ ] Add Supabase row-level security (RLS) policies
+  - [ ] Refactor habit store for better efficiency
+  
+- [ ] UI/UX Improvements
+  - [ ] Add loading skeletons to all screens
+  - [ ] Improve form validation with error messages
+  - [ ] Add animations for state transitions
+  - [ ] Enhance responsiveness across different screen sizes
+  - [ ] Improve habit detail screen with more statistics
+
+## Future Tasks (After Current Priority)
+
+### 1. Social Features
+- [ ] Partner System
+  - [ ] Create database tables for habit invitations
+  - [ ] Create API endpoints for sending/accepting invitations
+  - [ ] Send habit invitations UI and functionality
+  - [ ] Accept/reject invitations interface
+  - [ ] Email notification for invites using Supabase Edge Functions
+  - [ ] Partner status indication on habits
+- [ ] Activity Feed
+  - [ ] Partner updates
+  - [ ] Streak milestones
+  - [ ] Recent achievements
+
+### 2. Notifications
+- [ ] Push Notifications
+  - [ ] Daily reminders
+  - [ ] Partner activity alerts
+  - [ ] Streak warnings
+- [ ] In-App Notifications
+  - [ ] Notification center
+  - [ ] Read/unread status
+  - [ ] Clear notifications
+
+## Completed Features
+
+### Authentication & User Management
+- [x] Login screen implementation
+- [x] Sign up screen
+  - [x] Email/password registration
+  - [x] Username selection
+  - [ ] Avatar upload option
+- [x] Password reset functionality
+- [x] User profile screen
+  - [x] Edit profile information
+  - [x] View statistics
+  - [x] Manage account settings
+
+### Core Habit Features
+- [x] Habit Creation
+  - [x] Create habit form
+  - [x] Set frequency (daily/weekly)
+  - [x] Add description
+  - [x] Set privacy (public/private)
+- [✓] Habit List View
+  - [x] Display user's habits
+  - [x] Show current streaks
+  - [x] Filter options (all/active/completed)
+- [✓] Habit Detail Screen
+  - [x] View full habit details
+  - [x] Progress tracking
+  - [x] Partner information
+- [✓] Daily Check-ins (basic implementation)
+  - [x] Mark habit as completed
+  - [ ] Upload proof (photo/text)
+  - [ ] Validate partner's completion
+
+## Technical Implementation Notes
+
+### Implemented
+- [x] Use Supabase Auth for user management
+- [x] Dark/light theme support
+- [~] Basic loading states
+- [~] Form validation
+- [x] Responsive layouts
+
+### To Implement
+- [ ] Set up real-time subscriptions for notifications
+- [ ] Local state caching
+- [ ] Offline support considerations
+- [ ] Error handling improvements
+- [ ] Performance optimizations
+  - [ ] Image optimization
+  - [ ] Lazy loading
+  - [ ] Pagination for lists
+  - [ ] Cache management
+
+## Testing Requirements
+- [ ] Unit tests for core functionality
+- [ ] Integration tests for API calls
+- [ ] E2E tests for critical flows
+- [ ] Performance testing
+
+## Future Enhancements
+- [ ] Social sharing
+- [ ] Advanced analytics
+- [ ] Custom habit categories
+- [ ] Achievement system
+- [ ] Community features

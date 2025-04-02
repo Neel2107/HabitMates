@@ -20,6 +20,8 @@ export default function AuthLayout() {
                 <Stack screenOptions={{ headerShown: false }}>
                     <Stack.Screen name="(tabs)" />
                     <Stack.Screen name="edit-profile" />
+                    <Stack.Screen name="habit-detail" />
+                    <Stack.Screen name="add-habit" />
                 </Stack>
             </View>
         </ThemeProvider>
