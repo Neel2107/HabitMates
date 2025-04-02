@@ -4,7 +4,7 @@
             "developmentClient": true,
             "distribution": "internal",
             "env": {
-                "ANDROID_HOME": "/Users/racit/Library/Android/sdk"
+                "ANDROID_HOME": "/Users/neel/Library/Android/sdk"
             },
             "ios": {
                 "simulator": true
@@ -15,12 +15,12 @@
                 "buildType": "apk"
             },
             "env": {
-                "ANDROID_HOME": "/Users/racit/Library/Android/sdk"
+                "ANDROID_HOME": "/Users/neel/Library/Android/sdk"
             }
         },
         "production": {
             "env": {
-                "ANDROID_HOME": "/Users/racit/Library/Android/sdk"
+                "ANDROID_HOME": "/Users/neel/Library/Android/sdk"
             }
         }
     }
