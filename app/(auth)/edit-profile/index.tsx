@@ -60,10 +60,8 @@ const EditProfileScreen = () => {
                 setIsLoading(true);
                 try {
                     const uri = result.assets[0].uri;
-                    console.log('Selected image URI:', uri); // Debug log
 
                     const publicUrl = await uploadAvatar(uri);
-                    console.log('Received public URL:', publicUrl); // Debug log
 
                     if (publicUrl) {
                         setAvatarUrl(publicUrl);

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { calculateStreak, StreakInfo } from '../helpers/streakCalculator';
 import { supabase } from '../supabase';
 import type { Habit } from '../types';
 
@@ -52,10 +53,17 @@ export const useHabitsStore = create<HabitsState>((set, get) => ({
         target_days: habit.target_days,
         status: habit.status || 'active',
         start_date: habit.start_date,
-        end_date: habit.end_date
+        end_date: habit.end_date,
+        streaks: habit.streaks || [] // Add streaks to the transformed habit
       }));
 
-      set({ habits: transformedHabits });
+      // Calculate streaks for each habit
+      const habitsWithStreaks = transformedHabits.map(habit => ({
+        ...habit,
+        streakInfo: calculateStreak(habit)
+      }));
+
+      set({ habits: habitsWithStreaks });
     } catch (error: any) {
       console.error("Error fetching habits:", error);
       set({ error: error.message });

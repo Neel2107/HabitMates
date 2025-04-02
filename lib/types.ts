@@ -26,17 +26,17 @@ export interface Habit {
   status?: 'active' | 'completed' | 'archived';
   start_date?: string;
   end_date?: string | null;
+  streaks?: Streak[];
 }
 
 export interface Streak {
   id: string;
-  habitId: string;
+  habit_id: string;
   date: string;
-  userCompleted: boolean;
-  partnerCompleted: boolean;
-  userProofUrl: string | null;
-  partnerProofUrl: string | null;
-  createdAt: string;
+  user_completed: boolean;
+  partner_completed: boolean | null;
+  user_proof_url?: string | null;
+  partner_proof_url?: string | null;
 }
 
 export interface HabitInvite {

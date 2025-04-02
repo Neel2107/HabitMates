@@ -1,3 +1,5 @@
+import { HabitHeatmap } from '@/components/HabitHeatmap';
+import { jsonLog } from '@/lib/helpers';
 import { useHabitsStore } from '@/lib/stores/habitsStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
 import { Habit } from '@/lib/types';
@@ -121,16 +123,10 @@ const HabitDetailScreen = () => {
     // Fetch habit data
     useEffect(() => {
         const loadHabit = async () => {
-            console.log('Received habitId:', habitId);
-            console.log('Habits array length:', habits.length);
-
             if (!habits.length) {
                 await fetchHabits();
             }
-
             const foundHabit = habits.find(h => String(h.id) === String(habitId));
-            console.log('Found habit:', foundHabit ? foundHabit.name : 'Not found');
-
             if (foundHabit) {
                 setHabit(foundHabit);
             }
@@ -139,24 +135,6 @@ const HabitDetailScreen = () => {
         loadHabit();
     }, [habitId, habits]);
 
-    // Generate dummy streak data for the calendar view
-    // In a real app, this would come from the database
-    const getPastSevenDays = () => {
-        const days = [];
-        const today = new Date();
-
-        for (let i = 6; i >= 0; i--) {
-            const date = new Date();
-            date.setDate(today.getDate() - i);
-            days.push({
-                date,
-                isCompleted: i === 0 ? habit?.todayCompleted : Math.random() > 0.3,
-                isToday: i === 0
-            });
-        }
-
-        return days;
-    };
 
     const handleToggleCompletion = async () => {
         if (!habit?.id) return;
@@ -217,6 +195,8 @@ const HabitDetailScreen = () => {
             [{ text: 'OK' }]
         );
     };
+
+ jsonLog(habit);
 
     if (isLoading || !habit) {
         return (
@@ -323,6 +303,7 @@ const HabitDetailScreen = () => {
                         </Text>
                     </View>
                 </Animated.View>
+              
 
                 {/* Progress Circle */}
                 <Animated.View
@@ -333,7 +314,10 @@ const HabitDetailScreen = () => {
                         progress={habit.current_streak ? Math.min(1, habit.current_streak / 30) : 0}
                     />
                 </Animated.View>
+  <View className='px-6'>
 
+                <HabitHeatmap streaks={habit.streaks || []}  />
+                </View>
                 {/* Description Card */}
                 {habit.description && (
                     <Animated.View
@@ -349,26 +333,7 @@ const HabitDetailScreen = () => {
                     </Animated.View>
                 )}
 
-                {/* Weekly Calendar View */}
-                <Animated.View
-                    entering={FadeInDown.delay(400).duration(500)}
-                    className={`mx-6 mb-6 p-5 rounded-2xl ${isDark ? 'bg-gray-800/60' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-100'}`}
-                >
-                    <Text className={`text-base font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                        This Week
-                    </Text>
-
-                    <View className="flex-row justify-between">
-                        {getPastSevenDays().map((day, index) => (
-                            <CalendarDay
-                                key={index}
-                                date={day.date}
-                                isCompleted={day.isCompleted}
-                                isToday={day.isToday}
-                            />
-                        ))}
-                    </View>
-                </Animated.View>
+               
 
                 {/* Partner Section */}
                 <Animated.View
