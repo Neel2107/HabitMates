@@ -27,6 +27,10 @@ export interface Habit {
   start_date?: string;
   end_date?: string | null;
   streaks?: Streak[];
+  last_completed_at: string | null;
+  current_streak_count: number;
+  longest_streak_count: number;
+  streak_start_date: string | null;
 }
 
 export interface Streak {

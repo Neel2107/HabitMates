@@ -53,7 +53,6 @@ export const HabitHeatmap = ({ streaks }: HabitHeatmapProps) => {
   };
 
   const getColorForCompletion = (completed: boolean, isToday: boolean, isFuture: boolean) => {
-    console.log('Color params:', { completed, isToday, isFuture }); // Debug log
     
     if (completed) {
       return '#059669'; // Always show green for completed, regardless of today/future

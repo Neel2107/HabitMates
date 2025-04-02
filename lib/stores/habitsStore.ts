@@ -54,9 +54,14 @@ export const useHabitsStore = create<HabitsState>((set, get) => ({
         status: habit.status || 'active',
         start_date: habit.start_date,
         end_date: habit.end_date,
-        streaks: habit.streaks || [] // Add streaks to the transformed habit
+        streaks: habit.streaks || [],
+        // Add the new required fields
+        last_completed_at: habit.last_completed_at || null,
+        current_streak_count: habit.current_streak_count || 0,
+        longest_streak_count: habit.longest_streak_count || 0,
+        streak_start_date: habit.streak_start_date || null
       }));
-
+    
       // Calculate streaks for each habit
       const habitsWithStreaks = transformedHabits.map(habit => ({
         ...habit,
@@ -123,30 +128,34 @@ export const useHabitsStore = create<HabitsState>((set, get) => ({
       if (userError || !user) throw new Error('User not authenticated');
 
       const { data, error } = await supabase
-        .from('habits')
-        .insert({
-          name: habit.name,
-          description: habit.description,
-          frequency: habit.frequency,
-          is_public: habit.is_public,
-          target_days: habit.target_days,
-          status: habit.status || 'active',
-          start_date: habit.start_date,
-          end_date: habit.end_date,
-          owner_id: user.id,
-          current_streak: 0,
-          longest_streak: 0,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })
-        .select('*')
-        .single();
+      .from('habits')
+      .insert({
+        name: habit.name,
+        description: habit.description,
+        frequency: habit.frequency,
+        is_public: habit.is_public,
+        target_days: habit.target_days,
+        status: habit.status || 'active',
+        start_date: habit.start_date,
+        end_date: habit.end_date,
+        owner_id: user.id,
+        current_streak: 0,
+        longest_streak: 0,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        // Add the new required fields
+        current_streak_count: 0,
+        longest_streak_count: 0,
+        last_completed_at: null,
+        streak_start_date: null
+      })
+      .select('*')
+      .single();
 
       if (error) {
         console.error("Error creating habit:", error);
         throw error;
       }
-
       const transformedHabit: Habit = {
         id: data.id,
         name: data.name,
@@ -163,7 +172,13 @@ export const useHabitsStore = create<HabitsState>((set, get) => ({
         target_days: data.target_days,
         status: data.status,
         start_date: data.start_date,
-        end_date: data.end_date
+        end_date: data.end_date,
+        streaks: [],
+        // Add the new required fields
+        last_completed_at: data.last_completed_at || null,
+        current_streak_count: data.current_streak_count || 0,
+        longest_streak_count: data.longest_streak_count || 0,
+        streak_start_date: data.streak_start_date || null
       };
 
       set(state => ({
