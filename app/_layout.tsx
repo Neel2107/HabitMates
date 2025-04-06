@@ -61,12 +61,15 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider>
+      <KeyboardProvider>
+
       <StatusBar style={isDark ? 'light' : 'dark'} />
       <Stack
         screenOptions={{
           headerShown: false,
         }}
-      />
+        />
+        </KeyboardProvider>
     </ThemeProvider>
   );
 }

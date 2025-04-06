@@ -1,11 +1,12 @@
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { Alert, Image, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
 
 export default function LoginScreen() {
   const isDark = useThemeStore((state) => state.isDark);
@@ -35,14 +36,17 @@ export default function LoginScreen() {
     <View className="flex-1 bg-[#f5f9f8]">
       <StatusBar style={isDark ? 'light' : 'dark'} />
 
+
       <KeyboardAwareScrollView
         bottomOffset={Platform.OS === 'ios' ? 400 : 200}
-        keyboardShouldPersistTaps="handled"
         className="flex-1"
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="always"
         contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
       >
-        <View className="px-8 py-6">
+        <Animated.View
+        layout={LinearTransition.damping(14)}
+        className="px-8 py-6">
           {/* App Icon and Title */}
           <View className="items-center mb-12">
             <View className="rounded-3xl overflow-hidden mb-4">
@@ -126,7 +130,7 @@ export default function LoginScreen() {
               </TouchableOpacity>
             </View>
           </Animated.View>
-        </View>
+        </Animated.View>
       </KeyboardAwareScrollView>
     </View>
   );
