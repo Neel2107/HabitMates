@@ -10,6 +10,16 @@ module.exports = {
   darkMode: "class",
   theme: {
     extend: {
+      fontFamily: {
+        'inter-thin': ['Inter_28pt-Thin'],
+        'inter-extralight': ['Inter_28pt-ExtraLight'],
+        'inter-light': ['Inter_28pt-Light'],
+        'inter-regular': ['Inter'], // Default Inter
+        'inter-medium': ['Inter_28pt-Medium'],
+        'inter-semibold': ['Inter_28pt-SemiBold'],
+        'inter-bold': ['Inter_28pt-Bold'],
+        'inter-extrabold': ['Inter_28pt-ExtraBold'],
+      },
       colors: {
         brand: {
           primary: '#059669', // emerald-600

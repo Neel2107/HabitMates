@@ -2,10 +2,12 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import { useAuthStore } from "@/lib/stores/authStore";
 import { useThemeStore } from "@/lib/stores/themeStore";
 import { supabase } from "@/lib/supabase";
+import { loadFonts } from "@/lib/fonts";
 import { Stack } from "expo-router";
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import "../global.css";
@@ -15,31 +17,44 @@ export default function RootLayout() {
   const setSession = useAuthStore((state) => state.setSession);
   const isLoading = useAuthStore((state) => state.isLoading);
   const setIsLoading = useAuthStore((state) => state.setIsLoading);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
-    const initializeAuth = async () => {
+    const loadApp = async () => {
       try {
+        // Load fonts
+        await loadFonts();
+        setFontsLoaded(true);
+        
+        // Check for existing session
+        setIsLoading(true);
         const { data: { session } } = await supabase.auth.getSession();
         setSession(session);
-      } catch (error) {
-        console.error('Error loading session:', error);
-      } finally {
         setIsLoading(false);
+        
+        // Hide splash screen
+        await SplashScreen.hideAsync();
+      } catch (e) {
+        console.warn(e);
+        setIsLoading(false);
+        await SplashScreen.hideAsync();
       }
     };
 
-    supabase.auth.onAuthStateChange((_event, session) => {
+    loadApp();
+    
+    // Set up auth state change listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
 
-    initializeAuth();
+    return () => subscription.unsubscribe();
   }, []);
 
-  if (isLoading) {
+  if (isLoading || !fontsLoaded) {
     return (
-      <View className={`flex-1 items-center justify-center ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
-        <StatusBar style={isDark ? 'light' : 'dark'} />
-        <ActivityIndicator size="large" color={isDark ? '#60a5fa' : '#3b82f6'} />
+      <View className={`flex-1 items-center justify-center ${isDark ? 'bg-app-dark' : 'bg-app-light'}`}>
+        <ActivityIndicator size="large" color={isDark ? '#6ee7b7' : '#059669'} />
       </View>
     );
   }
@@ -47,22 +62,11 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <StatusBar style={isDark ? 'light' : 'dark'} />
-      <GestureHandlerRootView className="flex-1">
-        <KeyboardProvider>
-          {isLoading ? (
-            <View className={`flex-1 items-center justify-center ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
-              <ActivityIndicator size="large" color={isDark ? '#60a5fa' : '#3b82f6'} />
-            </View>
-          ) : (
-            <Stack screenOptions={{ headerShown: false }} >
-              <Stack.Screen name="index" />
-              <Stack.Screen name="login" />
-              <Stack.Screen name="reset-password" />
-              <Stack.Screen name="(auth)" />
-            </Stack>
-          )}
-        </KeyboardProvider>
-      </GestureHandlerRootView>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      />
     </ThemeProvider>
   );
 }
