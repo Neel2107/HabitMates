@@ -10,10 +10,7 @@
  - **Navigation:** Expo Router
  - **Storage:** MMKV for local storage
  - **Animations:** React Native Reanimated
- 
- ## **Screen Recording**
- 
- [[Embedded screen recording here, showcasing the working app.]](https:github.com/user-attachments/assets/f7fb8bac-3d93-4892-b289-89553419afd6)
+
  
  ## Project Structure
  
