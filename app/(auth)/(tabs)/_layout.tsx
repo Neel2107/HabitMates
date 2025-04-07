@@ -3,7 +3,7 @@ import { useAuthStore } from "@/lib/stores/authStore";
 import { useThemeStore } from "@/lib/stores/themeStore";
 import { Redirect, Tabs } from "expo-router";
 import { StatusBar } from 'expo-status-bar';
-import { Home, ListChecks, User, Users2 } from 'lucide-react-native';
+import { HandshakeIcon, HeartHandshake, HeartHandshakeIcon, Home, ListChecks, LucideHeartHandshake, User } from 'lucide-react-native';
 import { Platform, View } from "react-native";
 
 export default function AuthLayout() {
@@ -55,7 +55,7 @@ export default function AuthLayout() {
             name="partners"
             options={{
               title: "Partners",
-              tabBarIcon: ({ color }) => <Users2 size={24} color={color} />,
+              tabBarIcon: ({ color }) => <HandshakeIcon size={24} color={color} />,
               tabBarLabelStyle: {
                 fontWeight: '500'
               }

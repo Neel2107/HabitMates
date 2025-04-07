@@ -2,7 +2,6 @@ import { Session } from '@supabase/supabase-js';
 import { create } from 'zustand';
 import { supabase } from '../supabase';
 
-
 interface AuthState {
   session: Session | null;
   isLoading: boolean;
@@ -15,6 +14,11 @@ interface AuthState {
     username?: string; 
     avatar_url?: string | null;
     updated_at?: string;
+    // Add these new fields to match what you're using in the edit profile screen
+    full_name?: string;
+    bio?: string;
+    location?: string;
+    website?: string;
   }) => Promise<void>;
   uploadAvatar: (file: string) => Promise<string>;
   resetPassword: (email: string) => Promise<void>;

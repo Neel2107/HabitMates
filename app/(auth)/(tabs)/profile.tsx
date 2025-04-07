@@ -31,19 +31,6 @@ const UserAvatar = ({ size = 80, color = "#059669", avatarUrl = null }: { size?:
     );
 };
 
-// Achievement Icon Component
-const AchievementIcon = ({ emoji, isDark }: { emoji: string; isDark: boolean }) => (
-    <View className={`w-12 h-12 rounded-xl items-center justify-center ${isDark ? 'bg-gray-800' : 'bg-[#e6f7f1]'
-        }`}>
-        <Text style={{ fontSize: 24 }}>{emoji}</Text>
-    </View>
-);
-
-const achievements = [
-    { id: 1, name: '7 Day Streak', icon: '🔥', description: 'Completed a habit for 7 days' },
-    { id: 2, name: 'Early Bird', icon: '🌅', description: 'Completed morning habits 5 times' },
-    { id: 3, name: 'Team Player', icon: '🤝', description: 'Connected with 3 partners' },
-];
 
 // Move these interface definitions outside the component
 interface BaseSettingProps {
@@ -79,7 +66,7 @@ const ProfileScreen = () => {
                 <View className={`w-9 h-9 rounded-full items-center justify-center ${bgColor}`}>
                     <Feather name={icon as any} size={18} color={color} />
                 </View>
-                <Text className={`font-medium ml-3 ${danger ? (isDark ? 'text-red-400' : 'text-red-500') :
+                <Text className={`font-inter-medium ml-3 ${danger ? (isDark ? 'text-red-400' : 'text-red-500') :
                     isDark ? 'text-white' : 'text-gray-800'
                     }`}>
                     {name}
@@ -104,7 +91,7 @@ const ProfileScreen = () => {
                 <View className={`w-9 h-9 rounded-full items-center justify-center ${bgColor}`}>
                     <Feather name={icon as any} size={18} color={color} />
                 </View>
-                <Text className={`font-medium ml-3 ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                <Text className={`font-inter-medium ml-3 ${isDark ? 'text-white' : 'text-gray-800'}`}>
                     {name}
                 </Text>
             </View>
@@ -127,7 +114,7 @@ const ProfileScreen = () => {
                 <View className={`w-9 h-9 rounded-full items-center justify-center ${bgColor}`}>
                     <Feather name={icon as any} size={18} color={color} />
                 </View>
-                <Text className={`font-medium ml-3 ${danger ? (isDark ? 'text-red-400' : 'text-red-500') :
+                <Text className={`font-inter-medium ml-3 ${danger ? (isDark ? 'text-red-400' : 'text-red-500') :
                     isDark ? 'text-white' : 'text-gray-800'
                     }`}>
                     {name}
@@ -137,7 +124,7 @@ const ProfileScreen = () => {
     );
 
     return (
-        <SafeAreaView className={`flex-1 ${isDark ? 'bg-[#1a1a1a]' : 'bg-white'}`}>
+        <SafeAreaView className={`flex-1 ${isDark ? 'bg-[#1a1a1a]' : 'bg-[#f5f9f8]'}`}>
             <StatusBar style={isDark ? 'light' : 'dark'} />
 
             {/* Header with profile info */}
@@ -146,21 +133,9 @@ const ProfileScreen = () => {
                 className="px-6 pt-4 pb-6"
             >
                 <View className="flex-row justify-between items-center">
-                    <Text className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    <Text className={`text-2xl font-inter-bold ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
                         Profile
                     </Text>
-
-                    <TouchableOpacity
-                        className="p-2 rounded-full"
-                        activeOpacity={0.7}
-                        onPress={() => router.push('/(auth)/edit-profile')}
-                    >
-                        <Feather
-                            name="settings"
-                            size={22}
-                            color={isDark ? '#e2e8f0' : '#0f172a'}
-                        />
-                    </TouchableOpacity>
                 </View>
             </Animated.View>
 
@@ -182,6 +157,7 @@ const ProfileScreen = () => {
                                 color="#059669"
                                 avatarUrl={avatarUrl}
                             />
+                            {/* Keep this edit button on the avatar as it's a common pattern */}
                             <TouchableOpacity
                                 onPress={() => router.push('/(auth)/edit-profile')}
                                 className="absolute bottom-0 right-0 w-8 h-8 rounded-full items-center justify-center bg-[#059669]"
@@ -191,20 +167,21 @@ const ProfileScreen = () => {
                             </TouchableOpacity>
                         </View>
 
-                        <Text className={`text-xl font-bold mt-4 capitalize ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                        <Text className={`text-xl font-inter-bold mt-4 capitalize ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
                             {userName}
                         </Text>
-                        <Text className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                        <Text className={`text-sm font-inter-regular mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                             {userEmail}
                         </Text>
 
                         <View className="flex-row gap-4 mt-6">
+                            {/* Keep only one primary edit profile button */}
                             <TouchableOpacity
                                 className="bg-[#059669] px-5 py-2.5 rounded-xl"
                                 activeOpacity={0.8}
                                 onPress={() => router.push('/(auth)/edit-profile')}
                             >
-                                <Text className="text-white font-medium">Edit Profile</Text>
+                                <Text className="text-white font-inter-medium">Edit Profile</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
@@ -212,55 +189,28 @@ const ProfileScreen = () => {
                                     }`}
                                 activeOpacity={0.8}
                             >
-                                <Text className={isDark ? 'text-white' : 'text-gray-800'}>Share Stats</Text>
+                                <Text className={`font-inter-medium ${isDark ? 'text-white' : 'text-gray-800'}`}>Share Stats</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                 </Animated.View>
 
-                {/* Achievements */}
-                <View className="px-6 mb-6">
-                    <Text className={`text-base font-semibold mb-4 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                        ACHIEVEMENTS
-                    </Text>
-
-                    {achievements.map((achievement, index) => (
-                        <Animated.View
-                            key={achievement.id}
-                            entering={FadeInDown.delay(index * 100).duration(500)}
-                            className={`mb-3 p-4 rounded-2xl border shadow-sm ${isDark ? 'bg-gray-800/60 border-gray-700' : 'bg-white border-gray-100'
-                                }`}
-                        >
-                            <View className="flex-row items-center">
-                                <AchievementIcon emoji={achievement.icon} isDark={isDark} />
-                                <View className="flex-1 ml-3">
-                                    <Text className={`text-base font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                                        {achievement.name}
-                                    </Text>
-                                    <Text className={`text-sm mt-0.5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                                        {achievement.description}
-                                    </Text>
-                                </View>
-                            </View>
-                        </Animated.View>
-                    ))}
-                </View>
-
                 {/* Settings */}
                 <View className="px-6">
-                    <Text className={`text-base font-semibold mb-4 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                    <Text className={`text-base font-inter-semibold mb-4 ${isDark ? 'text-gray-300' : 'text-[#1e293b]'}`}>
                         SETTINGS
                     </Text>
 
                     <View className={`rounded-2xl border overflow-hidden shadow-sm ${isDark ? 'bg-gray-800/60 border-gray-700' : 'bg-white border-gray-100'
                         }`}>
-                        <NavigationSettingItem
+                        {/* Remove this duplicate navigation item */}
+                        {/* <NavigationSettingItem
                             icon="user"
                             name="Edit Profile"
                             color={isDark ? '#059669' : '#059669'}
                             bgColor={isDark ? 'bg-[#059669]/20' : 'bg-[#e6f7f1]'}
                             action={() => router.navigate('/(auth)/edit-profile')}
-                        />
+                        /> */}
 
                         <SwitchSettingItem
                             icon="bell"
@@ -282,7 +232,7 @@ const ProfileScreen = () => {
                                         color="#059669"
                                     />
                                 </View>
-                                <Text className={`font-medium ml-3 ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                                <Text className={`font-inter-medium ml-3 ${isDark ? 'text-white' : 'text-gray-800'}`}>
                                     Theme
                                 </Text>
                             </View>
@@ -297,8 +247,8 @@ const ProfileScreen = () => {
                                             : isDark ? 'bg-gray-700/50' : 'bg-gray-100'
                                             }`}
                                     >
-                                        <Text className={`text-sm capitalize ${mode === themeMode
-                                            ? 'text-white font-medium'
+                                        <Text className={`text-sm capitalize font-inter-medium ${mode === themeMode
+                                            ? 'text-white'
                                             : isDark ? 'text-gray-300' : 'text-gray-700'
                                             }`}>
                                             {themeMode}
@@ -307,7 +257,6 @@ const ProfileScreen = () => {
                                 ))}
                             </View>
                         </View>
-
 
                         <ActionSettingItem
                             icon="log-out"
