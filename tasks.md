@@ -1,27 +1,35 @@
+
 # HabitMates Implementation Tasks
 
 ## CURRENT PRIORITY: Complete & Polish Existing Features
 
 ### Immediate Tasks (Next Sprint)
+- [ ] UI/UX Redesign (NEW PRIORITY)
+  - [ ] Create consistent design system
+  - [ ] Implement modern, clean interface
+  - [ ] Improve user flows and interactions
+  - [ ] Enhance visual hierarchy and readability
+  - [ ] Add micro-interactions and feedback animations
+
 - [ ] Complete Streak System
   - [ ] Improve streak tracking accuracy in database
-  - [ ] Implement streak calculation functions
+  - [x] Implement streak calculation functions
   - [ ] Add streak visualization (calendar & graph)
   - [ ] Add streak rescue functionality
   - [ ] Implement proper Supabase queries and listeners
   
 - [ ] Data Management & Supabase Integration
   - [ ] Implement optimistic updates for immediate feedback
-  - [ ] Add proper error handling for all API calls
+  - [x] Add proper error handling for all API calls
   - [ ] Set up caching for offline support
-  - [ ] Add Supabase row-level security (RLS) policies
+  - [x] Add Supabase row-level security (RLS) policies
   - [ ] Refactor habit store for better efficiency
   
-- [ ] UI/UX Improvements
-  - [ ] Add loading skeletons to all screens
-  - [ ] Improve form validation with error messages
-  - [ ] Add animations for state transitions
-  - [ ] Enhance responsiveness across different screen sizes
+- [x] UI/UX Improvements (Basic)
+  - [x] Add loading states to all screens
+  - [x] Improve form validation with error messages
+  - [x] Add animations for state transitions
+  - [x] Enhance responsiveness across different screen sizes
   - [ ] Improve habit detail screen with more statistics
 
 ## Future Tasks (After Current Priority)
@@ -56,7 +64,7 @@
 - [x] Sign up screen
   - [x] Email/password registration
   - [x] Username selection
-  - [ ] Avatar upload option
+  - [x] Avatar upload option
 - [x] Password reset functionality
 - [x] User profile screen
   - [x] Edit profile information
@@ -69,15 +77,15 @@
   - [x] Set frequency (daily/weekly)
   - [x] Add description
   - [x] Set privacy (public/private)
-- [✓] Habit List View
+- [x] Habit List View
   - [x] Display user's habits
   - [x] Show current streaks
   - [x] Filter options (all/active/completed)
-- [✓] Habit Detail Screen
+- [x] Habit Detail Screen
   - [x] View full habit details
   - [x] Progress tracking
   - [x] Partner information
-- [✓] Daily Check-ins (basic implementation)
+- [x] Daily Check-ins (basic implementation)
   - [x] Mark habit as completed
   - [ ] Upload proof (photo/text)
   - [ ] Validate partner's completion
@@ -87,8 +95,8 @@
 ### Implemented
 - [x] Use Supabase Auth for user management
 - [x] Dark/light theme support
-- [~] Basic loading states
-- [~] Form validation
+- [x] Basic loading states
+- [x] Form validation
 - [x] Responsive layouts
 
 ### To Implement
@@ -114,3 +122,27 @@
 - [ ] Custom habit categories
 - [ ] Achievement system
 - [ ] Community features
+
+- [ ] Accountability Deposit System
+  - [ ] Database Schema Updates
+    - [ ] Create deposits table with user_id, habit_id, amount, status fields
+    - [ ] Create transactions table to track money movements
+    - [ ] Add deposit_required field to habits table
+  - [ ] Payment Integration
+    - [ ] Research and select payment processor (Stripe/PayPal)
+    - [ ] Implement secure payment collection and storage
+    - [ ] Set up refund/transfer mechanisms
+  - [ ] UI Implementation
+    - [ ] Add deposit option in habit creation flow
+    - [ ] Create deposit amount selection screen
+    - [ ] Add deposit status indicators on habit cards
+    - [ ] Create transaction history screen
+  - [ ] Business Logic
+    - [ ] Implement deposit verification before habit activation
+    - [ ] Create automated evaluation of habit completion
+    - [ ] Build payout/refund logic based on completion status
+    - [ ] Implement notification system for deposit-related events
+  - [ ] Legal Considerations
+    - [ ] Update terms of service and privacy policy
+    - [ ] Implement necessary disclosures for financial transactions
+    - [ ] Research regulatory requirements by region
