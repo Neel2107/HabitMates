@@ -12,10 +12,14 @@ import { Habit } from '@/lib/types';
 import { Feather } from '@expo/vector-icons';
 import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, Share, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { StreakRescue } from '@/components/habit/StreakRescue';
+import { StreakVisualization } from '@/components/habit/StreakVisualization';
+import { useStreaks } from '@/lib/hooks/useStreaks';
 
 // Main component
 const HabitDetailScreen = () => {
@@ -27,6 +31,29 @@ const HabitDetailScreen = () => {
     const [habit, setHabit] = useState<Habit | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [streakData, setStreakData] = useState<number[]>([]);
+
+    const { streakInfo, isLoading: streakLoading, refreshStreakInfo } = useStreaks(habit?.id);
+
+
+    const needsRescue = useMemo(() => {
+        if (!habit || !streakInfo) return false;
+
+        // If current streak is 0 but was previously > 0, might need rescue
+        if (streakInfo.currentStreak === 0 && habit.current_streak_count > 0) {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+            // Check if there's no completion for yesterday
+            const hasYesterdayCompletion = habit.streaks?.some(
+                s => s.date === yesterdayStr && s.user_completed
+            );
+
+            return !hasYesterdayCompletion;
+        }
+
+        return false;
+    }, [habit, streakInfo]);
 
     // Animation values
     const checkButtonScale = useSharedValue(1);
@@ -138,7 +165,7 @@ const HabitDetailScreen = () => {
             // Wait for the toggle to complete before proceeding
             await toggleHabitCompletion(habit.id.toString());
         } catch (error) {
-           handleError(error);
+            handleError(error);
             Alert.alert('Error', 'Failed to update habit completion status');
         }
     };
@@ -163,8 +190,7 @@ const HabitDetailScreen = () => {
         };
     };
 
-    const streakInfo = getStreakInfo();
-    const completionRate = calculateCompletionRate();
+
 
     // Button animation style
     const checkButtonStyle = useAnimatedStyle(() => {
@@ -172,6 +198,10 @@ const HabitDetailScreen = () => {
             transform: [{ scale: checkButtonScale.value }],
         };
     });
+
+
+    const habitStreakInfo = getStreakInfo();
+    const completionRate = calculateCompletionRate();
 
     if (isLoading || !habit) {
         return (
@@ -240,16 +270,35 @@ const HabitDetailScreen = () => {
                         STATISTICS
                     </Text>
 
+
+                    {needsRescue && (
+                        <StreakRescue
+                            habitId={habit.id}
+                            onRescueComplete={() => {
+                                refreshStreakInfo?.();
+                                fetchHabits();
+                            }}
+                        />
+                    )}
+
+                    {habit && streakInfo && (
+                        <StreakVisualization
+                            streakInfo={streakInfo}
+                            streaks={habit.streaks || []}
+                            frequency={habit.frequency}
+                        />
+                    )}
+
                     <View className="flex-row gap-4 mb-4">
                         <StatCard
                             title="Current Streak"
-                            value={streakInfo.currentStreak}
+                            value={habitStreakInfo.currentStreak}
                             icon="trending-up"
                             isDark={isDark}
                         />
                         <StatCard
                             title="Longest Streak"
-                            value={streakInfo.longestStreak}
+                            value={habitStreakInfo.longestStreak}
                             icon="award"
                             isDark={isDark}
                         />

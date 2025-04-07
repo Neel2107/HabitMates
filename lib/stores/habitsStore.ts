@@ -2,6 +2,10 @@ import { create } from 'zustand';
 import { calculateStreak, StreakInfo } from '../helpers/streakCalculator';
 import { supabase } from '../supabase';
 import type { Habit } from '../types';
+import { MMKV } from 'react-native-mmkv';
+
+
+const storage = new MMKV({ id: 'habits-cache' });
 
 interface HabitsState {
   habits: Habit[];
@@ -12,12 +16,22 @@ interface HabitsState {
   createHabit: (habit: Partial<Habit>) => Promise<void>;
   updateHabit: (habitId: string, habit: Partial<Habit>) => Promise<void>;
   deleteHabit: (habitId: string) => Promise<void>;
+  pendingActions: {
+    [key: string]: {
+      type: 'toggle' | 'create' | 'update' | 'delete';
+      data: any;
+      timestamp: number;
+    }
+  };
+  initFromCache: () => void;
+  syncPendingActions: () => Promise<void>;
 }
 
 export const useHabitsStore = create<HabitsState>((set, get) => ({
   habits: [],
   isLoading: false,
   error: null,
+  pendingActions: {},
 
   fetchHabits: async () => {
     set({ isLoading: true, error: null });
@@ -77,48 +91,143 @@ export const useHabitsStore = create<HabitsState>((set, get) => ({
     }
   },
 
-  toggleHabitCompletion: async (habitId: string) => {
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      const userId = (await supabase.auth.getUser()).data.user?.id;
-
-      // First, try to get today's streak
-      const { data: existingStreak, error: fetchError } = await supabase
+ // Modified toggleHabitCompletion with optimistic updates
+ toggleHabitCompletion: async (habitId: string) => {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const userId = (await supabase.auth.getUser()).data.user?.id;
+    
+    // Find the habit in the current state
+    const habit = get().habits.find(h => h.id === habitId);
+    if (!habit) return;
+    
+    // Create a unique action ID
+    const actionId = `toggle-${habitId}-${Date.now()}`;
+    
+    // Optimistically update the UI
+    set(state => {
+      const updatedHabits = state.habits.map(h => {
+        if (h.id === habitId) {
+          // Toggle the completion status
+          const newCompletionStatus = !h.todayCompleted;
+          
+          // Calculate new streak count (simplified for optimistic update)
+          let newStreakCount = h.current_streak_count;
+          if (newCompletionStatus) {
+            // If completing, increment streak
+            newStreakCount += 1;
+          } else {
+            // If uncompleting, decrement streak (but not below 0)
+            newStreakCount = Math.max(0, newStreakCount - 1);
+          }
+          
+          return {
+            ...h,
+            todayCompleted: newCompletionStatus,
+            current_streak_count: newStreakCount,
+            // Update longest streak if needed
+            longest_streak_count: Math.max(h.longest_streak_count, newStreakCount)
+          };
+        }
+        return h;
+      });
+      
+      // Add to pending actions
+      return {
+        habits: updatedHabits,
+        pendingActions: {
+          ...state.pendingActions,
+          [actionId]: {
+            type: 'toggle',
+            data: { habitId, previousState: habit.todayCompleted },
+            timestamp: Date.now()
+          }
+        }
+      };
+    });
+    
+    // Cache the updated state
+    storage.set('habits-cache', JSON.stringify(get().habits));
+    
+    // Perform the actual API call
+    const { data: existingStreak, error: fetchError } = await supabase
+      .from('streaks')
+      .select('*')
+      .eq('habit_id', habitId)
+      .eq('date', today)
+      .single();
+    
+    if (fetchError && fetchError.code !== 'PGRST116') {
+      throw fetchError;
+    }
+    
+    if (existingStreak) {
+      // Update existing streak
+      const { error } = await supabase
         .from('streaks')
-        .select('*')
-        .eq('habit_id', habitId)
-        .eq('date', today)
-        .single();
+        .update({ user_completed: !existingStreak.user_completed })
+        .eq('id', existingStreak.id);
+      
+      if (error) throw error;
+    } else {
+      // Create new streak
+      const { error } = await supabase
+        .from('streaks')
+        .insert({
+          habit_id: habitId,
+          date: today,
+          user_completed: true
+        });
+      
+      if (error) throw error;
+    }
+    
+    // Remove from pending actions after successful API call
+    set(state => ({
+      pendingActions: Object.fromEntries(
+        Object.entries(state.pendingActions).filter(([key]) => key !== actionId)
+      )
+    }));
+    
+    // Refresh habits to get updated streak information
+    await get().fetchHabits();
+    
+  } catch (error: any) {
+    console.error("Error toggling habit completion:", error);
+    
+    // Revert the optimistic update on error
+    await get().fetchHabits();
+    
+    set({ error: error.message });
+  }
+},
 
-      if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 is "not found" error
-        throw fetchError;
+
+    // Add method to initialize from cache
+    initFromCache: () => {
+      try {
+        const cachedHabits = storage.getString('habits-cache');
+        if (cachedHabits) {
+          set({ habits: JSON.parse(cachedHabits) });
+        }
+      } catch (error) {
+        console.error("Error loading from cache:", error);
       }
+    },
 
-      if (existingStreak) {
-        // Update existing streak
-        const { error } = await supabase
-          .from('streaks')
-          .update({ user_completed: !existingStreak.user_completed })
-          .eq('id', existingStreak.id);
-
-        if (error) throw error;
-      } else {
-        // Create new streak
-        const { error } = await supabase
-          .from('streaks')
-          .insert({
-            habit_id: habitId,
-            date: today,
-            user_completed: true
-          });
-
-        if (error) throw error;
+      // Add method to sync pending actions
+  syncPendingActions: async () => {
+    const pendingActions = get().pendingActions;
+    
+    for (const [actionId, action] of Object.entries(pendingActions)) {
+      try {
+        if (action.type === 'toggle') {
+          await get().toggleHabitCompletion(action.data.habitId);
+        }
+        // Add other action types as needed
+      } catch (error) {
+        console.error(`Error syncing action ${actionId}:`, error);
       }
-
-      // Refresh habits to get updated streak information
-      await get().fetchHabits();
-    } catch (error: any) {
-      set({ error: error.message });
     }
   },
 
