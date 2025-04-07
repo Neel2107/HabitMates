@@ -127,6 +127,7 @@ export const useHabitsStore = create<HabitsState>((set, get) => ({
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) throw new Error('User not authenticated');
 
+      // Modified to match the actual database schema
       const { data, error } = await supabase
       .from('habits')
       .insert({
@@ -139,15 +140,11 @@ export const useHabitsStore = create<HabitsState>((set, get) => ({
         start_date: habit.start_date,
         end_date: habit.end_date,
         owner_id: user.id,
-        current_streak: 0,
-        longest_streak: 0,
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        // Add the new required fields
-        current_streak_count: 0,
-        longest_streak_count: 0,
-        last_completed_at: null,
-        streak_start_date: null
+        updated_at: new Date().toISOString()
+        // Removed fields that don't exist in the schema:
+        // current_streak, longest_streak, current_streak_count, 
+        // longest_streak_count, last_completed_at, streak_start_date
       })
       .select('*')
       .single();
@@ -156,6 +153,8 @@ export const useHabitsStore = create<HabitsState>((set, get) => ({
         console.error("Error creating habit:", error);
         throw error;
       }
+      
+      // Transform the returned data to match our app's Habit type
       const transformedHabit: Habit = {
         id: data.id,
         name: data.name,
@@ -163,8 +162,6 @@ export const useHabitsStore = create<HabitsState>((set, get) => ({
         frequency: data.frequency,
         owner_id: data.owner_id,
         partner_id: data.partner_id,
-        current_streak: data.current_streak,
-        longest_streak: data.longest_streak,
         is_public: data.is_public,
         created_at: data.created_at,
         updated_at: data.updated_at,
@@ -174,11 +171,13 @@ export const useHabitsStore = create<HabitsState>((set, get) => ({
         start_date: data.start_date,
         end_date: data.end_date,
         streaks: [],
-        // Add the new required fields
-        last_completed_at: data.last_completed_at || null,
-        current_streak_count: data.current_streak_count || 0,
-        longest_streak_count: data.longest_streak_count || 0,
-        streak_start_date: data.streak_start_date || null
+        // Handle fields that might not exist in the database but are used in our app
+        current_streak: 0,
+        longest_streak: 0,
+        last_completed_at: null,
+        current_streak_count: 0,
+        longest_streak_count: 0,
+        streak_start_date: null
       };
 
       set(state => ({

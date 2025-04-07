@@ -74,11 +74,11 @@ export function CustomButton({
           overflow: 'hidden', 
           borderRadius: 12,
           backgroundColor: buttonBackgroundColor,
-          paddingVertical: 16
+          paddingVertical: 12
         }}
       >
         <Text 
-          className={`text-center font-inter-bold text-xl ${textColor === 'white' ? 'text-white' : ''}`}
+          className={`text-center font-inter-bold text-lg ${textColor === 'white' ? 'text-white' : ''}`}
           style={[
             textStyle,
             isDisabled && { opacity: 0.9 }

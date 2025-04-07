@@ -1,6 +1,5 @@
 import { HabitHeatmap } from '@/components/HabitHeatmap';
-import { jsonLog } from '@/lib/helpers';
-import { calculateStreak } from '@/lib/helpers/streakCalculator';
+import { CustomButton } from '@/components/ui/CustomButton';
 import { useHabitsStore } from '@/lib/stores/habitsStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
 import { Habit } from '@/lib/types';
@@ -9,32 +8,32 @@ import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, Share, Text, TouchableOpacity, View } from 'react-native';
-import Animated, { 
-  FadeIn, 
-  FadeInDown, 
-  useAnimatedStyle, 
-  useSharedValue, 
-  withSpring, 
-  withTiming,
-  interpolate,
-  Extrapolate
+import Animated, {
+    Extrapolate,
+    FadeIn,
+    FadeInDown,
+    interpolate,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
+    withTiming
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Svg, { Circle, Text as SvgText, Line, Rect } from 'react-native-svg';
+import Svg, { Circle, Line, Rect, Text as SvgText } from 'react-native-svg';
 
 // Progress circle component for habit completion
 const ProgressCircle = ({ progress, size = 120 }: { progress: number, size?: number }) => {
     const isDark = useThemeStore((state) => state.isDark);
     const circumference = 2 * Math.PI * (size / 2 - 4);
     const strokeDashoffset = circumference * (1 - progress);
-    
+
     // Animation for progress circle
     const progressAnimation = useSharedValue(0);
-    
+
     useEffect(() => {
         progressAnimation.value = withTiming(progress, { duration: 1000 });
     }, [progress]);
-    
+
     const animatedCircleStyle = useAnimatedStyle(() => {
         return {
             transform: [{ rotate: `${interpolate(progressAnimation.value, [0, 1], [0, 360], Extrapolate.CLAMP)}deg` }],
@@ -100,7 +99,7 @@ const StreakChart = ({ streakData, isDark }: { streakData: number[], isDark: boo
     const barWidth = 8;
     const spacing = 12;
     const maxValue = Math.max(...streakData, 1);
-    
+
     return (
         <Svg width={chartWidth} height={chartHeight} viewBox={`0 0 ${chartWidth} ${chartHeight}`}>
             {/* X-axis */}
@@ -112,13 +111,13 @@ const StreakChart = ({ streakData, isDark }: { streakData: number[], isDark: boo
                 stroke={isDark ? "#475569" : "#cbd5e1"}
                 strokeWidth="1"
             />
-            
+
             {/* Bars */}
             {streakData.map((value, index) => {
                 const barHeight = (value / maxValue) * (chartHeight - 30);
                 const x = index * (barWidth + spacing) + 10;
                 const y = chartHeight - 20 - barHeight;
-                
+
                 return (
                     <React.Fragment key={index}>
                         <Animated.View entering={FadeInDown.delay(index * 100).duration(300)}>
@@ -150,28 +149,28 @@ const StreakChart = ({ streakData, isDark }: { streakData: number[], isDark: boo
 // New component: Stat Card
 const StatCard = ({ title, value, icon, isDark }: { title: string, value: string | number, icon: string, isDark: boolean }) => {
     const scale = useSharedValue(1);
-    
+
     const handlePressIn = () => {
         scale.value = withSpring(0.95);
     };
-    
+
     const handlePressOut = () => {
         scale.value = withSpring(1);
     };
-    
+
     const animatedStyle = useAnimatedStyle(() => {
         return {
             transform: [{ scale: scale.value }],
         };
     });
-    
+
     return (
-        <Animated.View 
+        <Animated.View
             style={animatedStyle}
             entering={FadeInDown.duration(400)}
             className={`p-4 rounded-xl ${isDark ? 'bg-gray-800' : 'bg-white'} shadow-sm flex-1`}
         >
-            <TouchableOpacity 
+            <TouchableOpacity
                 activeOpacity={0.8}
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
@@ -199,15 +198,15 @@ const HabitDetailScreen = () => {
     const [habit, setHabit] = useState<Habit | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [streakData, setStreakData] = useState<number[]>([]);
-    
+
     // Animation values
     const checkButtonScale = useSharedValue(1);
-    
 
-      // Add the handleShareHabit function
-      const handleShareHabit = async () => {
+
+    // Add the handleShareHabit function
+    const handleShareHabit = async () => {
         if (!habit) return;
-        
+
         try {
             await Share.share({
                 message: `I'm tracking my habit "${habit.name}" with HabitMates! Join me in building better habits.`,
@@ -266,18 +265,18 @@ const HabitDetailScreen = () => {
             const foundHabit = habits.find(h => String(h.id) === String(habitId));
             if (foundHabit) {
                 setHabit(foundHabit);
-                
+
                 // Generate streak data for the last 7 days
                 const last7Days = Array(7).fill(0).map((_, i) => {
                     const date = new Date();
                     date.setDate(date.getDate() - i);
                     return date.toISOString().split('T')[0];
                 }).reverse();
-                
+
                 const streakCounts = last7Days.map(date => {
                     return foundHabit.streaks?.some(s => s.date.includes(date) && s.user_completed) ? 1 : 0;
                 });
-                
+
                 setStreakData(streakCounts);
             }
         };
@@ -287,38 +286,38 @@ const HabitDetailScreen = () => {
 
     const handleToggleCompletion = async () => {
         if (!habit?.id) return;
-        
+
         // Button animation
         checkButtonScale.value = withSpring(0.8, {}, () => {
             checkButtonScale.value = withSpring(1);
         });
-        
+
         await toggleHabitCompletion(habit.id.toString());
     };
 
     // Calculate completion rate
     const calculateCompletionRate = () => {
         if (!habit?.streaks || habit.streaks.length === 0) return 0;
-        
+
         const totalDays = habit.streaks.length;
         const completedDays = habit.streaks.filter(s => s.user_completed).length;
-        
+
         return Math.round((completedDays / totalDays) * 100);
     };
-    
+
     // Get streak info
     const getStreakInfo = () => {
         if (!habit) return { currentStreak: 0, longestStreak: 0 };
-        
+
         return {
             currentStreak: habit.current_streak_count || 0,
             longestStreak: habit.longest_streak_count || 0
         };
     };
-    
+
     const streakInfo = getStreakInfo();
     const completionRate = calculateCompletionRate();
-    
+
     // Button animation style
     const checkButtonStyle = useAnimatedStyle(() => {
         return {
@@ -410,34 +409,34 @@ const HabitDetailScreen = () => {
                     <Text className={`text-base font-inter-semibold mb-3 ${isDark ? 'text-gray-300' : 'text-[#1e293b]'}`}>
                         STATISTICS
                     </Text>
-                    
+
                     <View className="flex-row gap-4 mb-4">
-                        <StatCard 
-                            title="Current Streak" 
-                            value={streakInfo.currentStreak} 
-                            icon="trending-up" 
-                            isDark={isDark} 
+                        <StatCard
+                            title="Current Streak"
+                            value={streakInfo.currentStreak}
+                            icon="trending-up"
+                            isDark={isDark}
                         />
-                        <StatCard 
-                            title="Longest Streak" 
-                            value={streakInfo.longestStreak} 
-                            icon="award" 
-                            isDark={isDark} 
+                        <StatCard
+                            title="Longest Streak"
+                            value={streakInfo.longestStreak}
+                            icon="award"
+                            isDark={isDark}
                         />
                     </View>
-                    
+
                     <View className="flex-row gap-4">
-                        <StatCard 
-                            title="Completion Rate" 
-                            value={`${completionRate}%`} 
-                            icon="percent" 
-                            isDark={isDark} 
+                        <StatCard
+                            title="Completion Rate"
+                            value={`${completionRate}%`}
+                            icon="percent"
+                            isDark={isDark}
                         />
-                        <StatCard 
-                            title="Days Tracked" 
-                            value={habit.streaks?.length || 0} 
-                            icon="calendar" 
-                            isDark={isDark} 
+                        <StatCard
+                            title="Days Tracked"
+                            value={habit.streaks?.length || 0}
+                            icon="calendar"
+                            isDark={isDark}
                         />
                     </View>
                 </Animated.View>
@@ -450,7 +449,7 @@ const HabitDetailScreen = () => {
                     <Text className={`text-base font-inter-semibold mb-4 ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
                         Weekly Progress
                     </Text>
-                    
+
                     <View className="items-center">
                         <StreakChart streakData={streakData} isDark={isDark} />
                     </View>
@@ -464,27 +463,27 @@ const HabitDetailScreen = () => {
                     <Text className={`text-base font-inter-semibold mb-4 ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
                         Habit History
                     </Text>
-                    
+
                     {habit && habit.streaks && <HabitHeatmap streaks={habit.streaks} />}
                 </Animated.View>
 
                 {/* Action Buttons */}
-                <View className="px-6 mt-4 flex-row justify-between">
-                    <Animated.View style={checkButtonStyle} className="flex-1 mr-3">
-                        <TouchableOpacity
+                <View className="px-6 mt-4 flex-row gap-4">
+                    <View className="flex-1">
+                        <CustomButton
                             onPress={handleToggleCompletion}
-                            className={`py-4 rounded-xl items-center justify-center ${habit.todayCompleted ? 'bg-emerald-700' : 'bg-[#059669]'}`}
-                            activeOpacity={0.8}
-                        >
-                            <Text className="text-white font-inter-semibold">
-                                {habit.todayCompleted ? 'Completed Today' : 'Mark as Completed'}
-                            </Text>
-                        </TouchableOpacity>
-                    </Animated.View>
+                            title="Mark as Completed"
+                            isLoading={false}
+                            disabled={false}
+                            backgroundColor="#059669"
+                            textColor="white"
+                            loadingText="Marking..."
+                        />
+                    </View>
 
                     <TouchableOpacity
                         onPress={handleDeleteHabit}
-                        className={`p-4 rounded-xl ${isDark ? 'bg-gray-800' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}
+                        className={`p-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-gray-800' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}
                         activeOpacity={0.7}
                         disabled={isDeleting}
                     >
