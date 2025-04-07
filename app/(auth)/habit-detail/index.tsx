@@ -1,5 +1,11 @@
+import { CompletionOverlay } from '@/components/habit/CompletionOverlay';
+import { HabitHeader } from '@/components/habit/HabitHeader';
+import { ProgressCircle } from '@/components/habit/ProgressCircle';
+import { StatCard } from '@/components/habit/StatCard';
+import { StreakChart } from '@/components/habit/StreakChart';
 import { HabitHeatmap } from '@/components/HabitHeatmap';
 import { CustomButton } from '@/components/ui/CustomButton';
+import { handleError } from '@/lib/helpers';
 import { useHabitsStore } from '@/lib/stores/habitsStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
 import { Habit } from '@/lib/types';
@@ -8,185 +14,8 @@ import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, Share, Text, TouchableOpacity, View } from 'react-native';
-import Animated, {
-    Extrapolate,
-    FadeIn,
-    FadeInDown,
-    interpolate,
-    useAnimatedStyle,
-    useSharedValue,
-    withSpring,
-    withTiming
-} from 'react-native-reanimated';
+import Animated, { FadeInDown, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Svg, { Circle, Line, Rect, Text as SvgText } from 'react-native-svg';
-
-// Progress circle component for habit completion
-const ProgressCircle = ({ progress, size = 120 }: { progress: number, size?: number }) => {
-    const isDark = useThemeStore((state) => state.isDark);
-    const circumference = 2 * Math.PI * (size / 2 - 4);
-    const strokeDashoffset = circumference * (1 - progress);
-
-    // Animation for progress circle
-    const progressAnimation = useSharedValue(0);
-
-    useEffect(() => {
-        progressAnimation.value = withTiming(progress, { duration: 1000 });
-    }, [progress]);
-
-    const animatedCircleStyle = useAnimatedStyle(() => {
-        return {
-            transform: [{ rotate: `${interpolate(progressAnimation.value, [0, 1], [0, 360], Extrapolate.CLAMP)}deg` }],
-        };
-    });
-
-    return (
-        <View style={{ width: size, height: size }}>
-            <Animated.View style={animatedCircleStyle}>
-                <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-                    {/* Background Circle */}
-                    <Circle
-                        cx={size / 2}
-                        cy={size / 2}
-                        r={size / 2 - 4}
-                        stroke={isDark ? '#334155' : '#e2e8f0'}
-                        strokeWidth="8"
-                        fill="none"
-                    />
-                    {/* Progress Circle */}
-                    <Circle
-                        cx={size / 2}
-                        cy={size / 2}
-                        r={size / 2 - 4}
-                        stroke="#059669"
-                        strokeWidth="8"
-                        strokeDasharray={circumference}
-                        strokeDashoffset={strokeDashoffset}
-                        strokeLinecap="round"
-                        fill="none"
-                        transform={`rotate(-90, ${size / 2}, ${size / 2})`}
-                    />
-                    {/* Percentage Text */}
-                    <SvgText
-                        x={size / 2}
-                        y={size / 2 - 5}
-                        fontSize={size / 5}
-                        fill={isDark ? 'white' : '#1e293b'}
-                        textAnchor="middle"
-                        fontWeight="bold"
-                    >
-                        {Math.round(progress * 100)}%
-                    </SvgText>
-                    <SvgText
-                        x={size / 2}
-                        y={size / 2 + 20}
-                        fontSize={size / 10}
-                        fill={isDark ? '#94a3b8' : '#64748b'}
-                        textAnchor="middle"
-                    >
-                        Complete
-                    </SvgText>
-                </Svg>
-            </Animated.View>
-        </View>
-    );
-};
-
-// New component: Streak Chart
-const StreakChart = ({ streakData, isDark }: { streakData: number[], isDark: boolean }) => {
-    const chartHeight = 100;
-    const chartWidth = 300;
-    const barWidth = 8;
-    const spacing = 12;
-    const maxValue = Math.max(...streakData, 1);
-
-    return (
-        <Svg width={chartWidth} height={chartHeight} viewBox={`0 0 ${chartWidth} ${chartHeight}`}>
-            {/* X-axis */}
-            <Line
-                x1="0"
-                y1={chartHeight - 20}
-                x2={chartWidth}
-                y2={chartHeight - 20}
-                stroke={isDark ? "#475569" : "#cbd5e1"}
-                strokeWidth="1"
-            />
-
-            {/* Bars */}
-            {streakData.map((value, index) => {
-                const barHeight = (value / maxValue) * (chartHeight - 30);
-                const x = index * (barWidth + spacing) + 10;
-                const y = chartHeight - 20 - barHeight;
-
-                return (
-                    <React.Fragment key={index}>
-                        <Animated.View entering={FadeInDown.delay(index * 100).duration(300)}>
-                            <Rect
-                                x={x}
-                                y={y}
-                                width={barWidth}
-                                height={barHeight}
-                                rx={4}
-                                fill={value > 0 ? "#059669" : isDark ? "#334155" : "#e2e8f0"}
-                            />
-                        </Animated.View>
-                        <SvgText
-                            x={x + barWidth / 2}
-                            y={chartHeight - 5}
-                            fontSize="10"
-                            fill={isDark ? "#94a3b8" : "#64748b"}
-                            textAnchor="middle"
-                        >
-                            {index + 1}
-                        </SvgText>
-                    </React.Fragment>
-                );
-            })}
-        </Svg>
-    );
-};
-
-// New component: Stat Card
-const StatCard = ({ title, value, icon, isDark }: { title: string, value: string | number, icon: string, isDark: boolean }) => {
-    const scale = useSharedValue(1);
-
-    const handlePressIn = () => {
-        scale.value = withSpring(0.95);
-    };
-
-    const handlePressOut = () => {
-        scale.value = withSpring(1);
-    };
-
-    const animatedStyle = useAnimatedStyle(() => {
-        return {
-            transform: [{ scale: scale.value }],
-        };
-    });
-
-    return (
-        <Animated.View
-            style={animatedStyle}
-            entering={FadeInDown.duration(400)}
-            className={`p-4 rounded-xl ${isDark ? 'bg-gray-800' : 'bg-white'} shadow-sm flex-1`}
-        >
-            <TouchableOpacity
-                activeOpacity={0.8}
-                onPressIn={handlePressIn}
-                onPressOut={handlePressOut}
-                className="flex-row items-center"
-            >
-                <View className={`w-10 h-10 rounded-full items-center justify-center ${isDark ? 'bg-gray-700' : 'bg-emerald-50'}`}>
-                    <Feather name={icon as any} size={18} color="#059669" />
-                </View>
-                <View className="ml-3">
-                    <Text className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{title}</Text>
-                    <Text className={`text-lg font-inter-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>{value}</Text>
-                </View>
-            </TouchableOpacity>
-        </Animated.View>
-    );
-};
 
 // Main component
 const HabitDetailScreen = () => {
@@ -201,7 +30,8 @@ const HabitDetailScreen = () => {
 
     // Animation values
     const checkButtonScale = useSharedValue(1);
-
+    const completionOpacity = useSharedValue(0);
+    const completionScale = useSharedValue(0.5);
 
     // Add the handleShareHabit function
     const handleShareHabit = async () => {
@@ -213,7 +43,7 @@ const HabitDetailScreen = () => {
                 title: 'Share Habit'
             });
         } catch (error) {
-            console.error('Error sharing habit:', error);
+            handleError(error);
         }
     };
 
@@ -224,7 +54,6 @@ const HabitDetailScreen = () => {
             params: { id: habitId }
         });
     };
-
 
     const handleDeleteHabit = () => {
         if (!habit?.id) return;
@@ -287,12 +116,31 @@ const HabitDetailScreen = () => {
     const handleToggleCompletion = async () => {
         if (!habit?.id) return;
 
-        // Button animation
-        checkButtonScale.value = withSpring(0.8, {}, () => {
-            checkButtonScale.value = withSpring(1);
-        });
+        try {
+            // Enhanced button animation
+            checkButtonScale.value = withSpring(0.8, {}, () => {
+                checkButtonScale.value = withSpring(1);
+            });
 
-        await toggleHabitCompletion(habit.id.toString());
+            // Only show completion animation if marking as completed (not uncompleting)
+            if (!habit.todayCompleted) {
+                // Show completion animation
+                completionOpacity.value = withTiming(1, { duration: 300 });
+                completionScale.value = withSpring(1.2, { damping: 12 });
+
+                // Hide after a delay
+                setTimeout(() => {
+                    completionOpacity.value = withTiming(0, { duration: 300 });
+                    completionScale.value = withTiming(0.5);
+                }, 1500);
+            }
+
+            // Wait for the toggle to complete before proceeding
+            await toggleHabitCompletion(habit.id.toString());
+        } catch (error) {
+           handleError(error);
+            Alert.alert('Error', 'Failed to update habit completion status');
+        }
     };
 
     // Calculate completion rate
@@ -340,37 +188,19 @@ const HabitDetailScreen = () => {
         <SafeAreaView className={`flex-1 ${isDark ? 'bg-[#1a1a1a]' : 'bg-[#f5f9f8]'}`}>
             <StatusBar style={isDark ? 'light' : 'dark'} />
 
+            {/* Completion Animation Overlay */}
+            <CompletionOverlay
+                opacity={completionOpacity}
+                scale={completionScale}
+                isDark={isDark}
+            />
+
             {/* Header */}
-            <Animated.View
-                entering={FadeIn.duration(500)}
-                className="px-6 pt-4 pb-2 flex-row items-center justify-between"
-            >
-                <TouchableOpacity
-                    onPress={() => router.back()}
-                    className={`p-2 rounded-full ${isDark ? 'bg-gray-800' : 'bg-white'}`}
-                    activeOpacity={0.7}
-                >
-                    <Feather name="arrow-left" size={20} color={isDark ? '#e2e8f0' : '#0f172a'} />
-                </TouchableOpacity>
-
-                <View className="flex-row">
-                    <TouchableOpacity
-                        onPress={handleShareHabit}
-                        className={`p-2 rounded-full mr-3 ${isDark ? 'bg-gray-800' : 'bg-white'}`}
-                        activeOpacity={0.7}
-                    >
-                        <Feather name="share-2" size={20} color={isDark ? '#e2e8f0' : '#0f172a'} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={handleEditHabit}
-                        className={`p-2 rounded-full ${isDark ? 'bg-gray-800' : 'bg-white'}`}
-                        activeOpacity={0.7}
-                    >
-                        <Feather name="edit-2" size={20} color={isDark ? '#e2e8f0' : '#0f172a'} />
-                    </TouchableOpacity>
-                </View>
-            </Animated.View>
+            <HabitHeader
+                isDark={isDark}
+                onShare={handleShareHabit}
+                onEdit={handleEditHabit}
+            />
 
             <ScrollView
                 className="flex-1"
@@ -469,17 +299,18 @@ const HabitDetailScreen = () => {
 
                 {/* Action Buttons */}
                 <View className="px-6 mt-4 flex-row gap-4">
-                    <View className="flex-1">
+                    <Animated.View style={checkButtonStyle} className="flex-1">
                         <CustomButton
                             onPress={handleToggleCompletion}
-                            title="Mark as Completed"
+                            title={habit.todayCompleted ? "Completed Today" : "Mark as Completed"}
                             isLoading={false}
                             disabled={false}
-                            backgroundColor="#059669"
+                            backgroundColor={habit.todayCompleted ? "#047857" : "#059669"}
                             textColor="white"
                             loadingText="Marking..."
+                            icon={habit.todayCompleted ? "check-circle" : "check"}
                         />
-                    </View>
+                    </Animated.View>
 
                     <TouchableOpacity
                         onPress={handleDeleteHabit}
