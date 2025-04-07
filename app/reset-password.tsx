@@ -1,3 +1,4 @@
+import { CustomButton } from '@/components/ui/CustomButton';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -83,23 +84,16 @@ export default function ResetPasswordScreen() {
             </View>
 
             {/* Reset Button */}
-            <TouchableOpacity
-              onPress={handleResetPassword}
-              activeOpacity={0.8}
-              disabled={isLoading}
-              className="rounded-xl overflow-hidden mb-8"
-            >
-              <LinearGradient
-                colors={['#059669', '#047857']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                className="py-4"
-              >
-                <Text className="text-center font-inter-bold text-xl text-white">
-                  {isLoading ? 'SENDING...' : 'RESET PASSWORD'}
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
+            <View className='mb-8'>
+            <CustomButton
+            onPress={handleResetPassword}
+            title="RESET PASSWORD"
+            isLoading={isLoading}
+            loadingText="RESETTING..."
+            disabled={isLoading ||!email}
+            textColor="white"
+            />
+            </View>
 
             {/* Back to Login */}
             <View className="flex-row justify-center items-center">

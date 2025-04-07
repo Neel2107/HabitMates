@@ -1,12 +1,13 @@
+import { CustomButton } from '@/components/ui/CustomButton';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { Alert, Image, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 export default function SignUpScreen() {
   const isDark = useThemeStore((state) => state.isDark);
@@ -18,7 +19,38 @@ export default function SignUpScreen() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const signUp = useAuthStore((state) => state.signUp);
+
+  // Animation values
+  const passwordIconRotation = useSharedValue(0);
+  const confirmPasswordIconRotation = useSharedValue(0);
+
+  // Animated styles
+  const passwordIconStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ rotate: `${passwordIconRotation.value}deg` }],
+    };
+  });
+
+  const confirmPasswordIconStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ rotate: `${confirmPasswordIconRotation.value}deg` }],
+    };
+  });
+
+  // Toggle password visibility with animation
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+    passwordIconRotation.value = withTiming(passwordIconRotation.value + 180, { duration: 300 });
+  };
+
+  // Toggle confirm password visibility with animation
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+    confirmPasswordIconRotation.value = withTiming(confirmPasswordIconRotation.value + 180, { duration: 300 });
+  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -66,7 +98,6 @@ export default function SignUpScreen() {
   return (
     <View className="flex-1">
       <StatusBar style={isDark ? 'light' : 'dark'} />
- 
 
       <KeyboardAwareScrollView
         bottomOffset={Platform.OS === 'ios' ? 400 : 200}
@@ -78,12 +109,12 @@ export default function SignUpScreen() {
         <View className="px-8 py-6">
           {/* Header with Illustration */}
           <View className="items-center mb-8">
-          <Image 
-                source={require('@/assets/images/signup.png')} 
-                style={{ width: 240, height: 240 }}
-                resizeMode="cover"
-              />
-            <Text className="text-4xl  font-inter-bold text-[#1e293b] mt-2">
+            <Image
+              source={require('@/assets/images/signup.png')}
+              style={{ width: 240, height: 240 }}
+              resizeMode="cover"
+            />
+            <Text className="text-4xl font-inter-bold text-[#1e293b] mt-2">
               Join HabitMates today
             </Text>
           </View>
@@ -134,19 +165,33 @@ export default function SignUpScreen() {
               )}
             </View>
 
-            {/* Password Input */}
+            {/* Password Input with Show/Hide Toggle */}
             <View className="mb-4">
-              <TextInput
-                placeholder="Password"
-                value={formData.password}
-                onChangeText={(text) => {
-                  setFormData(prev => ({ ...prev, password: text }));
-                  if (errors.password) setErrors(prev => ({ ...prev, password: '' }));
-                }}
-                secureTextEntry
-                className={`bg-white p-4 rounded-xl text-xl font-inter-regular border ${errors.password ? 'border-red-500' : 'border-gray-200'} text-gray-800`}
-                placeholderTextColor="#9ca3af"
-              />
+              <View className={`flex-row items-center bg-white rounded-xl border ${errors.password ? 'border-red-500' : 'border-gray-200'}`}>
+                <TextInput
+                  placeholder="Password"
+                  value={formData.password}
+                  onChangeText={(text) => {
+                    setFormData(prev => ({ ...prev, password: text }));
+                    if (errors.password) setErrors(prev => ({ ...prev, password: '' }));
+                  }}
+                  secureTextEntry={!showPassword}
+                  className="flex-1 p-4 text-xl font-inter-regular text-gray-800"
+                  placeholderTextColor="#9ca3af"
+                />
+                <TouchableOpacity
+                  onPress={togglePasswordVisibility}
+                  className="pr-4"
+                >
+                  <Animated.View style={passwordIconStyle}>
+                    <Feather
+                      name={showPassword ? "eye-off" : "eye"}
+                      size={24}
+                      color="#059669"
+                    />
+                  </Animated.View>
+                </TouchableOpacity>
+              </View>
               {errors.password && (
                 <Text className="text-red-500 mt-1 text-xs pl-1">
                   {errors.password}
@@ -154,19 +199,33 @@ export default function SignUpScreen() {
               )}
             </View>
 
-            {/* Confirm Password Input */}
+            {/* Confirm Password Input with Show/Hide Toggle */}
             <View className="mb-6">
-              <TextInput
-                placeholder="Confirm password"
-                value={formData.confirmPassword}
-                onChangeText={(text) => {
-                  setFormData(prev => ({ ...prev, confirmPassword: text }));
-                  if (errors.confirmPassword) setErrors(prev => ({ ...prev, confirmPassword: '' }));
-                }}
-                secureTextEntry
-                className={`bg-white p-4 rounded-xl text-xl font-inter-regular border ${errors.confirmPassword ? 'border-red-500' : 'border-gray-200'} text-gray-800`}
-                placeholderTextColor="#9ca3af"
-              />
+              <View className={`flex-row items-center bg-white rounded-xl border ${errors.confirmPassword ? 'border-red-500' : 'border-gray-200'}`}>
+                <TextInput
+                  placeholder="Confirm password"
+                  value={formData.confirmPassword}
+                  onChangeText={(text) => {
+                    setFormData(prev => ({ ...prev, confirmPassword: text }));
+                    if (errors.confirmPassword) setErrors(prev => ({ ...prev, confirmPassword: '' }));
+                  }}
+                  secureTextEntry={!showConfirmPassword}
+                  className="flex-1 p-4 text-xl font-inter-regular text-gray-800"
+                  placeholderTextColor="#9ca3af"
+                />
+                <TouchableOpacity
+                  onPress={toggleConfirmPasswordVisibility}
+                  className="pr-4"
+                >
+                  <Animated.View style={confirmPasswordIconStyle}>
+                    <Feather
+                      name={showConfirmPassword ? "eye-off" : "eye"}
+                      size={24}
+                      color="#059669"
+                    />
+                  </Animated.View>
+                </TouchableOpacity>
+              </View>
               {errors.confirmPassword && (
                 <Text className="text-red-500 mt-1 text-xs pl-1">
                   {errors.confirmPassword}
@@ -174,29 +233,19 @@ export default function SignUpScreen() {
               )}
             </View>
 
-            {/* Create Account Button */}
-            <TouchableOpacity
+            <CustomButton
               onPress={handleSignUp}
-              activeOpacity={0.8}
+              title="CREATE ACCOUNT"
+              isLoading={isLoading}
+              loadingText="CREATING ACCOUNT..."
               disabled={isLoading}
-              className="rounded-xl overflow-hidden mb-8"
-            >
-              <LinearGradient
-                colors={['#059669', '#047857']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                className="py-4"
-              >
-                <Text className="text-center font-inter-bold text-xl text-white">
-                  {isLoading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
+              style={{ marginBottom: 32 }}
+            />
 
             {/* Sign In Link */}
             <View className="flex-row justify-center items-center">
               <Text className="text-gray-700 font-inter-regular text-base">
-                Already have an account? 
+                Already have an account?
               </Text>
               <TouchableOpacity
                 activeOpacity={0.7}

@@ -1,19 +1,37 @@
+import { CustomButton } from '@/components/ui/CustomButton';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
+import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { Alert, Image, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, LinearTransition, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 export default function LoginScreen() {
   const isDark = useThemeStore((state) => state.isDark);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const signIn = useAuthStore((state) => state.signIn);
+
+  // Animation value for password icon
+  const passwordIconRotation = useSharedValue(0);
+
+  // Animated style for password icon
+  const passwordIconStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ rotate: `${passwordIconRotation.value}deg` }],
+    };
+  });
+
+  // Toggle password visibility with animation
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -45,13 +63,13 @@ export default function LoginScreen() {
         contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
       >
         <Animated.View
-        layout={LinearTransition.damping(14)}
-        className="px-8 py-6">
+          layout={LinearTransition.damping(14)}
+          className="px-8 py-6">
           {/* App Icon and Title */}
           <View className="items-center mb-12">
             <View className="rounded-3xl overflow-hidden mb-4">
-              <Image 
-                source={require('@/assets/images/habit-mates.png')} 
+              <Image
+                source={require('@/assets/images/habit-mates.png')}
                 style={{ width: 240, height: 240 }}
                 resizeMode="cover"
               />
@@ -79,16 +97,38 @@ export default function LoginScreen() {
               />
             </View>
 
-            {/* Password Input */}
+            {/* Password Input with Show/Hide Toggle */}
             <View className="mb-2">
-              <TextInput
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                className="bg-white p-4 rounded-xl text-xl font-inter-regular border border-gray-200 text-gray-800"
-                placeholderTextColor="#9ca3af"
-              />
+              <View className="flex-row items-center bg-white rounded-xl border border-gray-200">
+                <TextInput
+                  placeholder="Password"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  className="flex-1 p-4 text-xl font-inter-regular text-gray-800"
+                  placeholderTextColor="#9ca3af"
+                />
+                <TouchableOpacity
+                  onPress={togglePasswordVisibility}
+                  className="pr-4"
+                >
+                  {showPassword ? (
+                    <Animated.View
+                      entering={FadeIn.duration(200)}
+                      exiting={FadeOut.duration(200)}
+                    >
+                      <Feather name="eye-off" size={24} color="#059669" />
+                    </Animated.View>
+                  ) : (
+                    <Animated.View
+                      entering={FadeIn.duration(200)}
+                      exiting={FadeOut.duration(200)}
+                    >
+                      <Feather name="eye" size={24} color="#059669" />
+                    </Animated.View>
+                  )}
+                </TouchableOpacity>
+              </View>
             </View>
 
             {/* Forgot Password Link */}
@@ -103,21 +143,19 @@ export default function LoginScreen() {
             </TouchableOpacity>
 
             {/* Login Button */}
-            <TouchableOpacity
+            <CustomButton
               onPress={handleLogin}
-              activeOpacity={0.8}
-              disabled={isLoading}
-              className="rounded-xl py-4 bg-[#059669] mb-8"
-            >
-              <Text className="text-center font-inter-bold text-xl text-white">
-                LOG IN
-              </Text>
-            </TouchableOpacity>
+              title="LOG IN"
+              isLoading={isLoading}
+              loadingText="SIGNING IN..."
+              disabled={isLoading || !email || !password}
+              style={{ marginBottom: 32 }}
+            />
 
             {/* Sign Up Link */}
             <View className="flex-row justify-center items-center">
               <Text className="text-gray-700 font-inter-regular">
-                Don't have an account? 
+                Don't have an account?
               </Text>
               <TouchableOpacity
                 activeOpacity={0.7}
