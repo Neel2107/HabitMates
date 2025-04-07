@@ -1,5 +1,6 @@
 import { HabitHeatmap } from '@/components/HabitHeatmap';
 import { jsonLog } from '@/lib/helpers';
+import { calculateStreak } from '@/lib/helpers/streakCalculator';
 import { useHabitsStore } from '@/lib/stores/habitsStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
 import { Habit } from '@/lib/types';
@@ -8,19 +9,41 @@ import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, Share, Text, TouchableOpacity, View } from 'react-native';
-import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
+import Animated, { 
+  FadeIn, 
+  FadeInDown, 
+  useAnimatedStyle, 
+  useSharedValue, 
+  withSpring, 
+  withTiming,
+  interpolate,
+  Extrapolate
+} from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Svg, { Circle, Text as SvgText } from 'react-native-svg';
+import Svg, { Circle, Text as SvgText, Line, Rect } from 'react-native-svg';
 
 // Progress circle component for habit completion
 const ProgressCircle = ({ progress, size = 120 }: { progress: number, size?: number }) => {
     const isDark = useThemeStore((state) => state.isDark);
     const circumference = 2 * Math.PI * (size / 2 - 4);
     const strokeDashoffset = circumference * (1 - progress);
+    
+    // Animation for progress circle
+    const progressAnimation = useSharedValue(0);
+    
+    useEffect(() => {
+        progressAnimation.value = withTiming(progress, { duration: 1000 });
+    }, [progress]);
+    
+    const animatedCircleStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ rotate: `${interpolate(progressAnimation.value, [0, 1], [0, 360], Extrapolate.CLAMP)}deg` }],
+        };
+    });
 
     return (
         <View style={{ width: size, height: size }}>
-            <Animated.View>
+            <Animated.View style={animatedCircleStyle}>
                 <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
                     {/* Background Circle */}
                     <Circle
@@ -70,47 +93,103 @@ const ProgressCircle = ({ progress, size = 120 }: { progress: number, size?: num
     );
 };
 
-// Calendar day component to visualize streak history
-const CalendarDay = ({
-    date,
-    isCompleted,
-    isToday
-}: {
-    date: Date;
-    isCompleted?: boolean;
-    isToday?: boolean;
-}) => {
-    const isDark = useThemeStore((state) => state.isDark);
-    const dayNumber = date.getDate();
-    const dayName = ['S', 'M', 'T', 'W', 'T', 'F', 'S'][date.getDay()];
-
+// New component: Streak Chart
+const StreakChart = ({ streakData, isDark }: { streakData: number[], isDark: boolean }) => {
+    const chartHeight = 100;
+    const chartWidth = 300;
+    const barWidth = 8;
+    const spacing = 12;
+    const maxValue = Math.max(...streakData, 1);
+    
     return (
-        <View className="items-center mx-1">
-            <Text className={`text-xs mb-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                {dayName}
-            </Text>
-            <View
-                className={`w-10 h-10 rounded-full items-center justify-center ${isToday
-                    ? 'border-2 border-[#059669]'
-                    : ''
-                    } ${isCompleted
-                        ? 'bg-[#059669]'
-                        : isDark ? 'bg-gray-800' : 'bg-gray-100'
-                    }`}
-            >
-                <Text
-                    className={`font-medium ${isCompleted
-                        ? 'text-white'
-                        : isDark ? 'text-white' : 'text-gray-800'
-                        }`}
-                >
-                    {dayNumber}
-                </Text>
-            </View>
-        </View>
+        <Svg width={chartWidth} height={chartHeight} viewBox={`0 0 ${chartWidth} ${chartHeight}`}>
+            {/* X-axis */}
+            <Line
+                x1="0"
+                y1={chartHeight - 20}
+                x2={chartWidth}
+                y2={chartHeight - 20}
+                stroke={isDark ? "#475569" : "#cbd5e1"}
+                strokeWidth="1"
+            />
+            
+            {/* Bars */}
+            {streakData.map((value, index) => {
+                const barHeight = (value / maxValue) * (chartHeight - 30);
+                const x = index * (barWidth + spacing) + 10;
+                const y = chartHeight - 20 - barHeight;
+                
+                return (
+                    <React.Fragment key={index}>
+                        <Animated.View entering={FadeInDown.delay(index * 100).duration(300)}>
+                            <Rect
+                                x={x}
+                                y={y}
+                                width={barWidth}
+                                height={barHeight}
+                                rx={4}
+                                fill={value > 0 ? "#059669" : isDark ? "#334155" : "#e2e8f0"}
+                            />
+                        </Animated.View>
+                        <SvgText
+                            x={x + barWidth / 2}
+                            y={chartHeight - 5}
+                            fontSize="10"
+                            fill={isDark ? "#94a3b8" : "#64748b"}
+                            textAnchor="middle"
+                        >
+                            {index + 1}
+                        </SvgText>
+                    </React.Fragment>
+                );
+            })}
+        </Svg>
     );
 };
 
+// New component: Stat Card
+const StatCard = ({ title, value, icon, isDark }: { title: string, value: string | number, icon: string, isDark: boolean }) => {
+    const scale = useSharedValue(1);
+    
+    const handlePressIn = () => {
+        scale.value = withSpring(0.95);
+    };
+    
+    const handlePressOut = () => {
+        scale.value = withSpring(1);
+    };
+    
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ scale: scale.value }],
+        };
+    });
+    
+    return (
+        <Animated.View 
+            style={animatedStyle}
+            entering={FadeInDown.duration(400)}
+            className={`p-4 rounded-xl ${isDark ? 'bg-gray-800' : 'bg-white'} shadow-sm flex-1`}
+        >
+            <TouchableOpacity 
+                activeOpacity={0.8}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+                className="flex-row items-center"
+            >
+                <View className={`w-10 h-10 rounded-full items-center justify-center ${isDark ? 'bg-gray-700' : 'bg-emerald-50'}`}>
+                    <Feather name={icon as any} size={18} color="#059669" />
+                </View>
+                <View className="ml-3">
+                    <Text className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{title}</Text>
+                    <Text className={`text-lg font-inter-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>{value}</Text>
+                </View>
+            </TouchableOpacity>
+        </Animated.View>
+    );
+};
+
+// Main component
 const HabitDetailScreen = () => {
     const { id } = useLocalSearchParams();
     const habitId = Array.isArray(id) ? id[0] : id;
@@ -119,44 +198,34 @@ const HabitDetailScreen = () => {
     const { habits, isLoading, fetchHabits, toggleHabitCompletion, deleteHabit } = useHabitsStore();
     const [habit, setHabit] = useState<Habit | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [streakData, setStreakData] = useState<number[]>([]);
+    
+    // Animation values
+    const checkButtonScale = useSharedValue(1);
+    
 
-    // Fetch habit data
-    useEffect(() => {
-        const loadHabit = async () => {
-            if (!habits.length) {
-                await fetchHabits();
-            }
-            const foundHabit = habits.find(h => String(h.id) === String(habitId));
-            if (foundHabit) {
-                setHabit(foundHabit);
-            }
-        };
-
-        loadHabit();
-    }, [habitId, habits]);
-
-
-    const handleToggleCompletion = async () => {
-        if (!habit?.id) return;
-        await toggleHabitCompletion(habit.id.toString());
-    };
-
-    const handleShareHabit = async () => {
+      // Add the handleShareHabit function
+      const handleShareHabit = async () => {
+        if (!habit) return;
+        
         try {
             await Share.share({
-                message: `Check out my habit "${habit?.name}" on HabitMates! I'm on a ${habit?.current_streak || 0} day streak.`,
+                message: `I'm tracking my habit "${habit.name}" with HabitMates! Join me in building better habits.`,
+                title: 'Share Habit'
             });
         } catch (error) {
             console.error('Error sharing habit:', error);
         }
     };
 
+    // Add the handleEditHabit function
     const handleEditHabit = () => {
         router.push({
             pathname: '/(auth)/add-habit',
             params: { id: habitId }
         });
     };
+
 
     const handleDeleteHabit = () => {
         if (!habit?.id) return;
@@ -188,228 +257,242 @@ const HabitDetailScreen = () => {
         );
     };
 
-    const handleInvitePartner = () => {
-        Alert.alert(
-            'Partner Invitation',
-            'This feature is coming soon! You\'ll be able to invite friends to join this habit.',
-            [{ text: 'OK' }]
-        );
+    // Fetch habit data
+    useEffect(() => {
+        const loadHabit = async () => {
+            if (!habits.length) {
+                await fetchHabits();
+            }
+            const foundHabit = habits.find(h => String(h.id) === String(habitId));
+            if (foundHabit) {
+                setHabit(foundHabit);
+                
+                // Generate streak data for the last 7 days
+                const last7Days = Array(7).fill(0).map((_, i) => {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    return date.toISOString().split('T')[0];
+                }).reverse();
+                
+                const streakCounts = last7Days.map(date => {
+                    return foundHabit.streaks?.some(s => s.date.includes(date) && s.user_completed) ? 1 : 0;
+                });
+                
+                setStreakData(streakCounts);
+            }
+        };
+
+        loadHabit();
+    }, [habitId, habits]);
+
+    const handleToggleCompletion = async () => {
+        if (!habit?.id) return;
+        
+        // Button animation
+        checkButtonScale.value = withSpring(0.8, {}, () => {
+            checkButtonScale.value = withSpring(1);
+        });
+        
+        await toggleHabitCompletion(habit.id.toString());
     };
 
- jsonLog(habit);
+    // Calculate completion rate
+    const calculateCompletionRate = () => {
+        if (!habit?.streaks || habit.streaks.length === 0) return 0;
+        
+        const totalDays = habit.streaks.length;
+        const completedDays = habit.streaks.filter(s => s.user_completed).length;
+        
+        return Math.round((completedDays / totalDays) * 100);
+    };
+    
+    // Get streak info
+    const getStreakInfo = () => {
+        if (!habit) return { currentStreak: 0, longestStreak: 0 };
+        
+        return {
+            currentStreak: habit.current_streak_count || 0,
+            longestStreak: habit.longest_streak_count || 0
+        };
+    };
+    
+    const streakInfo = getStreakInfo();
+    const completionRate = calculateCompletionRate();
+    
+    // Button animation style
+    const checkButtonStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ scale: checkButtonScale.value }],
+        };
+    });
 
     if (isLoading || !habit) {
         return (
-            <SafeAreaView className={`flex-1 ${isDark ? 'bg-[#1a1a1a]' : 'bg-white'}`}>
+            <SafeAreaView className={`flex-1 ${isDark ? 'bg-[#1a1a1a]' : 'bg-[#f5f9f8]'}`}>
                 <StatusBar style={isDark ? 'light' : 'dark'} />
-                <View className="flex-1 items-center justify-center">
+                <View className="flex-1 justify-center items-center">
                     <ActivityIndicator size="large" color="#059669" />
-                    <Text className={`mt-4 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                        Loading habit details...
-                    </Text>
                 </View>
             </SafeAreaView>
         );
     }
 
     return (
-        <SafeAreaView className={`flex-1 ${isDark ? 'bg-[#1a1a1a]' : 'bg-white'}`}>
+        <SafeAreaView className={`flex-1 ${isDark ? 'bg-[#1a1a1a]' : 'bg-[#f5f9f8]'}`}>
             <StatusBar style={isDark ? 'light' : 'dark'} />
 
-            {/* Header with back button */}
-            <View className="px-6 pt-4 pb-2 flex-row justify-between items-center">
+            {/* Header */}
+            <Animated.View
+                entering={FadeIn.duration(500)}
+                className="px-6 pt-4 pb-2 flex-row items-center justify-between"
+            >
                 <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                    className="p-2"
+                    onPress={() => router.back()}
+                    className={`p-2 rounded-full ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+                    activeOpacity={0.7}
                 >
-                    <Feather
-                        name="arrow-left"
-                        size={24}
-                        color={isDark ? 'white' : 'black'}
-                    />
+                    <Feather name="arrow-left" size={20} color={isDark ? '#e2e8f0' : '#0f172a'} />
                 </TouchableOpacity>
 
                 <View className="flex-row">
                     <TouchableOpacity
                         onPress={handleShareHabit}
-                        className="p-2 mr-2"
+                        className={`p-2 rounded-full mr-3 ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+                        activeOpacity={0.7}
                     >
-                        <Feather
-                            name="share-2"
-                            size={22}
-                            color={isDark ? '#94a3b8' : '#64748b'}
-                        />
+                        <Feather name="share-2" size={20} color={isDark ? '#e2e8f0' : '#0f172a'} />
                     </TouchableOpacity>
 
                     <TouchableOpacity
                         onPress={handleEditHabit}
-                        className="p-2 mr-2"
+                        className={`p-2 rounded-full ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+                        activeOpacity={0.7}
                     >
-                        <Feather
-                            name="edit-2"
-                            size={22}
-                            color={isDark ? '#94a3b8' : '#64748b'}
-                        />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={handleDeleteHabit}
-                        disabled={isDeleting}
-                        className="p-2"
-                    >
-                        <Feather
-                            name="trash-2"
-                            size={22}
-                            color={isDeleting ? (isDark ? '#475569' : '#94a3b8') : (isDark ? '#ef4444' : '#ef4444')}
-                        />
+                        <Feather name="edit-2" size={20} color={isDark ? '#e2e8f0' : '#0f172a'} />
                     </TouchableOpacity>
                 </View>
-            </View>
+            </Animated.View>
 
-            <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-                {/* Habit Title Section */}
+            <ScrollView
+                className="flex-1"
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 40 }}
+            >
+                {/* Habit Title */}
                 <Animated.View
-                    entering={FadeIn.duration(500)}
+                    entering={FadeInDown.duration(500).delay(100)}
                     className="px-6 mb-6"
                 >
-                    <Text className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    <Text className={`text-2xl font-inter-bold ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
                         {habit.name}
                     </Text>
-                    <Text className={`mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                        {habit.frequency} habit • {habit.is_public ? 'Public' : 'Private'}
+                    <Text className={`mt-1 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                        {habit.description || 'No description provided'}
                     </Text>
                 </Animated.View>
-
-                {/* Statistics Cards */}
-                <Animated.View
-                    entering={FadeInDown.delay(100).duration(500)}
-                    className="px-6 mb-6 flex-row justify-between"
-                >
-                    <View className={`flex-1 p-4 rounded-2xl mr-3 ${isDark ? 'bg-gray-800/60' : 'bg-[#e6f7f1]'}`}>
-                        <Text className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                            Current Streak
-                        </Text>
-                        <Text className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                            {habit.current_streak || 0} days
-                        </Text>
-                    </View>
-
-                    <View className={`flex-1 p-4 rounded-2xl ${isDark ? 'bg-gray-800/60' : 'bg-[#e6f7f1]'}`}>
-                        <Text className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                            Longest Streak
-                        </Text>
-                        <Text className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                            {habit.longest_streak || 0} days
-                        </Text>
-                    </View>
-                </Animated.View>
-              
 
                 {/* Progress Circle */}
                 <Animated.View
-                    entering={FadeInDown.delay(200).duration(500)}
-                    className="items-center py-4 mb-4"
+                    entering={FadeInDown.duration(500).delay(200)}
+                    className="items-center mb-8"
                 >
                     <ProgressCircle
-                        progress={habit.current_streak ? Math.min(1, habit.current_streak / 30) : 0}
+                        progress={habit.streaks ? habit.streaks.filter(s => s.user_completed).length / (habit.streaks.length || 1) : 0}
+                        size={160}
                     />
                 </Animated.View>
-  <View className='px-6'>
 
-                <HabitHeatmap streaks={habit.streaks || []}  />
-                </View>
-                {/* Description Card */}
-                {habit.description && (
-                    <Animated.View
-                        entering={FadeInDown.delay(300).duration(500)}
-                        className={`mx-6 mb-6 p-5 rounded-2xl ${isDark ? 'bg-gray-800/60' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-100'}`}
-                    >
-                        <Text className={`text-base font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                            Description
-                        </Text>
-                        <Text className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                            {habit.description || 'No description provided.'}
-                        </Text>
-                    </Animated.View>
-                )}
-
-               
-
-                {/* Partner Section */}
+                {/* Stats Cards */}
                 <Animated.View
-                    entering={FadeInDown.delay(500).duration(500)}
-                    className={`mx-6 mb-6 p-5 rounded-2xl ${isDark ? 'bg-gray-800/60' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-100'}`}
+                    entering={FadeInDown.duration(500).delay(300)}
+                    className="px-6 mb-6"
                 >
-                    <Text className={`text-base font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                        Accountability Partner
+                    <Text className={`text-base font-inter-semibold mb-3 ${isDark ? 'text-gray-300' : 'text-[#1e293b]'}`}>
+                        STATISTICS
                     </Text>
-
-                    {habit.partner_id ? (
-                        <View className="flex-row items-center">
-                            <View className="w-12 h-12 rounded-full bg-[#059669] items-center justify-center">
-                                <Text className="text-white font-bold">JP</Text>
-                            </View>
-                            <View className="ml-3 flex-1">
-                                <Text className={`font-medium ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                                    Jane Partner
-                                </Text>
-                                <Text className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                                    Joined 7 days ago
-                                </Text>
-                            </View>
-                            <TouchableOpacity className="p-2">
-                                <Feather
-                                    name="message-circle"
-                                    size={22}
-                                    color="#059669"
-                                />
-                            </TouchableOpacity>
-                        </View>
-                    ) : (
-                        <View className="items-center py-4">
-                            <Feather
-                                name="users"
-                                size={40}
-                                color="#059669"
-                            />
-                            <Text className={`text-center mt-3 mb-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                                No partner yet
-                            </Text>
-                            <Text className={`text-center text-sm mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                                Invite a partner to increase your accountability
-                            </Text>
-                            <TouchableOpacity
-                                onPress={handleInvitePartner}
-                                className="px-4 py-2 bg-[#059669] rounded-lg"
-                            >
-                                <Text className="text-white font-medium">Invite Partner</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
+                    
+                    <View className="flex-row gap-4 mb-4">
+                        <StatCard 
+                            title="Current Streak" 
+                            value={streakInfo.currentStreak} 
+                            icon="trending-up" 
+                            isDark={isDark} 
+                        />
+                        <StatCard 
+                            title="Longest Streak" 
+                            value={streakInfo.longestStreak} 
+                            icon="award" 
+                            isDark={isDark} 
+                        />
+                    </View>
+                    
+                    <View className="flex-row gap-4">
+                        <StatCard 
+                            title="Completion Rate" 
+                            value={`${completionRate}%`} 
+                            icon="percent" 
+                            isDark={isDark} 
+                        />
+                        <StatCard 
+                            title="Days Tracked" 
+                            value={habit.streaks?.length || 0} 
+                            icon="calendar" 
+                            isDark={isDark} 
+                        />
+                    </View>
                 </Animated.View>
 
-                {/* Mark Complete Button */}
-                <View className="px-6 pb-10">
-                    <TouchableOpacity
-                        onPress={handleToggleCompletion}
-                        className={`py-4 rounded-xl ${habit.todayCompleted
-                            ? isDark ? 'bg-gray-700' : 'bg-gray-200'
-                            : 'bg-[#059669]'
-                            }`}
-                    >
-                        <View className="flex-row items-center justify-center">
-                            <Feather
-                                name={habit.todayCompleted ? "check" : "check"}
-                                size={20}
-                                color={habit.todayCompleted ? (isDark ? "#94a3b8" : "#64748b") : "white"}
-                            />
-                            <Text className={`ml-2 font-semibold ${habit.todayCompleted
-                                ? isDark ? 'text-gray-400' : 'text-gray-600'
-                                : 'text-white'
-                                }`}>
-                                {habit.todayCompleted ? "Completed Today" : "Mark as Complete"}
+                {/* Weekly Progress */}
+                <Animated.View
+                    entering={FadeInDown.duration(500).delay(400)}
+                    className={`mx-6 p-5 rounded-2xl mb-6 ${isDark ? 'bg-gray-800/60' : 'bg-white'} shadow-sm`}
+                >
+                    <Text className={`text-base font-inter-semibold mb-4 ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
+                        Weekly Progress
+                    </Text>
+                    
+                    <View className="items-center">
+                        <StreakChart streakData={streakData} isDark={isDark} />
+                    </View>
+                </Animated.View>
+
+                {/* Habit History */}
+                <Animated.View
+                    entering={FadeInDown.duration(500).delay(500)}
+                    className={`mx-6 p-5 rounded-2xl mb-6 ${isDark ? 'bg-gray-800/60' : 'bg-white'} shadow-sm`}
+                >
+                    <Text className={`text-base font-inter-semibold mb-4 ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
+                        Habit History
+                    </Text>
+                    
+                    {habit && habit.streaks && <HabitHeatmap streaks={habit.streaks} />}
+                </Animated.View>
+
+                {/* Action Buttons */}
+                <View className="px-6 mt-4 flex-row justify-between">
+                    <Animated.View style={checkButtonStyle} className="flex-1 mr-3">
+                        <TouchableOpacity
+                            onPress={handleToggleCompletion}
+                            className={`py-4 rounded-xl items-center justify-center ${habit.todayCompleted ? 'bg-emerald-700' : 'bg-[#059669]'}`}
+                            activeOpacity={0.8}
+                        >
+                            <Text className="text-white font-inter-semibold">
+                                {habit.todayCompleted ? 'Completed Today' : 'Mark as Completed'}
                             </Text>
-                        </View>
+                        </TouchableOpacity>
+                    </Animated.View>
+
+                    <TouchableOpacity
+                        onPress={handleDeleteHabit}
+                        className={`p-4 rounded-xl ${isDark ? 'bg-gray-800' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}
+                        activeOpacity={0.7}
+                        disabled={isDeleting}
+                    >
+                        {isDeleting ? (
+                            <ActivityIndicator size="small" color="#ef4444" />
+                        ) : (
+                            <Feather name="trash-2" size={20} color="#ef4444" />
+                        )}
                     </TouchableOpacity>
                 </View>
             </ScrollView>
@@ -417,4 +500,4 @@ const HabitDetailScreen = () => {
     );
 };
 
-export default HabitDetailScreen; 
+export default HabitDetailScreen;
