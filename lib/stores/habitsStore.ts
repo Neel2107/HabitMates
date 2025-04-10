@@ -63,7 +63,9 @@ export const useHabitsStore = create<HabitsState>((set, get) => ({
         is_public: habit.is_public,
         created_at: habit.created_at,
         updated_at: habit.updated_at,
-        todayCompleted: habit.streaks?.[0]?.user_completed || false,
+        todayCompleted: habit.streaks?.[0]?.user_completed || 
+          (habit.last_completed_at && 
+           new Date(habit.last_completed_at).toDateString() === new Date().toDateString()),
         target_days: habit.target_days,
         status: habit.status || 'active',
         start_date: habit.start_date,
@@ -101,45 +103,41 @@ export const useHabitsStore = create<HabitsState>((set, get) => ({
     const habit = get().habits.find(h => h.id === habitId);
     if (!habit) return;
     
-    // Create a unique action ID
     const actionId = `toggle-${habitId}-${Date.now()}`;
     
     // Optimistically update the UI
     set(state => {
       const updatedHabits = state.habits.map(h => {
         if (h.id === habitId) {
-          // Toggle the completion status
           const newCompletionStatus = !h.todayCompleted;
-          
-          // Calculate new streak count (simplified for optimistic update)
-          let newStreakCount = h.current_streak_count;
-          if (newCompletionStatus) {
-            // If completing, increment streak
-            newStreakCount += 1;
-          } else {
-            // If uncompleting, decrement streak (but not below 0)
-            newStreakCount = Math.max(0, newStreakCount - 1);
-          }
+          const now = new Date().toISOString();
           
           return {
             ...h,
             todayCompleted: newCompletionStatus,
-            current_streak_count: newStreakCount,
-            // Update longest streak if needed
-            longest_streak_count: Math.max(h.longest_streak_count, newStreakCount)
+            last_completed_at: newCompletionStatus ? now : null,
+            current_streak_count: newCompletionStatus 
+              ? h.current_streak_count + 1 
+              : Math.max(0, h.current_streak_count - 1),
+            longest_streak_count: newCompletionStatus 
+              ? Math.max(h.longest_streak_count, h.current_streak_count + 1)
+              : h.longest_streak_count
           };
         }
         return h;
       });
       
-      // Add to pending actions
       return {
         habits: updatedHabits,
         pendingActions: {
           ...state.pendingActions,
           [actionId]: {
             type: 'toggle',
-            data: { habitId, previousState: habit.todayCompleted },
+            data: { 
+              habitId, 
+              previousState: habit.todayCompleted,
+              previous_last_completed_at: habit.last_completed_at 
+            },
             timestamp: Date.now()
           }
         }
@@ -236,7 +234,6 @@ export const useHabitsStore = create<HabitsState>((set, get) => ({
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) throw new Error('User not authenticated');
 
-      // Modified to match the actual database schema
       const { data, error } = await supabase
       .from('habits')
       .insert({
@@ -250,10 +247,8 @@ export const useHabitsStore = create<HabitsState>((set, get) => ({
         end_date: habit.end_date,
         owner_id: user.id,
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-        // Removed fields that don't exist in the schema:
-        // current_streak, longest_streak, current_streak_count, 
-        // longest_streak_count, last_completed_at, streak_start_date
+        updated_at: new Date().toISOString(),
+        last_completed_at: null // Add this field
       })
       .select('*')
       .single();
@@ -280,7 +275,6 @@ export const useHabitsStore = create<HabitsState>((set, get) => ({
         start_date: data.start_date,
         end_date: data.end_date,
         streaks: [],
-        // Handle fields that might not exist in the database but are used in our app
         current_streak: 0,
         longest_streak: 0,
         last_completed_at: null,

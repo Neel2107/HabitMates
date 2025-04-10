@@ -1,3 +1,5 @@
+import { useThemeStore } from '@/lib/stores/themeStore';
+import { useTheme } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
@@ -30,6 +32,12 @@ const CustomSwitch: React.FC<CustomSwitchProps> = ({
   thumbColor = '#FFFFFF',
   isLoading = false,
 }) => {
+  const isDark = useThemeStore((state) => state.isDark);
+  
+  // Update colors based on theme
+  const actualInactiveColor = isDark ? '#374151' : inactiveColor;
+  const actualThumbColor = isDark ? '#1f2937' : thumbColor;
+
   const progress = useDerivedValue(() => 
     withTiming(value ? 1 : 0, {
       duration: 200,
@@ -59,7 +67,7 @@ const CustomSwitch: React.FC<CustomSwitchProps> = ({
     backgroundColor: interpolateColor(
       progress.value,
       [0, 1],
-      [inactiveColor, activeColor]
+      [actualInactiveColor, activeColor]
     ),
   }));
 
@@ -85,7 +93,7 @@ const CustomSwitch: React.FC<CustomSwitchProps> = ({
   return (
     <Pressable onPress={() => !isLoading && onValueChange(!value)}>
       <Animated.View style={[styles.container, containerStyle]}>
-        <Animated.View style={[styles.thumb, thumbStyle, { backgroundColor: thumbColor }]}>
+        <Animated.View style={[styles.thumb, thumbStyle, { backgroundColor: actualThumbColor }]}>
           {isLoading && (
             <View style={styles.loaderContainer}>
               <Animated.View style={[styles.spinnerContainer, spinnerStyle]}>
@@ -94,7 +102,7 @@ const CustomSwitch: React.FC<CustomSwitchProps> = ({
                     cx="7" 
                     cy="7" 
                     r="5" 
-                    stroke={value ? activeColor : '#d3d3d3'} 
+                    stroke={value ? activeColor : isDark ? '#4b5563' : '#d3d3d3'} 
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeDasharray="12 20"

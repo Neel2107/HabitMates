@@ -18,7 +18,7 @@ import Animated, { FadeInDown, useAnimatedStyle, useSharedValue, withSpring, wit
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { StreakRescue } from '@/components/habit/StreakRescue';
-import { StreakVisualization } from '@/components/habit/StreakVisualization';
+// import { StreakVisualization } from '@/components/habit/StreakVisualization';
 import { useStreaks } from '@/lib/hooks/useStreaks';
 
 // Main component
@@ -281,13 +281,13 @@ const HabitDetailScreen = () => {
                         />
                     )}
 
-                    {habit && streakInfo && (
+                    {/* {habit && streakInfo && (
                         <StreakVisualization
                             streakInfo={streakInfo}
                             streaks={habit.streaks || []}
                             frequency={habit.frequency}
                         />
-                    )}
+                    )} */}
 
                     <View className="flex-row gap-4 mb-4">
                         <StatCard

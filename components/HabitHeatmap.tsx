@@ -1,7 +1,7 @@
 import { useThemeStore } from '@/lib/stores/themeStore';
-import React from 'react';
-import { View, Text, Dimensions } from 'react-native';
 import { Streak } from '@/lib/types';
+import React from 'react';
+import { Dimensions, Text, View } from 'react-native';
 
 interface HabitHeatmapProps {
   streaks: Streak[];
@@ -15,7 +15,7 @@ export const HabitHeatmap = ({ streaks }: HabitHeatmapProps) => {
   const labelWidth = 30;
   const availableWidth = screenWidth - 40;
   const weeksToShow = Math.floor((availableWidth - labelWidth) / (cellSize + spacing));
-  
+
   const generateHeatmapData = () => {
     const data = [];
     const today = new Date();
@@ -24,7 +24,7 @@ export const HabitHeatmap = ({ streaks }: HabitHeatmapProps) => {
 
     const startDate = new Date(today);
     startDate.setDate(today.getDate() - ((weeksToShow - 1) * 7));
-    
+
     // Get to the nearest Sunday
     const daysSinceMonday = startDate.getDay();
     startDate.setDate(startDate.getDate() - daysSinceMonday);
@@ -35,10 +35,10 @@ export const HabitHeatmap = ({ streaks }: HabitHeatmapProps) => {
         const currentDate = new Date(startDate);
         currentDate.setDate(startDate.getDate() + (week * 7) + day);
         const dateStr = currentDate.toISOString().split('T')[0];
-        
+
         // Use actual streaks data
         const streak = streaks.find(s => s.date === dateStr);
-        
+
         weekData.push({
           date: dateStr,
           completed: Boolean(streak?.user_completed),
@@ -53,7 +53,7 @@ export const HabitHeatmap = ({ streaks }: HabitHeatmapProps) => {
   };
 
   const getColorForCompletion = (completed: boolean, isToday: boolean, isFuture: boolean) => {
-    
+
     if (completed) {
       return '#059669'; // Always show green for completed, regardless of today/future
     }
@@ -74,7 +74,7 @@ export const HabitHeatmap = ({ streaks }: HabitHeatmapProps) => {
       <Text className={`text-base font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
         Activity History
       </Text>
-      <View className="flex-row">
+      <View className="flex-row ">
         {/* Week days labels */}
         <View className="mr-1">
           {weekDays.map((day, index) => (
@@ -87,7 +87,7 @@ export const HabitHeatmap = ({ streaks }: HabitHeatmapProps) => {
             </Text>
           ))}
         </View>
-        
+
         {/* Heatmap grid */}
         <View className="flex-row gap-0.5">
           {heatmapData.map((week, weekIndex) => (
@@ -115,7 +115,7 @@ export const HabitHeatmap = ({ streaks }: HabitHeatmapProps) => {
       </View>
       <View className="flex-row justify-between mt-1">
         <Text className={`text-[10px] ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-          {weeksToShow} weeks ago
+          {weeksToShow} weekws ago
         </Text>
         <Text className={`text-[10px] ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
           Now

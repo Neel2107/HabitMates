@@ -1,4 +1,5 @@
 import CustomSwitch from '@/components/Switch/CustomSwitch';
+import { CustomButton } from '@/components/ui/CustomButton';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useHabitsStore } from '@/lib/stores/habitsStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
@@ -163,26 +164,13 @@ const AddHabitScreen = () => {
                 <Text className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
                     {isEditing ? 'Edit Habit' : 'New Habit'}
                 </Text>
-                <TouchableOpacity
-                    onPress={handleSave}
-                    disabled={isLoading}
-                    className={`py-2 px-4 rounded-full ${isLoading ? 'opacity-70' : ''} ${isDark ? 'bg-[#059669]' : 'bg-[#059669]'}`}
-                    activeOpacity={0.7}
-                >
-                    {isLoading ? (
-                        <ActivityIndicator size="small" color="white" />
-                    ) : (
-                        <Text className="text-white font-medium">
-                            {isEditing ? 'Update' : 'Create'}
-                        </Text>
-                    )}
-                </TouchableOpacity>
+                <View style={{ width: 24 }} />
             </Animated.View>
 
             <ScrollView
                 className="flex-1 px-6"
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 40 }}
+                contentContainerStyle={{ paddingBottom: 80 }}
             >
                 <Animated.View
                     className="gap-6"
@@ -476,7 +464,32 @@ const AddHabitScreen = () => {
                         </Animated.View>
                     )}
                 </Animated.View>
+
             </ScrollView>
+            <Animated.View
+                entering={FadeIn.duration(500)}
+                className="absolute bottom-0 left-0 right-0 p-4 bg-transparent"
+                style={{
+                    shadowColor: isDark ? '#000' : '#000',
+                    shadowOffset: { width: 0, height: -4 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 8,
+                    elevation: 5,
+                }}
+            >
+
+                <CustomButton
+                    onPress={handleSave}
+                    isLoading={isLoading}
+                    backgroundColor={isDark ? '#059669' : '#059669'}
+                    textColor="white"
+                    disabled={isLoading}
+                    loadingText="Saving..."
+
+                    title={isEditing ? 'Save Changes' : 'Create Habit'}
+                />
+            </Animated.View>
+
         </SafeAreaView>
     );
 };
