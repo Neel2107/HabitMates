@@ -2,13 +2,12 @@ import { CustomButton } from '@/components/ui/CustomButton';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
 import { Feather } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { Alert, Image, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import Animated, { FadeIn, FadeOut, LinearTransition, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, LinearTransition, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 
 export default function LoginScreen() {
   const isDark = useThemeStore((state) => state.isDark);
@@ -92,14 +91,14 @@ export default function LoginScreen() {
                 onChangeText={setEmail}
                 autoCapitalize="none"
                 keyboardType="email-address"
-                className="bg-white p-4 rounded-xl text-xl font-inter-regular border border-gray-200 text-gray-800"
+                className="bg-white p-4 rounded-xl text-xl font-inter-regular border border-zinc-200 text-gray-800"
                 placeholderTextColor="#9ca3af"
               />
             </View>
 
             {/* Password Input with Show/Hide Toggle */}
             <View className="mb-2">
-              <View className="flex-row items-center bg-white rounded-xl border border-gray-200">
+              <View className="flex-row items-center bg-white rounded-xl border border-zinc-200">
                 <TextInput
                   placeholder="Password"
                   value={password}

@@ -1,7 +1,6 @@
 import { CustomButton } from '@/components/ui/CustomButton';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
-import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
@@ -39,8 +38,8 @@ export default function ResetPasswordScreen() {
   return (
     <View className="flex-1">
       <StatusBar style={isDark ? 'light' : 'dark'} />
-      
-   
+
+
 
       <KeyboardAwareScrollView
         bottomOffset={Platform.OS === 'ios' ? 400 : 200}
@@ -52,8 +51,8 @@ export default function ResetPasswordScreen() {
         <View className="px-8 py-6">
           {/* Header with Illustration */}
           <View className="items-center mb-8">
-            <Image 
-              source={require('@/assets/images/signup.png')} 
+            <Image
+              source={require('@/assets/images/signup.png')}
               style={{ width: 180, height: 180 }}
               resizeMode="cover"
             />
@@ -78,27 +77,27 @@ export default function ResetPasswordScreen() {
                 onChangeText={setEmail}
                 autoCapitalize="none"
                 keyboardType="email-address"
-                className="bg-white p-4 rounded-xl text-xl font-inter-regular border border-gray-200 text-gray-800"
+                className="bg-white p-4 rounded-xl text-xl font-inter-regular border border-zinc-200 text-gray-800"
                 placeholderTextColor="#9ca3af"
               />
             </View>
 
             {/* Reset Button */}
             <View className='mb-8'>
-            <CustomButton
-            onPress={handleResetPassword}
-            title="RESET PASSWORD"
-            isLoading={isLoading}
-            loadingText="RESETTING..."
-            disabled={isLoading ||!email}
-            textColor="white"
-            />
+              <CustomButton
+                onPress={handleResetPassword}
+                title="RESET PASSWORD"
+                isLoading={isLoading}
+                loadingText="RESETTING..."
+                disabled={isLoading || !email}
+                textColor="white"
+              />
             </View>
 
             {/* Back to Login */}
             <View className="flex-row justify-center items-center">
               <Text className="text-gray-700 font-inter-regular text-base">
-                Remember your password? 
+                Remember your password?
               </Text>
               <TouchableOpacity
                 activeOpacity={0.7}

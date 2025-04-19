@@ -181,8 +181,8 @@ const AddHabitScreen = () => {
                         entering={FadeInDown.duration(500).delay(200)}
                         layout={LinearTransition.damping(15)}
                         className={`rounded-2xl border ${isDark
-                            ? 'bg-zinc-800/60 border-gray-700'
-                            : 'bg-white border-gray-100'}`}
+                            ? 'bg-zinc-800/60 border-zinc-700'
+                            : 'bg-white border-zinc-100'}`}
                     >
                         <View className="p-4">
                             <Text className={`text-sm font-medium mb-2 ${isDark
@@ -229,8 +229,8 @@ const AddHabitScreen = () => {
                         entering={FadeInDown.duration(500).delay(300)}
                         layout={LinearTransition.damping(15)}
                         className={`rounded-2xl border ${isDark
-                            ? 'bg-zinc-800/60 border-gray-700'
-                            : 'bg-white border-gray-100'}`}
+                            ? 'bg-zinc-800/60 border-zinc-700'
+                            : 'bg-white border-zinc-100'}`}
                     >
                         <View className="p-4">
                             <Text className={`text-sm font-medium mb-2 ${isDark
@@ -273,8 +273,8 @@ const AddHabitScreen = () => {
                         entering={FadeInDown.duration(500).delay(400)}
                         layout={LinearTransition.damping(15)}
                         className={`rounded-2xl border ${isDark
-                            ? 'bg-zinc-800/60 border-gray-700'
-                            : 'bg-white border-gray-100'}`}
+                            ? 'bg-zinc-800/60 border-zinc-700'
+                            : 'bg-white border-zinc-100'}`}
                     >
                         <View className="p-4">
                             <Text className={`text-sm font-medium mb-4 ${isDark
@@ -296,8 +296,8 @@ const AddHabitScreen = () => {
                                                     ? 'bg-[#059669] border-[#059669]'
                                                     : 'bg-[#059669] border-[#059669]'
                                                 : isDark
-                                                    ? 'border-gray-700'
-                                                    : 'border-gray-200'
+                                                    ? 'border-zinc-700'
+                                                    : 'border-zinc-200'
                                                 }`}
                                         >
                                             <View className="flex-row items-center justify-center gap-2">
@@ -337,8 +337,8 @@ const AddHabitScreen = () => {
                                         </Text>
                                     </View>
                                     <View className={`rounded-xl border ${isDark
-                                        ? 'border-gray-700'
-                                        : 'border-gray-200'}`}>
+                                        ? 'border-zinc-700'
+                                        : 'border-zinc-200'}`}>
                                         <TextInput
                                             value={formData.target_days.toString()}
                                             onChangeText={handleTargetDaysChange}
@@ -365,8 +365,8 @@ const AddHabitScreen = () => {
                         entering={FadeInDown.duration(500).delay(500)}
                         layout={LinearTransition.damping(15)}
                         className={`rounded-2xl border ${isDark
-                            ? 'bg-zinc-800/60 border-gray-700'
-                            : 'bg-white border-gray-100'}`}
+                            ? 'bg-zinc-800/60 border-zinc-700'
+                            : 'bg-white border-zinc-100'}`}
                     >
                         <TouchableOpacity
                             activeOpacity={0.8}
@@ -402,8 +402,8 @@ const AddHabitScreen = () => {
                     <Animated.View
                         entering={FadeInDown.duration(500).delay(600)}
                         className={`rounded-2xl border ${isDark
-                            ? 'bg-zinc-800/60 border-gray-700'
-                            : 'bg-white border-gray-100'}`}
+                            ? 'bg-zinc-800/60 border-zinc-700'
+                            : 'bg-white border-zinc-100'}`}
                     >
                         <View className="p-4">
                             <Text className={`text-sm font-medium mb-4 ${isDark
@@ -417,8 +417,8 @@ const AddHabitScreen = () => {
                                     Alert.alert('Coming Soon', 'Partner selection will be available soon!');
                                 }}
                                 className={`flex-row items-center p-3 rounded-xl border ${isDark
-                                    ? 'border-gray-700'
-                                    : 'border-gray-200'}`}
+                                    ? 'border-zinc-700'
+                                    : 'border-zinc-200'}`}
                             >
                                 <Feather
                                     name="users"

@@ -135,7 +135,7 @@ export default function SignUpScreen() {
                 }}
                 autoCapitalize="none"
                 keyboardType="email-address"
-                className={`bg-white p-4 rounded-xl text-xl font-inter-regular border ${errors.email ? 'border-red-500' : 'border-gray-200'} text-gray-800`}
+                className={`bg-white p-4 rounded-xl text-xl font-inter-regular border ${errors.email ? 'border-red-500' : 'border-zinc-200'} text-gray-800`}
                 placeholderTextColor="#9ca3af"
               />
               {errors.email && (
@@ -155,7 +155,7 @@ export default function SignUpScreen() {
                   if (errors.username) setErrors(prev => ({ ...prev, username: '' }));
                 }}
                 autoCapitalize="none"
-                className={`bg-white p-4 rounded-xl text-xl font-inter-regular border ${errors.username ? 'border-red-500' : 'border-gray-200'} text-gray-800`}
+                className={`bg-white p-4 rounded-xl text-xl font-inter-regular border ${errors.username ? 'border-red-500' : 'border-zinc-200'} text-gray-800`}
                 placeholderTextColor="#9ca3af"
               />
               {errors.username && (
@@ -167,7 +167,7 @@ export default function SignUpScreen() {
 
             {/* Password Input with Show/Hide Toggle */}
             <View className="mb-4">
-              <View className={`flex-row items-center bg-white rounded-xl border ${errors.password ? 'border-red-500' : 'border-gray-200'}`}>
+              <View className={`flex-row items-center bg-white rounded-xl border ${errors.password ? 'border-red-500' : 'border-zinc-200'}`}>
                 <TextInput
                   placeholder="Password"
                   value={formData.password}
@@ -201,7 +201,7 @@ export default function SignUpScreen() {
 
             {/* Confirm Password Input with Show/Hide Toggle */}
             <View className="mb-6">
-              <View className={`flex-row items-center bg-white rounded-xl border ${errors.confirmPassword ? 'border-red-500' : 'border-gray-200'}`}>
+              <View className={`flex-row items-center bg-white rounded-xl border ${errors.confirmPassword ? 'border-red-500' : 'border-zinc-200'}`}>
                 <TextInput
                   placeholder="Confirm password"
                   value={formData.confirmPassword}
