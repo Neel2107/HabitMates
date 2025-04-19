@@ -32,7 +32,7 @@ const PartnersScreen = () => {
         {/* Coming Soon Card */}
         <Animated.View
           entering={FadeInDown.delay(150).duration(500)}
-          className={`mb-6 p-6 rounded-2xl ${isDark ? 'bg-gray-800/60' : 'bg-white'} shadow-sm border ${isDark ? 'border-gray-700' : 'border-gray-100'}`}
+          className={`mb-6 p-6 rounded-2xl ${isDark ? 'bg-zinc-800/60' : 'bg-white'} shadow-sm border ${isDark ? 'border-gray-700' : 'border-gray-100'}`}
         >
           <View className="items-center mb-6">
             <Feather name="users" size={60} color="#059669" />
@@ -44,7 +44,7 @@ const PartnersScreen = () => {
             </Text>
           </View>
 
-          <View className={`p-5 rounded-xl mb-6 ${isDark ? 'bg-gray-700/40' : 'bg-[#e6f7f1]'}`}>
+          <View className={`p-5 rounded-xl mb-6 ${isDark ? 'bg-zinc-700/40' : 'bg-[#e6f7f1]'}`}>
             <Text className={`text-base font-inter-semibold mb-2 ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
               What to expect
             </Text>
@@ -89,18 +89,18 @@ const PartnersScreen = () => {
         {/* Feature Preview */}
         <Animated.View
           entering={FadeInDown.delay(300).duration(500)}
-          className={`mb-10 p-6 rounded-2xl ${isDark ? 'bg-gray-800/60' : 'bg-white'} shadow-sm border ${isDark ? 'border-gray-700' : 'border-gray-100'}`}
+          className={`mb-10 p-6 rounded-2xl ${isDark ? 'bg-zinc-800/60' : 'bg-white'} shadow-sm border ${isDark ? 'border-gray-700' : 'border-gray-100'}`}
         >
           <Text className={`text-base font-inter-semibold mb-3 ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
             Why use partners?
           </Text>
-          
+
           <Text className={`text-sm font-inter-regular mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
             Research shows that having an accountability partner increases your chances of sticking to habits by up to 95%
           </Text>
-          
+
           <View className="space-y-4">
-            <View className={`p-4 rounded-xl ${isDark ? 'bg-gray-700/40' : 'bg-gray-50'}`}>
+            <View className={`p-4 rounded-xl ${isDark ? 'bg-zinc-700/40' : 'bg-zinc-50'}`}>
               <View className="flex-row items-center mb-2">
                 <Feather name="trending-up" size={18} color="#059669" />
                 <Text className={`ml-2 font-inter-medium ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
@@ -111,8 +111,8 @@ const PartnersScreen = () => {
                 Partners help you stay on track with your habits through mutual accountability
               </Text>
             </View>
-            
-            <View className={`p-4 rounded-xl ${isDark ? 'bg-gray-700/40' : 'bg-gray-50'}`}>
+
+            <View className={`p-4 rounded-xl ${isDark ? 'bg-zinc-700/40' : 'bg-zinc-50'}`}>
               <View className="flex-row items-center mb-2">
                 <Feather name="zap" size={18} color="#059669" />
                 <Text className={`ml-2 font-inter-medium ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>

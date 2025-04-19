@@ -181,7 +181,7 @@ const AddHabitScreen = () => {
                         entering={FadeInDown.duration(500).delay(200)}
                         layout={LinearTransition.damping(15)}
                         className={`rounded-2xl border ${isDark
-                            ? 'bg-gray-800/60 border-gray-700'
+                            ? 'bg-zinc-800/60 border-gray-700'
                             : 'bg-white border-gray-100'}`}
                     >
                         <View className="p-4">
@@ -229,7 +229,7 @@ const AddHabitScreen = () => {
                         entering={FadeInDown.duration(500).delay(300)}
                         layout={LinearTransition.damping(15)}
                         className={`rounded-2xl border ${isDark
-                            ? 'bg-gray-800/60 border-gray-700'
+                            ? 'bg-zinc-800/60 border-gray-700'
                             : 'bg-white border-gray-100'}`}
                     >
                         <View className="p-4">
@@ -273,7 +273,7 @@ const AddHabitScreen = () => {
                         entering={FadeInDown.duration(500).delay(400)}
                         layout={LinearTransition.damping(15)}
                         className={`rounded-2xl border ${isDark
-                            ? 'bg-gray-800/60 border-gray-700'
+                            ? 'bg-zinc-800/60 border-gray-700'
                             : 'bg-white border-gray-100'}`}
                     >
                         <View className="p-4">
@@ -365,7 +365,7 @@ const AddHabitScreen = () => {
                         entering={FadeInDown.duration(500).delay(500)}
                         layout={LinearTransition.damping(15)}
                         className={`rounded-2xl border ${isDark
-                            ? 'bg-gray-800/60 border-gray-700'
+                            ? 'bg-zinc-800/60 border-gray-700'
                             : 'bg-white border-gray-100'}`}
                     >
                         <TouchableOpacity
@@ -402,7 +402,7 @@ const AddHabitScreen = () => {
                     <Animated.View
                         entering={FadeInDown.duration(500).delay(600)}
                         className={`rounded-2xl border ${isDark
-                            ? 'bg-gray-800/60 border-gray-700'
+                            ? 'bg-zinc-800/60 border-gray-700'
                             : 'bg-white border-gray-100'}`}
                     >
                         <View className="p-4">
@@ -444,7 +444,7 @@ const AddHabitScreen = () => {
                                 onPress={handleDelete}
                                 disabled={isDeleting}
                                 className={`py-4 px-4 rounded-xl border border-red-500 ${isDeleting ? 'opacity-50' : ''
-                                    } ${isDark ? 'bg-gray-800/30' : 'bg-red-50'
+                                    } ${isDark ? 'bg-zinc-800/30' : 'bg-red-50'
                                     }`}
                                 activeOpacity={0.7}
                             >

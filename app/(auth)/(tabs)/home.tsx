@@ -176,7 +176,7 @@ export default function HomePage() {
                     {getCompletionPercentage()}%
                   </Text>
                 </View>
-                <View className={`h-2 rounded-full overflow-hidden ${isDark ? 'bg-zinc-700' : 'bg-gray-100'}`}>
+                <View className={`h-2 rounded-full overflow-hidden ${isDark ? 'bg-zinc-700' : 'bg-zinc-100'}`}>
                   <View
                     className="h-full rounded-full bg-[#059669]"
                     style={{ width: `${getCompletionPercentage()}%` }}
@@ -261,7 +261,7 @@ export default function HomePage() {
                           Daily • Streak: {habit.current_streak || 0} days
                         </Text>
                         <View className="flex-row items-center gap-2 mt-2">
-                          <View className={`flex-1 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-zinc-700' : 'bg-gray-100'}`}>
+                          <View className={`flex-1 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-zinc-700' : 'bg-zinc-100'}`}>
                             <View
                               className="h-full rounded-full bg-[#059669]"
                               style={{
@@ -328,7 +328,7 @@ export default function HomePage() {
                           Weekly • Streak: {habit.current_streak || 0} weeks
                         </Text>
                         <View className="flex-row items-center gap-2 mt-2">
-                          <View className={`flex-1 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-zinc-700' : 'bg-gray-100'}`}>
+                          <View className={`flex-1 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-zinc-700' : 'bg-zinc-100'}`}>
                             <View
                               className="h-full rounded-full bg-[#059669]"
                               style={{

@@ -1,12 +1,12 @@
+import { CustomButton } from '@/components/ui/CustomButton';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
-import { CustomButton } from '@/components/ui/CustomButton';
+import { supabase } from '@/lib/supabase';
 import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { supabase } from '@/lib/supabase';
 import {
     Alert,
     Image,
@@ -114,7 +114,7 @@ const EditProfileScreen = () => {
     const handleSaveProfile = async () => {
         try {
             setIsLoading(true);
-            
+
             // First, update user metadata (which can store any custom fields)
             await updateProfile({
                 username: formData.username,
@@ -123,7 +123,7 @@ const EditProfileScreen = () => {
                 avatar_url: avatarUrl,
                 updated_at: new Date().toISOString()
             });
-            
+
             // Update Supabase auth user metadata directly for the additional fields
             const { error } = await supabase.auth.updateUser({
                 data: {
@@ -133,9 +133,9 @@ const EditProfileScreen = () => {
                     website: formData.website
                 }
             });
-            
+
             if (error) throw error;
-            
+
             Alert.alert('Success', 'Profile updated successfully', [
                 { text: 'OK', onPress: () => router.back() }
             ]);
@@ -179,12 +179,12 @@ const EditProfileScreen = () => {
                 {/* Profile Picture Section */}
                 <Animated.View
                     entering={FadeInDown.delay(100).duration(500)}
-                    className={`mx-6 mb-6 p-6 rounded-2xl border shadow-sm ${isDark ? 'bg-gray-800/60 border-gray-700' : 'bg-white border-gray-100'}`}
+                    className={`mx-6 mb-6 p-6 rounded-2xl border shadow-sm ${isDark ? 'bg-zinc-800/60 border-gray-700' : 'bg-white border-gray-100'}`}
                 >
                     <View className="items-center">
                         <View className="relative">
                             {isLoading ? (
-                                <View className="w-24 h-24 rounded-full bg-gray-300 items-center justify-center">
+                                <View className="w-24 h-24 rounded-full bg-zinc-300 items-center justify-center">
                                     <Feather name="loader" size={30} color="#059669" />
                                 </View>
                             ) : (
@@ -213,7 +213,7 @@ const EditProfileScreen = () => {
                 {/* Form Fields */}
                 <Animated.View
                     entering={FadeInDown.delay(200).duration(500)}
-                    className={`mx-6 mb-6 rounded-2xl border shadow-sm ${isDark ? 'bg-gray-800/60 border-gray-700' : 'bg-white border-gray-100'}`}
+                    className={`mx-6 mb-6 rounded-2xl border shadow-sm ${isDark ? 'bg-zinc-800/60 border-gray-700' : 'bg-white border-gray-100'}`}
                 >
                     {/* Username Field */}
                     <View className={`p-4 border-b ${isDark ? 'border-gray-700/50' : 'border-gray-100'}`}>

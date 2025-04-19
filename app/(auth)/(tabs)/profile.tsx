@@ -147,7 +147,7 @@ const ProfileScreen = () => {
                 {/* Profile Card */}
                 <Animated.View
                     entering={FadeInDown.duration(500).delay(100)}
-                    className={`mx-6 mb-6 p-6 rounded-2xl border shadow-sm ${isDark ? 'bg-gray-800/60 border-gray-700' : 'bg-white border-gray-100'
+                    className={`mx-6 mb-6 p-6 rounded-2xl border shadow-sm ${isDark ? 'bg-zinc-800/60 border-gray-700' : 'bg-white border-gray-100'
                         }`}
                 >
                     <View className="items-center">
@@ -201,7 +201,7 @@ const ProfileScreen = () => {
                         SETTINGS
                     </Text>
 
-                    <View className={`rounded-2xl border overflow-hidden shadow-sm ${isDark ? 'bg-gray-800/60 border-gray-700' : 'bg-white border-gray-100'
+                    <View className={`rounded-2xl border overflow-hidden shadow-sm ${isDark ? 'bg-zinc-800/60 border-gray-700' : 'bg-white border-gray-100'
                         }`}>
                         {/* Remove this duplicate navigation item */}
                         {/* <NavigationSettingItem
@@ -244,7 +244,7 @@ const ProfileScreen = () => {
                                         onPress={() => setMode(themeMode)}
                                         className={`px-4 py-2 rounded-xl ${mode === themeMode
                                             ? 'bg-[#059669]'
-                                            : isDark ? 'bg-gray-700/50' : 'bg-gray-100'
+                                            : isDark ? 'bg-zinc-700/50' : 'bg-zinc-100'
                                             }`}
                                     >
                                         <Text className={`text-sm capitalize font-inter-medium ${mode === themeMode

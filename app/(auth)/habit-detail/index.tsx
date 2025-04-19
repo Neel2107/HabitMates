@@ -323,7 +323,7 @@ const HabitDetailScreen = () => {
                 {/* Weekly Progress */}
                 <Animated.View
                     entering={FadeInDown.duration(500).delay(400)}
-                    className={`mx-6 p-5 rounded-2xl mb-6 ${isDark ? 'bg-gray-800/60' : 'bg-white'} shadow-sm`}
+                    className={`mx-6 p-5 rounded-2xl mb-6 ${isDark ? 'bg-zinc-800/60' : 'bg-white'} shadow-sm`}
                 >
                     <Text className={`text-base font-inter-semibold mb-4 ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
                         Weekly Progress
@@ -337,7 +337,7 @@ const HabitDetailScreen = () => {
                 {/* Habit History */}
                 <Animated.View
                     entering={FadeInDown.duration(500).delay(500)}
-                    className={`mx-6 p-5 rounded-2xl mb-6 ${isDark ? 'bg-gray-800/60' : 'bg-white'} shadow-sm`}
+                    className={`mx-6 p-5 rounded-2xl mb-6 ${isDark ? 'bg-zinc-800/60' : 'bg-white'} shadow-sm`}
                 >
                     <Text className={`text-base font-inter-semibold mb-4 ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
                         Habit History
@@ -363,7 +363,7 @@ const HabitDetailScreen = () => {
 
                     <TouchableOpacity
                         onPress={handleDeleteHabit}
-                        className={`p-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-gray-800' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}
+                        className={`p-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-zinc-800' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}
                         activeOpacity={0.7}
                         disabled={isDeleting}
                     >

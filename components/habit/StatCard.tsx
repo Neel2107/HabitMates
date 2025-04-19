@@ -31,7 +31,7 @@ export const StatCard = ({ title, value, icon, isDark }: StatCardProps) => {
         <Animated.View
             style={animatedStyle}
             entering={FadeInDown.duration(400)}
-            className={`p-4 rounded-xl ${isDark ? 'bg-gray-800' : 'bg-white'} shadow-sm flex-1`}
+            className={`p-4 rounded-xl ${isDark ? 'bg-zinc-800' : 'bg-white'} shadow-sm flex-1`}
         >
             <TouchableOpacity
                 activeOpacity={0.8}
@@ -39,7 +39,7 @@ export const StatCard = ({ title, value, icon, isDark }: StatCardProps) => {
                 onPressOut={handlePressOut}
                 className="flex-row items-center"
             >
-                <View className={`w-10 h-10 rounded-full items-center justify-center ${isDark ? 'bg-gray-700' : 'bg-emerald-50'}`}>
+                <View className={`w-10 h-10 rounded-full items-center justify-center ${isDark ? 'bg-zinc-700' : 'bg-emerald-50'}`}>
                     <Feather name={icon as any} size={18} color="#059669" />
                 </View>
                 <View className="ml-3">

@@ -48,7 +48,7 @@ export const HabitHeader = ({ isDark, onShare, onEdit }: HabitHeaderProps) => {
                         animateButton(backButtonScale);
                         router.back();
                     }}
-                    className={`p-2 rounded-full ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+                    className={`p-2 rounded-full ${isDark ? 'bg-zinc-800' : 'bg-white'}`}
                     activeOpacity={0.7}
                 >
                     <Feather name="arrow-left" size={20} color={isDark ? '#e2e8f0' : '#0f172a'} />
@@ -62,7 +62,7 @@ export const HabitHeader = ({ isDark, onShare, onEdit }: HabitHeaderProps) => {
                             animateButton(shareButtonScale);
                             onShare();
                         }}
-                        className={`p-2 rounded-full ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+                        className={`p-2 rounded-full ${isDark ? 'bg-zinc-800' : 'bg-white'}`}
                         activeOpacity={0.7}
                     >
                         <Feather name="share-2" size={20} color={isDark ? '#e2e8f0' : '#0f172a'} />
@@ -75,7 +75,7 @@ export const HabitHeader = ({ isDark, onShare, onEdit }: HabitHeaderProps) => {
                             animateButton(editButtonScale);
                             onEdit();
                         }}
-                        className={`p-2 rounded-full ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+                        className={`p-2 rounded-full ${isDark ? 'bg-zinc-800' : 'bg-white'}`}
                         activeOpacity={0.7}
                     >
                         <Feather name="edit-2" size={20} color={isDark ? '#e2e8f0' : '#0f172a'} />

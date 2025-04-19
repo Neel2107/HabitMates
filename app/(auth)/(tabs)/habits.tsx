@@ -84,7 +84,7 @@ const HabitsScreen = () => {
                 entering={FadeInDown.delay(150).duration(500)}
                 className="px-6 mb-4"
             >
-                <View className={`flex-row items-center px-4 py-3 rounded-xl ${isDark ? 'bg-gray-800/60' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
+                <View className={`flex-row items-center px-4 py-3 rounded-xl ${isDark ? 'bg-zinc-800/60' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
                     <Feather
                         name="search"
                         size={18}
@@ -105,7 +105,7 @@ const HabitsScreen = () => {
                 entering={FadeInDown.delay(200).duration(500)}
                 className="px-6 mb-4"
             >
-                <View className={`flex-row p-1 rounded-xl ${isDark ? 'bg-gray-800/40' : 'bg-gray-100'}`}>
+                <View className={`flex-row p-1 rounded-xl ${isDark ? 'bg-zinc-800/40' : 'bg-zinc-100'}`}>
                     {(['all', 'active', 'completed'] as HabitStatus[]).map((tab) => (
                         <TouchableOpacity
                             key={tab}
@@ -151,7 +151,7 @@ const HabitsScreen = () => {
                 {filteredHabits.length === 0 ? (
                     <Animated.View
                         entering={FadeIn.duration(500)}
-                        className={`p-6 rounded-2xl border items-center ${isDark ? 'bg-gray-800/40 border-gray-700' : 'bg-white border-gray-100'}`}
+                        className={`p-6 rounded-2xl border items-center ${isDark ? 'bg-zinc-800/40 border-gray-700' : 'bg-white border-gray-100'}`}
                     >
                         <Feather name="calendar" size={50} color="#059669" />
                         <Text className={`text-base font-inter-medium text-center mt-4 ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
@@ -181,7 +181,7 @@ const HabitsScreen = () => {
                             key={habit.id}
                             entering={FadeInDown.delay(250 + index * 100).duration(500)}
                             className={`mb-4 p-4 rounded-2xl border shadow-sm ${isDark
-                                ? 'bg-gray-800/60 border-gray-700'
+                                ? 'bg-zinc-800/60 border-gray-700'
                                 : 'bg-white border-gray-100'
                                 }`}
                         >
@@ -214,7 +214,7 @@ const HabitsScreen = () => {
                                         </Text>
 
                                         <View className="flex-row items-center gap-2 mt-2">
-                                            <View className={`flex-1 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-gray-700' : 'bg-gray-100'}`}>
+                                            <View className={`flex-1 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-zinc-700' : 'bg-zinc-100'}`}>
                                                 <View
                                                     className="h-full rounded-full bg-[#059669]"
                                                     style={{

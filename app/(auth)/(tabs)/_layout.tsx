@@ -28,6 +28,8 @@ export default function AuthLayout() {
               paddingTop: Platform.OS === 'android' ? 8 : 0,
               height: 65,
               backgroundColor: isDark ? '#171717' : '#ffffff',
+              borderTopWidth: 1,
+              borderColor: isDark ? '#1f1f1f' : '#e5e7eb'
             },
             headerShown: false,
           }}>
