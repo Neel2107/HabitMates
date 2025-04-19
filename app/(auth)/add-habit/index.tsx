@@ -181,7 +181,7 @@ const AddHabitScreen = () => {
                         entering={FadeInDown.duration(500).delay(200)}
                         layout={LinearTransition.damping(15)}
                         className={`rounded-2xl border ${isDark
-                            ? 'bg-zinc-800/60 border-zinc-700'
+                            ? 'bg-zinc-800/60 border-zinc-800'
                             : 'bg-white border-zinc-100'}`}
                     >
                         <View className="p-4">
@@ -229,7 +229,7 @@ const AddHabitScreen = () => {
                         entering={FadeInDown.duration(500).delay(300)}
                         layout={LinearTransition.damping(15)}
                         className={`rounded-2xl border ${isDark
-                            ? 'bg-zinc-800/60 border-zinc-700'
+                            ? 'bg-zinc-800/60 border-zinc-800'
                             : 'bg-white border-zinc-100'}`}
                     >
                         <View className="p-4">
@@ -273,7 +273,7 @@ const AddHabitScreen = () => {
                         entering={FadeInDown.duration(500).delay(400)}
                         layout={LinearTransition.damping(15)}
                         className={`rounded-2xl border ${isDark
-                            ? 'bg-zinc-800/60 border-zinc-700'
+                            ? 'bg-zinc-800/60 border-zinc-800'
                             : 'bg-white border-zinc-100'}`}
                     >
                         <View className="p-4">
@@ -296,7 +296,7 @@ const AddHabitScreen = () => {
                                                     ? 'bg-[#059669] border-[#059669]'
                                                     : 'bg-[#059669] border-[#059669]'
                                                 : isDark
-                                                    ? 'border-zinc-700'
+                                                    ? 'border-zinc-800'
                                                     : 'border-zinc-200'
                                                 }`}
                                         >
@@ -337,7 +337,7 @@ const AddHabitScreen = () => {
                                         </Text>
                                     </View>
                                     <View className={`rounded-xl border ${isDark
-                                        ? 'border-zinc-700'
+                                        ? 'border-zinc-800'
                                         : 'border-zinc-200'}`}>
                                         <TextInput
                                             value={formData.target_days.toString()}
@@ -365,7 +365,7 @@ const AddHabitScreen = () => {
                         entering={FadeInDown.duration(500).delay(500)}
                         layout={LinearTransition.damping(15)}
                         className={`rounded-2xl border ${isDark
-                            ? 'bg-zinc-800/60 border-zinc-700'
+                            ? 'bg-zinc-800/60 border-zinc-800'
                             : 'bg-white border-zinc-100'}`}
                     >
                         <TouchableOpacity
@@ -402,7 +402,7 @@ const AddHabitScreen = () => {
                     <Animated.View
                         entering={FadeInDown.duration(500).delay(600)}
                         className={`rounded-2xl border ${isDark
-                            ? 'bg-zinc-800/60 border-zinc-700'
+                            ? 'bg-zinc-800/60 border-zinc-800'
                             : 'bg-white border-zinc-100'}`}
                     >
                         <View className="p-4">
@@ -417,7 +417,7 @@ const AddHabitScreen = () => {
                                     Alert.alert('Coming Soon', 'Partner selection will be available soon!');
                                 }}
                                 className={`flex-row items-center p-3 rounded-xl border ${isDark
-                                    ? 'border-zinc-700'
+                                    ? 'border-zinc-800'
                                     : 'border-zinc-200'}`}
                             >
                                 <Feather

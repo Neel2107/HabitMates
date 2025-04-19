@@ -179,7 +179,7 @@ const EditProfileScreen = () => {
                 {/* Profile Picture Section */}
                 <Animated.View
                     entering={FadeInDown.delay(100).duration(500)}
-                    className={`mx-6 mb-6 p-6 rounded-2xl border shadow-sm ${isDark ? 'bg-zinc-800/60 border-zinc-700' : 'bg-white border-zinc-100'}`}
+                    className={`mx-6 mb-6 p-6 rounded-2xl border shadow-sm ${isDark ? 'bg-zinc-800/60 border-zinc-800' : 'bg-white border-zinc-100'}`}
                 >
                     <View className="items-center">
                         <View className="relative">
@@ -213,10 +213,10 @@ const EditProfileScreen = () => {
                 {/* Form Fields */}
                 <Animated.View
                     entering={FadeInDown.delay(200).duration(500)}
-                    className={`mx-6 mb-6 rounded-2xl border shadow-sm ${isDark ? 'bg-zinc-800/60 border-zinc-700' : 'bg-white border-zinc-100'}`}
+                    className={`mx-6 mb-6 rounded-2xl border shadow-sm ${isDark ? 'bg-zinc-800/60 border-zinc-800' : 'bg-white border-zinc-100'}`}
                 >
                     {/* Username Field */}
-                    <View className={`p-4 border-b ${isDark ? 'border-zinc-700/50' : 'border-zinc-100'}`}>
+                    <View className={`p-4 border-b ${isDark ? 'border-zinc-800/50' : 'border-zinc-100'}`}>
                         <Text className={`text-sm font-inter-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                             Username
                         </Text>
@@ -230,7 +230,7 @@ const EditProfileScreen = () => {
                     </View>
 
                     {/* Full Name Field */}
-                    <View className={`p-4 border-b ${isDark ? 'border-zinc-700/50' : 'border-zinc-100'}`}>
+                    <View className={`p-4 border-b ${isDark ? 'border-zinc-800/50' : 'border-zinc-100'}`}>
                         <Text className={`text-sm font-inter-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                             Full Name
                         </Text>
@@ -244,7 +244,7 @@ const EditProfileScreen = () => {
                     </View>
 
                     {/* Bio Field */}
-                    <View className={`p-4 border-b ${isDark ? 'border-zinc-700/50' : 'border-zinc-100'}`}>
+                    <View className={`p-4 border-b ${isDark ? 'border-zinc-800/50' : 'border-zinc-100'}`}>
                         <Text className={`text-sm font-inter-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                             Bio
                         </Text>
@@ -261,7 +261,7 @@ const EditProfileScreen = () => {
                     </View>
 
                     {/* Location Field */}
-                    <View className={`p-4 border-b ${isDark ? 'border-zinc-700/50' : 'border-zinc-100'}`}>
+                    <View className={`p-4 border-b ${isDark ? 'border-zinc-800/50' : 'border-zinc-100'}`}>
                         <Text className={`text-sm font-inter-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                             Location
                         </Text>

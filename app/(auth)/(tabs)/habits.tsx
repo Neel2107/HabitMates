@@ -84,7 +84,7 @@ const HabitsScreen = () => {
                 entering={FadeInDown.delay(150).duration(500)}
                 className="px-6 mb-4"
             >
-                <View className={`flex-row items-center px-4 py-3 rounded-xl ${isDark ? 'bg-zinc-800/60' : 'bg-white'} border ${isDark ? 'border-zinc-700' : 'border-zinc-100'}`}>
+                <View className={`flex-row items-center px-4 py-3 rounded-xl ${isDark ? 'bg-zinc-800/60' : 'bg-white'} border ${isDark ? 'border-zinc-800' : 'border-zinc-100'}`}>
                     <Feather
                         name="search"
                         size={18}
@@ -151,7 +151,7 @@ const HabitsScreen = () => {
                 {filteredHabits.length === 0 ? (
                     <Animated.View
                         entering={FadeIn.duration(500)}
-                        className={`p-6 rounded-2xl border items-center ${isDark ? 'bg-zinc-800/40 border-zinc-700' : 'bg-white border-zinc-100'}`}
+                        className={`p-6 rounded-2xl border items-center ${isDark ? 'bg-zinc-800/40 border-zinc-800' : 'bg-white border-zinc-100'}`}
                     >
                         <Feather name="calendar" size={50} color="#059669" />
                         <Text className={`text-base font-inter-medium text-center mt-4 ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
@@ -181,7 +181,7 @@ const HabitsScreen = () => {
                             key={habit.id}
                             entering={FadeInDown.delay(250 + index * 100).duration(500)}
                             className={`mb-4 p-4 rounded-2xl border shadow-sm ${isDark
-                                ? 'bg-zinc-800/60 border-zinc-700'
+                                ? 'bg-zinc-800/60 border-zinc-800'
                                 : 'bg-white border-zinc-100'
                                 }`}
                         >

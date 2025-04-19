@@ -32,7 +32,7 @@ const PartnersScreen = () => {
         {/* Coming Soon Card */}
         <Animated.View
           entering={FadeInDown.delay(150).duration(500)}
-          className={`mb-6 p-6 rounded-2xl ${isDark ? 'bg-zinc-800/60' : 'bg-white'} shadow-sm border ${isDark ? 'border-zinc-700' : 'border-zinc-100'}`}
+          className={`mb-6 p-6 rounded-2xl ${isDark ? 'bg-zinc-800/60' : 'bg-white'} shadow-sm border ${isDark ? 'border-zinc-800' : 'border-zinc-100'}`}
         >
           <View className="items-center mb-6">
             <Feather name="users" size={60} color="#059669" />
@@ -89,7 +89,7 @@ const PartnersScreen = () => {
         {/* Feature Preview */}
         <Animated.View
           entering={FadeInDown.delay(300).duration(500)}
-          className={`mb-10 p-6 rounded-2xl ${isDark ? 'bg-zinc-800/60' : 'bg-white'} shadow-sm border ${isDark ? 'border-zinc-700' : 'border-zinc-100'}`}
+          className={`mb-10 p-6 rounded-2xl ${isDark ? 'bg-zinc-800/60' : 'bg-white'} shadow-sm border ${isDark ? 'border-zinc-800' : 'border-zinc-100'}`}
         >
           <Text className={`text-base font-inter-semibold mb-3 ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
             Why use partners?

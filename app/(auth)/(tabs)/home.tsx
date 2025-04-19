@@ -147,7 +147,7 @@ export default function HomePage() {
             {/* Streak Card */}
             <Animated.View
               entering={FadeInDown.duration(500).delay(100)}
-              className={`mx-6 mb-6 p-5 rounded-2xl ${isDark ? 'bg-zinc-800' : 'bg-white'} shadow-sm border ${isDark ? 'border-zinc-700' : 'border-zinc-100'}`}
+              className={`mx-6 mb-6 p-5 rounded-2xl ${isDark ? 'bg-zinc-800' : 'bg-white'} shadow-sm border ${isDark ? 'border-zinc-700/40' : 'border-zinc-100'}`}
             >
               <View className="flex-row items-center justify-between mb-3">
                 <Text className={`text-base font-inter-semibold ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
@@ -224,7 +224,7 @@ export default function HomePage() {
               {getDailyHabits().length === 0 ? (
                 <Animated.View
                   entering={FadeIn.duration(500)}
-                  className={`p-4 rounded-2xl border ${isDark ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-zinc-100'} items-center shadow-sm`}
+                  className={`p-4 rounded-2xl border ${isDark ? 'bg-zinc-800 border-zinc-700/40' : 'bg-white border-zinc-100'} items-center shadow-sm`}
                 >
                   <Text className={`text-sm text-center font-inter-regular ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                     No daily habits yet
@@ -236,7 +236,7 @@ export default function HomePage() {
                     key={habit.id}
                     entering={FadeInDown.delay(index * 100).duration(500)}
                     className={`mb-3 rounded-2xl border shadow-sm ${isDark
-                      ? 'bg-zinc-800 border-zinc-700'
+                      ? 'bg-zinc-800 border-zinc-700/40'
                       : 'bg-white border-zinc-100'
                       }`}
                   >
@@ -291,7 +291,7 @@ export default function HomePage() {
               {getWeeklyHabits().length === 0 ? (
                 <Animated.View
                   entering={FadeIn.duration(500)}
-                  className={`p-4 rounded-2xl border ${isDark ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-zinc-100'} items-center shadow-sm`}
+                  className={`p-4 rounded-2xl border ${isDark ? 'bg-zinc-800 border-zinc-700/40' : 'bg-white border-zinc-100'} items-center shadow-sm`}
                 >
                   <Text className={`text-sm text-center font-inter-regular ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                     No weekly habits yet
@@ -303,7 +303,7 @@ export default function HomePage() {
                     key={habit.id}
                     entering={FadeInDown.delay(index * 100).duration(500)}
                     className={`mb-3 rounded-2xl border shadow-sm ${isDark
-                      ? 'bg-zinc-800 border-zinc-700'
+                      ? 'bg-zinc-800 border-zinc-700/40'
                       : 'bg-white border-zinc-100'
                       }`}
                   >
@@ -355,7 +355,7 @@ export default function HomePage() {
 
               <Animated.View
                 entering={FadeIn.duration(500)}
-                className={`p-6 rounded-2xl border ${isDark ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-zinc-100'} shadow-sm`}
+                className={`p-6 rounded-2xl border ${isDark ? 'bg-zinc-800 border-zinc-700/40' : 'bg-white border-zinc-100'} shadow-sm`}
               >
                 <View className="flex-row items-center mb-4">
                   <Feather name="trending-up" size={24} color="#059669" />

@@ -57,7 +57,7 @@ const ProfileScreen = () => {
     // Regular setting item with navigation/press action
     const NavigationSettingItem = ({ icon, name, color, bgColor, action, danger = false }: BaseSettingProps & { action?: () => void }) => (
         <TouchableOpacity
-            className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-zinc-700/50' : 'border-zinc-100'
+            className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-zinc-800/50' : 'border-zinc-100'
                 }`}
             activeOpacity={action ? 0.7 : 1}
             onPress={action}
@@ -82,7 +82,7 @@ const ProfileScreen = () => {
         onValueChange: (value: boolean) => void
     }) => (
         <TouchableOpacity
-            className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-zinc-700/50' : 'border-zinc-100'
+            className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-zinc-800/50' : 'border-zinc-100'
                 }`}
             activeOpacity={1}
             onPress={() => onValueChange(!value)}
@@ -105,7 +105,7 @@ const ProfileScreen = () => {
     // Action setting item without chevron (like logout)
     const ActionSettingItem = ({ icon, name, color, bgColor, action, danger = false }: BaseSettingProps & { action?: () => void }) => (
         <TouchableOpacity
-            className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-zinc-700/50' : 'border-zinc-100'
+            className={`p-4 flex-row items-center justify-between border-b ${isDark ? 'border-zinc-800/50' : 'border-zinc-100'
                 }`}
             activeOpacity={0.7}
             onPress={action}
@@ -147,7 +147,7 @@ const ProfileScreen = () => {
                 {/* Profile Card */}
                 <Animated.View
                     entering={FadeInDown.duration(500).delay(100)}
-                    className={`mx-6 mb-6 p-6 rounded-2xl border shadow-sm ${isDark ? 'bg-zinc-800/60 border-zinc-700' : 'bg-white border-zinc-100'
+                    className={`mx-6 mb-6 p-6 rounded-2xl border shadow-sm ${isDark ? 'bg-zinc-800/60 border-zinc-800' : 'bg-white border-zinc-100'
                         }`}
                 >
                     <View className="items-center">
@@ -185,7 +185,7 @@ const ProfileScreen = () => {
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                className={`px-5 py-2.5 rounded-xl border ${isDark ? 'border-zinc-700' : 'border-zinc-200'
+                                className={`px-5 py-2.5 rounded-xl border ${isDark ? 'border-zinc-800' : 'border-zinc-200'
                                     }`}
                                 activeOpacity={0.8}
                             >
@@ -201,7 +201,7 @@ const ProfileScreen = () => {
                         SETTINGS
                     </Text>
 
-                    <View className={`rounded-2xl border overflow-hidden shadow-sm ${isDark ? 'bg-zinc-800/60 border-zinc-700' : 'bg-white border-zinc-100'
+                    <View className={`rounded-2xl border overflow-hidden shadow-sm ${isDark ? 'bg-zinc-800/60 border-zinc-800' : 'bg-white border-zinc-100'
                         }`}>
                         {/* Remove this duplicate navigation item */}
                         {/* <NavigationSettingItem
@@ -222,7 +222,7 @@ const ProfileScreen = () => {
                         />
 
                         {/* Theme Mode */}
-                        <View className={`p-4 flex flex-row justify-between items-center border-b ${isDark ? 'border-zinc-700/50' : 'border-zinc-100'}`}>
+                        <View className={`p-4 flex flex-row justify-between items-center border-b ${isDark ? 'border-zinc-800/50' : 'border-zinc-100'}`}>
                             <View className="flex-row items-center mb-3">
                                 <View className={`w-9 h-9 rounded-full items-center justify-center ${isDark ? 'bg-[#059669]/20' : 'bg-[#e6f7f1]'
                                     }`}>

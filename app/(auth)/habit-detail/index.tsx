@@ -363,7 +363,7 @@ const HabitDetailScreen = () => {
 
                     <TouchableOpacity
                         onPress={handleDeleteHabit}
-                        className={`p-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-zinc-800' : 'bg-white'} border ${isDark ? 'border-zinc-700' : 'border-zinc-200'}`}
+                        className={`p-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-zinc-800' : 'bg-white'} border ${isDark ? 'border-zinc-800' : 'border-zinc-200'}`}
                         activeOpacity={0.7}
                         disabled={isDeleting}
                     >
