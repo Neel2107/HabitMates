@@ -1,4 +1,4 @@
-import TopGradient from '@/components/Switch/TopGradient';
+import TopGradient from '@/components/ui/TopGradient';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useHabitsStore } from '@/lib/stores/habitsStore';
 import { useThemeStore } from '@/lib/stores/themeStore';
@@ -147,7 +147,7 @@ export default function HomePage() {
             {/* Streak Card */}
             <Animated.View
               entering={FadeInDown.duration(500).delay(100)}
-              className={`mx-6 mb-6 p-5 rounded-2xl ${isDark ? 'bg-gray-800/60' : 'bg-white'} shadow-sm border ${isDark ? 'border-gray-700' : 'border-gray-100'}`}
+              className={`mx-6 mb-6 p-5 rounded-2xl ${isDark ? 'bg-zinc-800' : 'bg-white'} shadow-sm border ${isDark ? 'border-zinc-700' : 'border-gray-100'}`}
             >
               <View className="flex-row items-center justify-between mb-3">
                 <Text className={`text-base font-inter-semibold ${isDark ? 'text-white' : 'text-[#1e293b]'}`}>
@@ -176,7 +176,7 @@ export default function HomePage() {
                     {getCompletionPercentage()}%
                   </Text>
                 </View>
-                <View className={`h-2 rounded-full overflow-hidden ${isDark ? 'bg-gray-700' : 'bg-gray-100'}`}>
+                <View className={`h-2 rounded-full overflow-hidden ${isDark ? 'bg-zinc-700' : 'bg-gray-100'}`}>
                   <View
                     className="h-full rounded-full bg-[#059669]"
                     style={{ width: `${getCompletionPercentage()}%` }}
@@ -187,7 +187,7 @@ export default function HomePage() {
               {/* Quick Actions */}
               <View className="flex-row justify-between mt-2">
                 <TouchableOpacity
-                  className="flex-row items-center py-2 px-3 rounded-lg bg-[#e6f7f1]"
+                  className={`flex-row items-center py-2 px-3 rounded-lg ${isDark ? "bg-brand-primary/10 border border-brand-primary/10 " : "bg-[#e6f7f1]"} `}
                   onPress={() => router.push('/(auth)/add-habit')}
                   activeOpacity={0.7}
                 >
@@ -196,7 +196,7 @@ export default function HomePage() {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  className="flex-row items-center py-2 px-3 rounded-lg bg-[#e6f7f1]"
+                  className={`flex-row items-center py-2 px-3 rounded-lg ${isDark ? "bg-brand-primary/10 " : "bg-[#e6f7f1]"} `}
                   onPress={() => router.push('/(auth)/(tabs)/habits')}
                   activeOpacity={0.7}
                 >
@@ -224,7 +224,7 @@ export default function HomePage() {
               {getDailyHabits().length === 0 ? (
                 <Animated.View
                   entering={FadeIn.duration(500)}
-                  className={`p-4 rounded-2xl border ${isDark ? 'bg-gray-800/40 border-gray-700' : 'bg-white border-gray-100'} items-center shadow-sm`}
+                  className={`p-4 rounded-2xl border ${isDark ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-gray-100'} items-center shadow-sm`}
                 >
                   <Text className={`text-sm text-center font-inter-regular ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                     No daily habits yet
@@ -236,7 +236,7 @@ export default function HomePage() {
                     key={habit.id}
                     entering={FadeInDown.delay(index * 100).duration(500)}
                     className={`mb-3 rounded-2xl border shadow-sm ${isDark
-                      ? 'bg-gray-800/60 border-gray-700'
+                      ? 'bg-zinc-800 border-zinc-700'
                       : 'bg-white border-gray-100'
                       }`}
                   >
@@ -261,7 +261,7 @@ export default function HomePage() {
                           Daily • Streak: {habit.current_streak || 0} days
                         </Text>
                         <View className="flex-row items-center gap-2 mt-2">
-                          <View className={`flex-1 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-gray-700' : 'bg-gray-100'}`}>
+                          <View className={`flex-1 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-zinc-700' : 'bg-gray-100'}`}>
                             <View
                               className="h-full rounded-full bg-[#059669]"
                               style={{
@@ -291,7 +291,7 @@ export default function HomePage() {
               {getWeeklyHabits().length === 0 ? (
                 <Animated.View
                   entering={FadeIn.duration(500)}
-                  className={`p-4 rounded-2xl border ${isDark ? 'bg-gray-800/40 border-gray-700' : 'bg-white border-gray-100'} items-center shadow-sm`}
+                  className={`p-4 rounded-2xl border ${isDark ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-gray-100'} items-center shadow-sm`}
                 >
                   <Text className={`text-sm text-center font-inter-regular ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                     No weekly habits yet
@@ -303,7 +303,7 @@ export default function HomePage() {
                     key={habit.id}
                     entering={FadeInDown.delay(index * 100).duration(500)}
                     className={`mb-3 rounded-2xl border shadow-sm ${isDark
-                      ? 'bg-gray-800/60 border-gray-700'
+                      ? 'bg-zinc-800 border-zinc-700'
                       : 'bg-white border-gray-100'
                       }`}
                   >
@@ -328,7 +328,7 @@ export default function HomePage() {
                           Weekly • Streak: {habit.current_streak || 0} weeks
                         </Text>
                         <View className="flex-row items-center gap-2 mt-2">
-                          <View className={`flex-1 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-gray-700' : 'bg-gray-100'}`}>
+                          <View className={`flex-1 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-zinc-700' : 'bg-gray-100'}`}>
                             <View
                               className="h-full rounded-full bg-[#059669]"
                               style={{
@@ -355,7 +355,7 @@ export default function HomePage() {
 
               <Animated.View
                 entering={FadeIn.duration(500)}
-                className={`p-6 rounded-2xl border ${isDark ? 'bg-gray-800/40 border-gray-700' : 'bg-white border-gray-100'} shadow-sm`}
+                className={`p-6 rounded-2xl border ${isDark ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-gray-100'} shadow-sm`}
               >
                 <View className="flex-row items-center mb-4">
                   <Feather name="trending-up" size={24} color="#059669" />

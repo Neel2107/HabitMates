@@ -12,19 +12,21 @@ const TopGradient = () => {
             <BlurView
                 intensity={80}
                 tint={isDark ? "dark" : "light"}
-                className="absolute top-0 left-0 right-0 h-44 "
+                className="absolute top-0 left-0 right-0 h-48 "
                 experimentalBlurMethod="dimezisBlurView"
-                // blurReductionFactor={0.9}
+                blurReductionFactor={5}
             >
                 <View className="h-full">
                     {/* Main horizontal gradient */}
                     <LinearGradient
                         colors={[
-                            'rgba(5,150,105,0.6)',    // Emerald (increased opacity)
-                            'rgba(79,70,229,0.6)',    // Indigo (increased opacity)
-                            'rgba(236,72,153,0.6)',   // Pink (increased opacity)
+                            'rgba(5,150,105,0.6)',    // Emerald
+                            'rgba(45,110,167,0.6)',   // Emerald-Indigo blend
+                            'rgba(79,70,229,0.6)',    // Indigo
+                            'rgba(157,71,191,0.6)',   // Indigo-Pink blend
+                            'rgba(236,72,153,0.6)',   // Pink
                         ]}
-                        locations={[0, 0.5, 1]}
+                        locations={[0, 0.25, 0.5, 0.75, 1]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
                         className="absolute top-0 left-0 right-0 h-full"

@@ -3,7 +3,7 @@ import { useAuthStore } from "@/lib/stores/authStore";
 import { useThemeStore } from "@/lib/stores/themeStore";
 import { Redirect, Tabs } from "expo-router";
 import { StatusBar } from 'expo-status-bar';
-import { HandshakeIcon, HeartHandshake, HeartHandshakeIcon, Home, ListChecks, LucideHeartHandshake, User } from 'lucide-react-native';
+import { HandshakeIcon, Home, ListChecks, User } from 'lucide-react-native';
 import { Platform, View } from "react-native";
 
 export default function AuthLayout() {
@@ -27,7 +27,7 @@ export default function AuthLayout() {
             tabBarStyle: {
               paddingTop: Platform.OS === 'android' ? 8 : 0,
               height: 65,
-              backgroundColor: isDark ? '#1e293b' : '#ffffff',
+              backgroundColor: isDark ? '#171717' : '#ffffff',
             },
             headerShown: false,
           }}>
