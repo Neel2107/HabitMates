@@ -112,7 +112,7 @@ export default function HomePage() {
         {/* Header Section with User Info and Date */}
         <Animated.View
           entering={FadeIn.duration(500)}
-          className="px-6 pt-4 pb-6"
+          className="px-6 pt-4 pb-6 z-10"
         >
           <View className="flex-row items-center justify-between">
             <View>
