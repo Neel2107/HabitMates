@@ -1,5 +1,4 @@
 import { useThemeStore } from '@/lib/stores/themeStore';
-import { useTheme } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
